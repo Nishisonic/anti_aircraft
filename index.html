@@ -8,7 +8,7 @@
     <script src="js/process.js" type="text/javascript"></script>
   </head>
   <body>
-    <p>対空砲火計算機　Ver1.0.1</p>
+    <p>対空砲火計算機　Ver1.0.2</p>
     <p>深海棲艦の対空砲火を調べることが出来るかも(╹‿ ╹.　)</p>
     <p>
       陣形：
@@ -24,7 +24,7 @@
         <option value="1.0">第四警戒航行序列</option>
       </select>
       　敵スロット機数：
-      <input type="number" name="slotNum" id="slotNumSpinner" value="0" min="0" onchange="calc()">
+      <input type="number" name="slotNum" id="slotNumSpinner" value="0" min="0" oninput="calc()" onchange="calc()">
       　艦隊防空：
       <input name="kantai" id="kantaiLabel" value="0" readonly>
       　全滅確率：
@@ -244,5 +244,6 @@
     <br>
     <p>Ver1.0.0 2017/01/07 初版</p>
     <p>Ver1.0.1 2017/01/07 バグ修正</p>
+    <p>Ver1.0.2 2017/01/07 バグ修正、編成リセットボタン追加</p>
   </body>
 <html>
