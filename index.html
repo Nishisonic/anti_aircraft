@@ -8,8 +8,9 @@
     <script src="js/process.js" type="text/javascript"></script>
   </head>
   <body>
-    <p>対空砲火計算機　Ver1.0.2</p>
+    <p>対空砲火計算機　Ver1.0.3</p>
     <p>深海棲艦の対空砲火を調べることが出来るかも(╹‿ ╹.　)</p>
+    <br>
     <p>
       陣形：
       <select name="formation" id="formation" onchange="calc()">
@@ -23,12 +24,15 @@
         <option value="1.5">第三警戒航行序列</option>
         <option value="1.0">第四警戒航行序列</option>
       </select>
-      　敵スロット機数：
+      　スロット機数：
       <input type="number" name="slotNum" id="slotNumSpinner" value="0" min="0" oninput="calc()" onchange="calc()">
-      　艦隊防空：
-      <input name="kantai" id="kantaiLabel" value="0" readonly>
+    </p>
+    <Hr Width="100%">
+    <p>
       　全滅確率：
       <input name="annihilation" id="annihilationLabel" value="100.00%" readonly>
+      　艦隊防空：
+      <input name="kantai" id="kantaiLabel" value="0" readonly>
     </p>
     <table class="table" border="1" id="table">
       <tbody>
@@ -240,10 +244,15 @@
     </table>
     <p>ソースに関しては<a href="https://twitter.com/KennethWWKK" target="_blank">@KennethWWKK</a>さんの
     <a href="https://docs.google.com/document/d/1tqYyqzdc1RT_fYDKFMcUId0kOZHCdGpVsObm6yt-Yco/edit?usp=sharing" target="_blank">艦これ改のソフトって解析翻訳</a>をご参照下さい。</p>
-    <p>作成者：<a href="https://twitter.com/Nishisonic" target="_blank">@Nishisonic</a>
+    <p>ご要望、ご指摘お待ちしてます(╹‿ ╹.　)</p>
+    <p>作成者：<a href="https://twitter.com/Nishisonic" target="_blank">@Nishisonic</a></p>
     <br>
-    <p>Ver1.0.0 2017/01/07 初版</p>
-    <p>Ver1.0.1 2017/01/07 バグ修正</p>
-    <p>Ver1.0.2 2017/01/07 バグ修正、編成リセットボタン追加</p>
+    履歴
+    <p>
+      Ver1.0.3 2017/01/08 レイアウト変更<br>
+      Ver1.0.2 2017/01/07 バグ修正、編成リセットボタン追加<br>
+      Ver1.0.1 2017/01/07 バグ修正<br>
+      Ver1.0.0 2017/01/07 初版<br>
+    </p>
   </body>
 <html>
