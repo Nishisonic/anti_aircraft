@@ -9,24 +9,20 @@
     <link href="css/style.css" rel="stylesheet" type="text/css" media="all" />
   </head>
   <body>
-    <h2>対空砲火計算機　Ver1.0.4.1</h2>
-    <p>深海棲艦の対空砲火を調べることが出来るかも(╹‿ ╹.　)</p>
+    <h2>対空砲火計算機　Ver1.0.5</h2>
+    <p>対空砲火を調べることが出来るかも(╹‿ ╹.　)</p>
     <br>
     <p>
+      <span id="radiogroup">
+        <input type="radio" id="isFriend" name="isFriend" value="true" onclick="initialize()" checked> 艦娘
+        <input type="radio" id="isFriend" name="isFriend" value="false" onclick="initialize()"> 深海棲艦
+      </span>
       陣形：
-      <select name="formation" id="formation" onchange="calc()">
-        <option value="1.0" selected>単縦陣</option>
-        <option value="1.2">複縦陣</option>
-        <option value="1.6">輪形陣</option>
-        <option value="1.0">梯形陣</option>
-        <option value="1.0">単横陣</option>
-        <option value="1.1">第一警戒航行序列</option>
-        <option value="1.0">第二警戒航行序列</option>
-        <option value="1.5">第三警戒航行序列</option>
-        <option value="1.0">第四警戒航行序列</option>
-      </select>
+      <span id="formationBox"></span>
       スロット機数：
       <input type="number" name="slotNum" id="slotNumSpinner" value="0" min="0" oninput="calc()" onchange="calc()">
+      対空カットイン種別：
+      <span id="taiku_cutinBox"></span>
     </p>
     <Hr Width="100%">
     <p>
@@ -254,6 +250,7 @@
     <br>
     履歴
     <p>
+      Ver1.0.5 2017/01/08 対空CI追加、味方も計算できるよう改良<br>
       Ver1.0.4 2017/01/08 cssによるレイアウト変更<br>
       Ver1.0.3 2017/01/08 レイアウト変更<br>
       Ver1.0.2 2017/01/07 バグ修正、編成リセットボタン追加<br>

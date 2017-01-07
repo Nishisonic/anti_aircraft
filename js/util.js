@@ -111,7 +111,6 @@ function getB(kaju,slot,ciKind = 0,isFriend = false){
 function getTaikuCuinFactor(ciKind,isFriend = false){
   if(TAIKU_CUIIN[ciKind].A !== undefined){
     return TAIKU_CUIIN[ciKind];
-  } else {
-    return TAIKU_CUIIN[ciKind][isFriend ? "FRIEND" : "ENEMY"];
   }
+  return TAIKU_CUIIN[ciKind][isFriend ? "FRIEND" : "ENEMY"];
 }

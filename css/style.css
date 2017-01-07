@@ -13,7 +13,7 @@ BODY{
   margin-right:15px;
   width: 100px;
 }
-#formation{
+#radiogroup,#formation{
   margin-right:15px;
 }
 #kantaiLabel{
@@ -23,6 +23,7 @@ BODY{
 #slotNumSpinner{
   width: 70px;
   text-align: right;
+  margin-right:15px;
 }
 #header1,#header2,#header1_,#header2_{
   text-align: center;

@@ -1,11 +1,13 @@
 $(function(){
+  $('#formationBox').load('formation.html');
+  $('#taiku_cutinBox').load('taiku_cutin.html');
   for(let i = 1;i <= 2;i++){
     for(let j = 1;j <= 6;j++){
-      $('#f' + i + 's' + j + 'name').load('name.html');
+      $('#f' + i + 's' + j + 'name').load('name_f.html');
       $('#f' + i + 's' + j + 'name').change(i * 10 + j,setStatus);
       $('#f' + i + 's' + j + 'name').change(calc);
       for(let k = 1;k <= 5;k++){
-        $('#f' + i + 's' + j + 'item' + k).load('item.html');
+        $('#f' + i + 's' + j + 'item' + k).load('item_f.html');
         $('#f' + i + 's' + j + 'item' + k).change(calc);
       }
       document.getElementById('f' + i + 's' + j + 'tyku').innerHTML = 0;
@@ -46,7 +48,7 @@ function calc(e){
       }
     }
   }
-  kantaiAirBonus = Math.floor($('#formation').val() * Math.floor(kantaiAirBonus));
+  kantaiAirBonus = Math.floor($('#formationBox').children().val() * Math.floor(kantaiAirBonus));
   $('#kantaiLabel').val(kantaiAirBonus);
   let shipNum = 0;
   let annihilationCnt = 0;
@@ -70,10 +72,12 @@ function calc(e){
         totalItemTyku += itemTyku;
         sum += itemTyku * getKansenItem_A(type) + kaishuBonus;
       }
+      let isFriend = $('input[name=isFriend]:checked').val() === 'true';
       let kaju = Math.sqrt(shipTyku + totalItemTyku) + sum;
-      let kajuTotal = (kaju + kantaiAirBonus) * AIR_BATTLE_FACTOR * ENEMY_FACTOR;
-      let a = getA(kajuTotal,0,false);
-      let b = getB(kaju,slotNum,0,false);
+      let kajuTotal = (kaju + kantaiAirBonus) * AIR_BATTLE_FACTOR * (isFriend ? FRIEND_FACTOR : ENEMY_FACTOR);
+      let taikuCIkind = $('#taiku_cutinBox').children().val();
+      let a = getA(kajuTotal,taikuCIkind,isFriend);
+      let b = getB(kaju,slotNum,taikuCIkind,isFriend);
       if($(t_name).val() != -1){
         shipNum++;
         if(a >= slotNum) annihilationCnt += 2;
@@ -106,4 +110,32 @@ function reset(no){
     }
   }
   calc();
+}
+
+function initialize(){
+  reset(1);
+  reset(2);
+  let nameSource;
+  let itemSource;
+  if($('input[name=isFriend]:checked').val() === 'true'){
+    nameSource = 'name_f.html';
+    itemSource = 'item_f.html';
+  } else {
+    nameSource = 'name_e.html';
+    itemSource = 'item_e.html';
+  }
+  $('#formationBox').children().prop('selectedIndex', 0);
+  $('#slotNumSpinner').val(0);
+  $('#taiku_cutinBox').children().prop('selectedIndex', 0);
+  for(let i = 1;i <= 2;i++){
+    for(let j = 1;j <= 6;j++){
+      $('#f' + i + 's' + j + 'name').load(nameSource);
+      $('#f' + i + 's' + j + 'name').change(i * 10 + j,setStatus);
+      $('#f' + i + 's' + j + 'name').change(calc);
+      for(let k = 1;k <= 5;k++){
+        $('#f' + i + 's' + j + 'item' + k).load(itemSource);
+        $('#f' + i + 's' + j + 'item' + k).change(calc);
+      }
+    }
+  }
 }
