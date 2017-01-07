@@ -9,7 +9,7 @@
     <link href="css/style.css" rel="stylesheet" type="text/css" media="all" />
   </head>
   <body>
-    <h2>対空砲火計算機　Ver1.0.4</h2>
+    <h2>対空砲火計算機　Ver1.0.4.1</h2>
     <p>深海棲艦の対空砲火を調べることが出来るかも(╹‿ ╹.　)</p>
     <br>
     <p>
@@ -38,12 +38,12 @@
     <table class="table" border="1" id="table">
       <tbody>
         <tr>
-          <th colspan="13">
+          <th colspan="13" id="header1">
             第一艦隊
             <input type="button" name="reset1" id="resetButton1" value="編成リセット" onclick="reset(1)">
           </th>
         </tr>
-        <tr>
+        <tr id="header1_">
           <td></td>
           <td>名前</td>
           <td>装備1</td>
@@ -142,12 +142,12 @@
           <td id="f1s6total"/>
         </tr>
         <tr>
-          <th colspan="13">
+          <th colspan="13" id="header2">
             第ニ艦隊
             <input type="button" name="reset1" id="resetButton1" value="編成リセット" onclick="reset(2)">
           </th>
         </tr>
-        <tr>
+        <tr id="header2_">
           <td></td>
           <td>名前</td>
           <td>装備1</td>
@@ -254,7 +254,7 @@
     <br>
     履歴
     <p>
-      Ver1.0.4 2017/01/08 レイアウト変更<br>
+      Ver1.0.4 2017/01/08 cssによるレイアウト変更<br>
       Ver1.0.3 2017/01/08 レイアウト変更<br>
       Ver1.0.2 2017/01/07 バグ修正、編成リセットボタン追加<br>
       Ver1.0.1 2017/01/07 バグ修正<br>

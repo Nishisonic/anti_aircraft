@@ -24,3 +24,9 @@ BODY{
   width: 70px;
   text-align: right;
 }
+#header1,#header2,#header1_,#header2_{
+  text-align: center;
+}
+table{
+  text-align: right;
+}
