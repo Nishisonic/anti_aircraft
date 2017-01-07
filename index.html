@@ -1,0 +1,245 @@
+<!DOCTYPE HTML>
+<html lang="ja">
+  <head>
+    <title>対空砲火計算機</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <script src="js/jquery-3.1.1.min.js" type="text/javascript"></script>
+    <script src="js/util.js" type="text/javascript"></script>
+    <script src="js/process.js" type="text/javascript"></script>
+  </head>
+  <body>
+    <p>対空砲火計算機　Ver1.0.0</p>
+    <p>深海棲艦の対空砲火を調べることが出来るかも(╹‿ ╹.　)</p>
+    <p>
+      陣形：
+      <select name="formation" id="formation" onchange="calc()">
+        <option value="1.0" selected>単縦陣</option>
+        <option value="1.2">複縦陣</option>
+        <option value="1.6">輪形陣</option>
+        <option value="1.0">梯形陣</option>
+        <option value="1.0">単横陣</option>
+        <option value="1.1">第一警戒航行序列</option>
+        <option value="1.0">第二警戒航行序列</option>
+        <option value="1.5">第三警戒航行序列</option>
+        <option value="1.0">第四警戒航行序列</option>
+      </select>
+      　敵スロット機数：
+      <input type="number" name="slotNum" id="slotNumSpinner" value="0" min="0" onchange="calc()">
+      　艦隊防空：
+      <input name="kantai" id="kantaiLabel" value="0" readonly>
+      　全滅確率：
+      <input name="annihilation" id="annihilationLabel" value="100.00%" readonly>
+    </p>
+    <table class="table" border="1" id="table">
+      <tbody>
+        <tr>
+          <th colspan="15">第一艦隊</th>
+        </tr>
+        <tr>
+          <th></th>
+          <th>名前</th>
+          <th>装備1</th>
+          <th>装備2</th>
+          <th>装備3</th>
+          <th>装備4</th>
+          <th>装備5</th>
+          <th>素対空</th>
+          <th>加重対空</th>
+          <th>撃墜数A</th>
+          <th>撃墜数B</th>
+          <th>最終撃墜数</th>
+        </tr>
+        <tr>
+          <td>一</td>
+          <td id="f1s1name"/>
+          <td id="f1s1item1"/>
+          <td id="f1s1item2"/>
+          <td id="f1s1item3"/>
+          <td id="f1s1item4"/>
+          <td id="f1s1item5"/>
+          <td id="f1s1tyku"/>
+          <td id="f1s1kaju"/>
+          <td id="f1s1shotDownA"/>
+          <td id="f1s1shotDownB"/>
+          <td id="f1s1total"/>
+        </tr>
+        <tr>
+          <td>ニ</td>
+          <td id="f1s2name"/>
+          <td id="f1s2item1"/>
+          <td id="f1s2item2"/>
+          <td id="f1s2item3"/>
+          <td id="f1s2item4"/>
+          <td id="f1s2item5"/>
+          <td id="f1s2tyku"/>
+          <td id="f1s2kaju"/>
+          <td id="f1s2shotDownA"/>
+          <td id="f1s2shotDownB"/>
+          <td id="f1s2total"/>
+        </tr>
+        <tr>
+          <td>三</td>
+          <td id="f1s3name"/>
+          <td id="f1s3item1"/>
+          <td id="f1s3item2"/>
+          <td id="f1s3item3"/>
+          <td id="f1s3item4"/>
+          <td id="f1s3item5"/>
+          <td id="f1s3tyku"/>
+          <td id="f1s3kaju"/>
+          <td id="f1s3shotDownA"/>
+          <td id="f1s3shotDownB"/>
+          <td id="f1s3total"/>
+        </tr>
+        <tr>
+          <td>四</td>
+          <td id="f1s4name"/>
+          <td id="f1s4item1"/>
+          <td id="f1s4item2"/>
+          <td id="f1s4item3"/>
+          <td id="f1s4item4"/>
+          <td id="f1s4item5"/>
+          <td id="f1s4tyku"/>
+          <td id="f1s4kaju"/>
+          <td id="f1s4shotDownA"/>
+          <td id="f1s4shotDownB"/>
+          <td id="f1s4total"/>
+        </tr>
+        <tr>
+          <td>五</td>
+          <td id="f1s5name"/>
+          <td id="f1s5item1"/>
+          <td id="f1s5item2"/>
+          <td id="f1s5item3"/>
+          <td id="f1s5item4"/>
+          <td id="f1s5item5"/>
+          <td id="f1s5tyku"/>
+          <td id="f1s5kaju"/>
+          <td id="f1s5shotDownA"/>
+          <td id="f1s5shotDownB"/>
+          <td id="f1s5total"/>
+        </tr>
+        <tr>
+          <td>六</td>
+          <td id="f1s6name"/>
+          <td id="f1s6item1"/>
+          <td id="f1s6item2"/>
+          <td id="f1s6item3"/>
+          <td id="f1s6item4"/>
+          <td id="f1s6item5"/>
+          <td id="f1s6tyku"/>
+          <td id="f1s6kaju"/>
+          <td id="f1s6shotDownA"/>
+          <td id="f1s6shotDownB"/>
+          <td id="f1s6total"/>
+        </tr>
+        <tr>
+          <th colspan="15">第ニ艦隊</th>
+        </tr>
+        <tr>
+          <th></th>
+          <th>名前</th>
+          <th>装備1</th>
+          <th>装備2</th>
+          <th>装備3</th>
+          <th>装備4</th>
+          <th>装備5</th>
+          <th>素対空</th>
+          <th>加重対空</th>
+          <th>撃墜数A</th>
+          <th>撃墜数B</th>
+          <th>最終撃墜数</th>
+        </tr>
+        <tr>
+          <td>一</td>
+          <td id="f2s1name"/>
+          <td id="f2s1item1"/>
+          <td id="f2s1item2"/>
+          <td id="f2s1item3"/>
+          <td id="f2s1item4"/>
+          <td id="f2s1item5"/>
+          <td id="f2s1tyku"/>
+          <td id="f2s1kaju"/>
+          <td id="f2s1shotDownA"/>
+          <td id="f2s1shotDownB"/>
+          <td id="f2s1total"/>
+        </tr>
+        <tr>
+          <td>ニ</td>
+          <td id="f2s2name"/>
+          <td id="f2s2item1"/>
+          <td id="f2s2item2"/>
+          <td id="f2s2item3"/>
+          <td id="f2s2item4"/>
+          <td id="f2s2item5"/>
+          <td id="f2s2tyku"/>
+          <td id="f2s2kaju"/>
+          <td id="f2s2shotDownA"/>
+          <td id="f2s2shotDownB"/>
+          <td id="f2s2total"/>
+        </tr>
+        <tr>
+          <td>三</td>
+          <td id="f2s3name"/>
+          <td id="f2s3item1"/>
+          <td id="f2s3item2"/>
+          <td id="f2s3item3"/>
+          <td id="f2s3item4"/>
+          <td id="f2s3item5"/>
+          <td id="f2s3tyku"/>
+          <td id="f2s3kaju"/>
+          <td id="f2s3shotDownA"/>
+          <td id="f2s3shotDownB"/>
+          <td id="f2s3total"/>
+        </tr>
+        <tr>
+          <td>四</td>
+          <td id="f2s4name"/>
+          <td id="f2s4item1"/>
+          <td id="f2s4item2"/>
+          <td id="f2s4item3"/>
+          <td id="f2s4item4"/>
+          <td id="f2s4item5"/>
+          <td id="f2s4tyku"/>
+          <td id="f2s4kaju"/>
+          <td id="f2s4shotDownA"/>
+          <td id="f2s4shotDownB"/>
+          <td id="f2s4total"/>
+        </tr>
+        <tr>
+          <td>五</td>
+          <td id="f2s5name"/>
+          <td id="f2s5item1"/>
+          <td id="f2s5item2"/>
+          <td id="f2s5item3"/>
+          <td id="f2s5item4"/>
+          <td id="f2s5item5"/>
+          <td id="f2s5tyku"/>
+          <td id="f2s5kaju"/>
+          <td id="f2s5shotDownA"/>
+          <td id="f2s5shotDownB"/>
+          <td id="f2s5total"/>
+        </tr>
+        <tr>
+          <td>六</td>
+          <td id="f2s6name"/>
+          <td id="f2s6item1"/>
+          <td id="f2s6item2"/>
+          <td id="f2s6item3"/>
+          <td id="f2s6item4"/>
+          <td id="f2s6item5"/>
+          <td id="f2s6tyku"/>
+          <td id="f2s6kaju"/>
+          <td id="f2s6shotDownA"/>
+          <td id="f2s6shotDownB"/>
+          <td id="f2s6total"/>
+        </tr>
+      </tbody>
+    </table>
+    <p>ソースに関しては<a href="https://twitter.com/KennethWWKK" target="_blank">@KennethWWKK</a>さんの
+    <a href="https://docs.google.com/document/d/1tqYyqzdc1RT_fYDKFMcUId0kOZHCdGpVsObm6yt-Yco/edit?usp=sharing" target="_blank">艦これ改のソフトって解析翻訳</a>をご参照下さい。</p>
+    <p>作成者：<a href="https://twitter.com/Nishisonic" target="_blank">@Nishisonic</a>
+    <br>
+    <p>Ver1.0.0 2017/01/07 初版</p>
+  </body>
+<html>
