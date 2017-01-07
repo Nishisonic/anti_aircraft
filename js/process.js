@@ -49,8 +49,9 @@ function calc(e){
   }
   kantaiAirBonus = Math.floor($('#formation').val() * Math.floor(kantaiAirBonus));
   $('#kantaiLabel').val(kantaiAirBonus);
-  let cnt = 0;
+  let shipNum = 0;
   let annihilationCnt = 0;
+  let slotNum = $('#slotNumSpinner').val();
   // 加重対空値
   for(let i = 1;i <= 2;i++){
     for(let j = 1;j <= 6;j++){
@@ -72,13 +73,12 @@ function calc(e){
       }
       let kaju = Math.sqrt(shipTyku + totalItemTyku) + sum;
       let kajuTotal = (kaju + kantaiAirBonus) * AIR_BATTLE_FACTOR * ENEMY_FACTOR;
-      let slotNum = $('#slotNumSpinner').val();
       let a = getA(kajuTotal,0,false);
       let b = getB(kaju,slotNum,0,false);
       if($(t_name).val() != -1){
-        cnt += 3;
-        if(a >= slotNum) annihilationCnt++;
-        if(b >= slotNum) annihilationCnt++;
+        shipNum++;
+        if(a >= slotNum) annihilationCnt += 2;
+        if(b >= slotNum) annihilationCnt += 2;
         if((a + b) >= slotNum) annihilationCnt++;
         document.getElementById(t_kaju).innerHTML = (kajuTotal).toFixed(2);
         document.getElementById(t_shotDownA).innerHTML = a;
@@ -91,13 +91,7 @@ function calc(e){
         document.getElementById(t_total).innerHTML = 0;
       }
     }
-    let annihilationPercent = (function(a,b){
-      let c = 1 / cnt * annihilationCnt * 100;
-      if(Number.isNaN(c)){
-        return 100;
-      }
-      return c;
-    })(cnt,annihilationCnt);
-    $('#annihilationLabel').val(annihilationPercent.toFixed(2) + "%");
+    let annihilationProbability = slotNum > 0 && shipNum > 0 ? annihilationCnt / (shipNum * 2 * 2) * 100 : 100;
+    $('#annihilationLabel').val(annihilationProbability.toFixed(2) + "%");
   }
 }
