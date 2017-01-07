@@ -1,0 +1,26 @@
+#resetButton1{
+  float:right;
+}
+#resetButton2{
+  float:right;
+}
+BODY{
+  color:#000000;
+  background-color: #F0F0F0;
+  padding:5px 0 0 10px;
+}
+#annihilationLabel{
+  margin-right:15px;
+  width: 100px;
+}
+#formation{
+  margin-right:15px;
+}
+#kantaiLabel{
+  text-align: right;
+  width: 100px;
+}
+#slotNumSpinner{
+  width: 70px;
+  text-align: right;
+}
