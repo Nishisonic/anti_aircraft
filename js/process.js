@@ -23,10 +23,9 @@ function setStatus(e){
   let t_tyku = 'f' + fleet + 's' + ship + 'tyku';
   let tyku = $(target).data('tyku');
   document.getElementById(t_tyku).innerHTML = tyku;
-  for(let i = 0;i < 5;i++){
-    let t_item = '#f' + fleet + 's' + ship + 'item' + (i + 1);
-    let itemIdx = fleet * (ship - 1) * 5 + i;
-    let item = $(target).data('i' + (i + 1));
+  for(let i = 1;i <= 5;i++){
+    let t_item = '#f' + fleet + 's' + ship + 'item' + i;
+    let item = $(target).data('i' + i);
     $(t_item).children('[name=item]').val(item);
   }
 }
@@ -94,4 +93,17 @@ function calc(e){
     let annihilationProbability = slotNum > 0 && shipNum > 0 ? annihilationCnt / (shipNum * 2 * 2) * 100 : 100;
     $('#annihilationLabel').val(annihilationProbability.toFixed(2) + "%");
   }
+}
+function reset(no){
+  for(let i = 1;i <= 6;i++){
+    let target = '#f' + no + 's' + i + 'name';
+    $(target).children('[name=name]').val(-1);
+    let t_tyku = 'f' + no + 's' + i + 'tyku';
+    document.getElementById(t_tyku).innerHTML = 0;
+    for(let j = 1;j <= 5;j++){
+      let t_item = '#f' + no + 's' + i + 'item' + j;
+      $(t_item).children('[name=item]').val(-1);
+    }
+  }
+  calc();
 }
