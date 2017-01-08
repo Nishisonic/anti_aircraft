@@ -82,7 +82,9 @@ function calc(e){
         shipNum++;
         if(a >= slotNum) annihilationCnt += 2;
         if(b >= slotNum) annihilationCnt += 2;
-        if((a + b) >= slotNum) annihilationCnt++;
+        if(!(a >= slotNum || b >= slotNum) && (a + b) >= slotNum){
+          annihilationCnt++;
+        }
         document.getElementById(t_kaju).innerHTML = (kajuTotal).toFixed(2);
         document.getElementById(t_shotDownA).innerHTML = a;
         document.getElementById(t_shotDownB).innerHTML = b;
