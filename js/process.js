@@ -9,6 +9,8 @@ $(function(){
       for(let k = 1;k <= 5;k++){
         $('#f' + i + 's' + j + 'item' + k).load('item_f.html');
         $('#f' + i + 's' + j + 'item' + k).change(calc);
+        $('#f' + i + 's' + j + 'item' + k + 'alv').load('alv.html');
+        $('#f' + i + 's' + j + 'item' + k + 'alv').change(calc);
       }
       document.getElementById('f' + i + 's' + j + 'tyku').innerHTML = 0;
       document.getElementById('f' + i + 's' + j + 'kaju').innerHTML = "0.00";
@@ -66,9 +68,11 @@ function calc(e){
       let sum = 0;
       for(let k = 1;k <= 5;k++){
         let t_item = '#f' + i + 's' + j + 'item' + k + ' option:selected';
+        let t_alv = '#f' + i + 's' + j + 'item' + k + 'alv option:selected'
         let itemTyku = $(t_item).data('tyku');
         let type = $(t_item).data('type');
-        let kaishuBonus = getKansenItem_B(type,itemTyku) * Math.sqrt(0);
+        let alv = $(t_alv).val();
+        let kaishuBonus = getKansenItem_B(type,itemTyku) * Math.sqrt(alv);
         totalItemTyku += itemTyku;
         sum += itemTyku * getKansenItem_A(type) + kaishuBonus;
       }
@@ -108,7 +112,9 @@ function reset(no){
     document.getElementById(t_tyku).innerHTML = 0;
     for(let j = 1;j <= 5;j++){
       let t_item = '#f' + no + 's' + i + 'item' + j;
+      let t_item_alv = '#f' + no + 's' + i + 'item' + j + 'alv';
       $(t_item).children('[name=item]').val(-1);
+      $(t_item_alv).val(0);
     }
   }
   calc();

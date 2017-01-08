@@ -9,7 +9,7 @@
     <link href="css/style.css" rel="stylesheet" type="text/css" media="all" />
   </head>
   <body>
-    <h2>対空砲火計算機　Ver1.0.6</h2>
+    <h2>対空砲火計算機　Ver1.0.7</h2>
     <p>対空砲火を調べることが出来るかも(╹‿ ╹.　)</p>
     <br>
     <p>
@@ -34,7 +34,7 @@
     <table class="table" border="1" id="table">
       <tbody>
         <tr>
-          <th colspan="13" id="header1">
+          <th colspan="19" id="header1">
             第一艦隊
             <input type="button" name="reset1" id="resetButton1" value="編成リセット" onclick="reset(1)">
           </th>
@@ -42,11 +42,11 @@
         <tr id="header1_">
           <td></td>
           <td>名前</td>
-          <td>装備1</td>
-          <td>装備2</td>
-          <td>装備3</td>
-          <td>装備4</td>
-          <td>装備5</td>
+          <td colspan="2">装備1</td>
+          <td colspan="2">装備2</td>
+          <td colspan="2">装備3</td>
+          <td colspan="2">装備4</td>
+          <td colspan="2">装備5</td>
           <td>素対空</td>
           <td>加重対空</td>
           <td>撃墜数A</td>
@@ -57,10 +57,15 @@
           <td>一</td>
           <td id="f1s1name"/>
           <td id="f1s1item1"/>
+          <td id="f1s1item1alv"/>
           <td id="f1s1item2"/>
+          <td id="f1s1item2alv"/>
           <td id="f1s1item3"/>
+          <td id="f1s1item3alv"/>
           <td id="f1s1item4"/>
+          <td id="f1s1item4alv"/>
           <td id="f1s1item5"/>
+          <td id="f1s1item5alv"/>
           <td id="f1s1tyku"/>
           <td id="f1s1kaju"/>
           <td id="f1s1shotDownA"/>
@@ -71,10 +76,15 @@
           <td>ニ</td>
           <td id="f1s2name"/>
           <td id="f1s2item1"/>
+          <td id="f1s2item1alv"/>
           <td id="f1s2item2"/>
+          <td id="f1s2item2alv"/>
           <td id="f1s2item3"/>
+          <td id="f1s2item3alv"/>
           <td id="f1s2item4"/>
+          <td id="f1s2item4alv"/>
           <td id="f1s2item5"/>
+          <td id="f1s2item5alv"/>
           <td id="f1s2tyku"/>
           <td id="f1s2kaju"/>
           <td id="f1s2shotDownA"/>
@@ -85,10 +95,15 @@
           <td>三</td>
           <td id="f1s3name"/>
           <td id="f1s3item1"/>
+          <td id="f1s3item1alv"/>
           <td id="f1s3item2"/>
+          <td id="f1s3item2alv"/>
           <td id="f1s3item3"/>
+          <td id="f1s3item3alv"/>
           <td id="f1s3item4"/>
+          <td id="f1s3item4alv"/>
           <td id="f1s3item5"/>
+          <td id="f1s3item5alv"/>
           <td id="f1s3tyku"/>
           <td id="f1s3kaju"/>
           <td id="f1s3shotDownA"/>
@@ -99,10 +114,15 @@
           <td>四</td>
           <td id="f1s4name"/>
           <td id="f1s4item1"/>
+          <td id="f1s4item1alv"/>
           <td id="f1s4item2"/>
+          <td id="f1s4item2alv"/>
           <td id="f1s4item3"/>
+          <td id="f1s4item3alv"/>
           <td id="f1s4item4"/>
+          <td id="f1s4item4alv"/>
           <td id="f1s4item5"/>
+          <td id="f1s4item5alv"/>
           <td id="f1s4tyku"/>
           <td id="f1s4kaju"/>
           <td id="f1s4shotDownA"/>
@@ -113,10 +133,15 @@
           <td>五</td>
           <td id="f1s5name"/>
           <td id="f1s5item1"/>
+          <td id="f1s5item1alv"/>
           <td id="f1s5item2"/>
+          <td id="f1s5item2alv"/>
           <td id="f1s5item3"/>
+          <td id="f1s5item3alv"/>
           <td id="f1s5item4"/>
+          <td id="f1s5item4alv"/>
           <td id="f1s5item5"/>
+          <td id="f1s5item5alv"/>
           <td id="f1s5tyku"/>
           <td id="f1s5kaju"/>
           <td id="f1s5shotDownA"/>
@@ -127,10 +152,15 @@
           <td>六</td>
           <td id="f1s6name"/>
           <td id="f1s6item1"/>
+          <td id="f1s6item1alv"/>
           <td id="f1s6item2"/>
+          <td id="f1s6item2alv"/>
           <td id="f1s6item3"/>
+          <td id="f1s6item3alv"/>
           <td id="f1s6item4"/>
+          <td id="f1s6item4alv"/>
           <td id="f1s6item5"/>
+          <td id="f1s6item5alv"/>
           <td id="f1s6tyku"/>
           <td id="f1s6kaju"/>
           <td id="f1s6shotDownA"/>
@@ -138,7 +168,7 @@
           <td id="f1s6total"/>
         </tr>
         <tr>
-          <th colspan="13" id="header2">
+          <th colspan="19" id="header2">
             第ニ艦隊
             <input type="button" name="reset1" id="resetButton1" value="編成リセット" onclick="reset(2)">
           </th>
@@ -146,11 +176,11 @@
         <tr id="header2_">
           <td></td>
           <td>名前</td>
-          <td>装備1</td>
-          <td>装備2</td>
-          <td>装備3</td>
-          <td>装備4</td>
-          <td>装備5</td>
+          <td colspan="2">装備1</td>
+          <td colspan="2">装備2</td>
+          <td colspan="2">装備3</td>
+          <td colspan="2">装備4</td>
+          <td colspan="2">装備5</td>
           <td>素対空</td>
           <td>加重対空</td>
           <td>撃墜数A</td>
@@ -161,10 +191,15 @@
           <td>一</td>
           <td id="f2s1name"/>
           <td id="f2s1item1"/>
+          <td id="f2s1item1alv"/>
           <td id="f2s1item2"/>
+          <td id="f2s1item2alv"/>
           <td id="f2s1item3"/>
+          <td id="f2s1item3alv"/>
           <td id="f2s1item4"/>
+          <td id="f2s1item4alv"/>
           <td id="f2s1item5"/>
+          <td id="f2s1item5alv"/>
           <td id="f2s1tyku"/>
           <td id="f2s1kaju"/>
           <td id="f2s1shotDownA"/>
@@ -175,10 +210,15 @@
           <td>ニ</td>
           <td id="f2s2name"/>
           <td id="f2s2item1"/>
+          <td id="f2s2item1alv"/>
           <td id="f2s2item2"/>
+          <td id="f2s2item2alv"/>
           <td id="f2s2item3"/>
+          <td id="f2s2item3alv"/>
           <td id="f2s2item4"/>
+          <td id="f2s2item4alv"/>
           <td id="f2s2item5"/>
+          <td id="f2s2item5alv"/>
           <td id="f2s2tyku"/>
           <td id="f2s2kaju"/>
           <td id="f2s2shotDownA"/>
@@ -189,10 +229,15 @@
           <td>三</td>
           <td id="f2s3name"/>
           <td id="f2s3item1"/>
+          <td id="f2s3item1alv"/>
           <td id="f2s3item2"/>
+          <td id="f2s3item2alv"/>
           <td id="f2s3item3"/>
+          <td id="f2s3item3alv"/>
           <td id="f2s3item4"/>
+          <td id="f2s3item4alv"/>
           <td id="f2s3item5"/>
+          <td id="f2s3item5alv"/>
           <td id="f2s3tyku"/>
           <td id="f2s3kaju"/>
           <td id="f2s3shotDownA"/>
@@ -203,10 +248,15 @@
           <td>四</td>
           <td id="f2s4name"/>
           <td id="f2s4item1"/>
+          <td id="f2s4item1alv"/>
           <td id="f2s4item2"/>
+          <td id="f2s4item2alv"/>
           <td id="f2s4item3"/>
+          <td id="f2s4item3alv"/>
           <td id="f2s4item4"/>
+          <td id="f2s4item4alv"/>
           <td id="f2s4item5"/>
+          <td id="f2s4item5alv"/>
           <td id="f2s4tyku"/>
           <td id="f2s4kaju"/>
           <td id="f2s4shotDownA"/>
@@ -217,10 +267,15 @@
           <td>五</td>
           <td id="f2s5name"/>
           <td id="f2s5item1"/>
+          <td id="f2s5item1alv"/>
           <td id="f2s5item2"/>
+          <td id="f2s5item2alv"/>
           <td id="f2s5item3"/>
+          <td id="f2s5item3alv"/>
           <td id="f2s5item4"/>
+          <td id="f2s5item4alv"/>
           <td id="f2s5item5"/>
+          <td id="f2s5item5alv"/>
           <td id="f2s5tyku"/>
           <td id="f2s5kaju"/>
           <td id="f2s5shotDownA"/>
@@ -231,10 +286,15 @@
           <td>六</td>
           <td id="f2s6name"/>
           <td id="f2s6item1"/>
+          <td id="f2s6item1alv"/>
           <td id="f2s6item2"/>
+          <td id="f2s6item2alv"/>
           <td id="f2s6item3"/>
+          <td id="f2s6item3alv"/>
           <td id="f2s6item4"/>
+          <td id="f2s6item4alv"/>
           <td id="f2s6item5"/>
+          <td id="f2s6item5alv"/>
           <td id="f2s6tyku"/>
           <td id="f2s6kaju"/>
           <td id="f2s6shotDownA"/>
@@ -250,6 +310,7 @@
     <br>
     履歴
     <p>
+      Ver1.0.7 2017/01/09 改修度追加<br>
       Ver1.0.6 2017/01/08 バグ修正<br>
       Ver1.0.5 2017/01/08 対空CI追加、味方も計算できるよう改良<br>
       Ver1.0.4 2017/01/08 cssによるレイアウト変更<br>
