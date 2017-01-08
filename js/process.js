@@ -8,7 +8,7 @@ $(function(){
       $('#f' + i + 's' + j + 'name').change(calc);
       for(let k = 1;k <= 5;k++){
         $('#f' + i + 's' + j + 'item' + k).load('item_f.html');
-        $('#f' + i + 's' + j + 'item' + k).change(calc);
+        $('#f' + i + 's' + j + 'item' + k).change(i * 100 + j * 10 + k,resetAlv);
         $('#f' + i + 's' + j + 'item' + k + 'alv').load('alv.html');
         $('#f' + i + 's' + j + 'item' + k + 'alv').change(calc);
       }
@@ -20,6 +20,7 @@ $(function(){
     }
   }
 });
+
 function setStatus(e){
   let fleet = Math.floor(e.data / 10);
   let ship = e.data % 10;
@@ -29,10 +30,13 @@ function setStatus(e){
   document.getElementById(t_tyku).innerHTML = tyku;
   for(let i = 1;i <= 5;i++){
     let t_item = '#f' + fleet + 's' + ship + 'item' + i;
+    let t_item_alv = '#f' + no + 's' + i + 'item' + j + 'alv';
     let item = $(target).data('i' + i);
     $(t_item).children('[name=item]').val(item);
+    $(t_item_alv).children().val(0);
   }
 }
+
 function calc(e){
   let kantaiAirBonus = 0;
   // 艦隊防空値
@@ -104,6 +108,7 @@ function calc(e){
     $('#annihilationLabel').val(annihilationProbability.toFixed(2) + "%");
   }
 }
+
 function reset(no){
   for(let i = 1;i <= 6;i++){
     let target = '#f' + no + 's' + i + 'name';
@@ -114,7 +119,7 @@ function reset(no){
       let t_item = '#f' + no + 's' + i + 'item' + j;
       let t_item_alv = '#f' + no + 's' + i + 'item' + j + 'alv';
       $(t_item).children('[name=item]').val(-1);
-      $(t_item_alv).val(0);
+      $(t_item_alv).children().val(0);
     }
   }
   calc();
@@ -146,4 +151,13 @@ function initialize(){
       }
     }
   }
+}
+
+function resetAlv(e){
+  let fleet = Math.floor(e.data / 100);
+  let ship = Math.floor(e.data / 10) % 10;
+  let item = e.data % 10;
+  let target = '#f' + fleet + 's' + ship + 'item' + item + 'alv';
+  $(target).children().val(0);
+  calc();
 }
