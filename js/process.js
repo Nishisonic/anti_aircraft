@@ -46,10 +46,11 @@ function calc(e){
         let t_item = '#f' + i + 's' + j + 'item' + k + ' option:selected';
         let id = $(t_item).val();
         let tyku = $(t_item).data('tyku');
+        let alv = $(t_alv).val();
         if(tyku <= 0) continue;
         let type = $(t_item).data('type');
         let kantaiKajuValue = tyku * getKantaiItem_A(type,id);
-        let kaishuBonus = getKantaiItem_B(type,id) * Math.sqrt(0);
+        let kaishuBonus = getKantaiItem_B(type,id) * Math.sqrt(alv);
         kantaiAirBonus += Math.floor(kantaiKajuValue + kaishuBonus);
       }
     }
