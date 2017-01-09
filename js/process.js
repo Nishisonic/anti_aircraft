@@ -95,22 +95,30 @@ function calc(e){
       // 最終加重對空值 = (艦船加重對空值 + 艦隊防空補正)*基本定數*味方相手補正(0.8(味方の対空砲火) or 0.75(相手の対空砲火))
       let kajuTotal = (kaju + kantaiAirBonus) * AIR_BATTLE_FACTOR * (isFriend ? FRIEND_FACTOR : ENEMY_FACTOR);
       let taikuCIkind = $('#taiku_cutinBox').children().val();
+      let factor = getTaikuCuinFactor(taikuCIkind,isFriend);
       // 擊墜數A = int( 最終加重對空值*((0 or 1)の一様な乱数)*対空カットイン定數C + 対空カットイン定數A )
-      let a = getA(kajuTotal,taikuCIkind,isFriend);
+      let minA = factor.A;
+      let maxA = getA(kajuTotal,taikuCIkind,isFriend);
       // 擊墜數B = int( 0.02*基本定數*機數*艦船加重對空值*((0 or 1)の一様な乱数) + 対空カットイン定數B )
-      let b = getB(kaju,slotNum,taikuCIkind,isFriend);
+      let minB = factor.B;
+      let maxB = getB(kaju,slotNum,taikuCIkind,isFriend);
       if($(t_name).val() != -1){
         shipNum++;
-        if(a >= slotNum) annihilationCnt += 2;
-        if(b >= slotNum) annihilationCnt += 2;
-        if(!(a >= slotNum || b >= slotNum) && (a + b) >= slotNum){
-          annihilationCnt++;
+        if((minA + minB) >= slotNum){
+          annihilationCnt += 2 * 2;
+        } else {
+          if(maxA >= slotNum) annihilationCnt += 2;
+          if(maxB >= slotNum) annihilationCnt += 2;
+          if(!(maxA >= slotNum || maxB >= slotNum) && (maxA + maxB) >= slotNum){
+            annihilationCnt++;
+          }
+          if(maxA >= slotNum && maxB >= slotNum) annihilationCnt -= 2;
         }
         document.getElementById(t_kaju).innerHTML = (kajuTotal).toFixed(2);
-        document.getElementById(t_shotDownA).innerHTML = a;
-        document.getElementById(t_shotDownB).innerHTML = b;
+        document.getElementById(t_shotDownA).innerHTML = minA + " - " + maxA;
+        document.getElementById(t_shotDownB).innerHTML = minB + " - " + maxB;
         // 最終擊墜數 = 擊墜數A + 擊墜數B
-        document.getElementById(t_total).innerHTML = a + b;
+        document.getElementById(t_total).innerHTML = (minA + minB) + " - " + (maxA + maxB);
       } else {
         document.getElementById(t_kaju).innerHTML = "0.00";
         document.getElementById(t_shotDownA).innerHTML = 0;
@@ -118,7 +126,7 @@ function calc(e){
         document.getElementById(t_total).innerHTML = 0;
       }
     }
-    let annihilationProbability = slotNum > 0 && shipNum > 0 ? annihilationCnt / (shipNum * 2 * 2) * 100 : 100;
+    let annihilationProbability = (slotNum > 0 && shipNum > 0) ? annihilationCnt / (shipNum * 2 * 2) * 100 : 100;
     $('#annihilationLabel').val(annihilationProbability.toFixed(2) + "%");
   }
 }
