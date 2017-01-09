@@ -35,5 +35,11 @@ BODY{
   text-align: left;
 }
 #alv{
-  color:#45A9A5
+  color:#45A9A5;
+}
+#item{
+  width: 70%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
