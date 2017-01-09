@@ -182,3 +182,43 @@ function resetAlv(e){
   $(target).children().val(0);
   calc();
 }
+
+function parse(){
+  /* 初期化 */
+  $('input[name=isFriend]').val([true]);
+  initialize();
+  /* 解析 */
+  var time = setInterval(function(){
+    let json = $('#parseLabel').val();
+    let object = JSON.parse(json);
+    if(object['version'] == 4){
+      for(let i = 1;i <= 2;i++){
+        let fleet = object['f' + i];
+        if(fleet === undefined) continue;
+        for(let j = 1;j <= 6;j++){
+          let ship = fleet['s' + j];
+          if(ship === undefined) continue;
+          let shipid = ship['id'];
+          $('#f'+i+'s'+j+'name').children().val(shipid);
+          let items = ship['items'];
+          for(let k = 1;k <= 4;k++){
+            let item = items['i' + k];
+            if(item === undefined) continue;
+            let itemid = item['id'];
+            let alv = item['rf'];
+            $('#f'+i+'s'+j+'item'+k).children().val(itemid);
+            $('#f'+i+'s'+j+'item'+k+'alv').children().val(alv);
+          }
+          let item = items['ix'];
+          if(item === undefined) continue;
+          let itemid = item['id'];
+          let alv = item['rf'];
+          $('#f'+i+'s'+j+'item5').children().val(itemid);
+          $('#f'+i+'s'+j+'item5alv').children().val(alv);
+        }
+      }
+      calc();
+      clearInterval(time);
+    }
+  },500);
+}

@@ -9,7 +9,7 @@
     <link href="css/style.css" rel="stylesheet" type="text/css" media="all" />
   </head>
   <body>
-    <h2>対空砲火計算機　Ver1.1.2.4</h2>
+    <h2>対空砲火計算機　Ver1.1.3</h2>
     <p>対空砲火を調べることが出来るかも(╹‿ ╹.　)</p>
     <br>
     <p>
@@ -23,6 +23,9 @@
       <input type="number" name="slotNum" id="slotNumSpinner" value="0" min="0" oninput="calc()" onchange="calc()">
       対空カットイン種別：
       <span id="taiku_cutinBox"></span>
+      デッキビルダーから反映：
+      <input name="kantai" id="parseLabel" title="艦隊シミュレーター＆デッキビルダーで排出されたフォーマットをここに入力して、反映ボタンをクリックするとこの画面に反映されます。">
+      <input type="button" id="parse" value="反映" onclick="parse()">
     </p>
     <Hr Width="100%">
     <p>
@@ -425,6 +428,9 @@
     </table>
     <p>・撃墜数の見方について</p>
     <p>撃墜数A、Bの見方 -> 「対空砲火失敗時 - 対空砲火成功時」　最終撃墜数の見方 -> 「最低撃墜数 - 最高撃墜数」</p>
+    <p>・デッキビルダーから反映機能について</p>
+    <p><q cite=”http://kancolle-calc.net/deckbuilder.html”>{version: 4, f1: {s1: {id: '100', lv: 40, luck: -1, items:{i1:{id:1, rf: 4, mas:7},{i2:{id:3, rf: 0}}...,ix:{id:43}}}, s2:{}...},...}</q></p>
+    <p><a href="http://kancolle-calc.net/deckbuilder.html" target="_blank">艦隊シミュレーター＆デッキビルダー</a>で排出された上のようなフォーマットを入力してから反映ボタンをクリックすることで、お手軽に実行ができます(و 'ω')و</p>
     <br>
     <p>ソースに関しては<a href="https://twitter.com/KennethWWKK" target="_blank">@KennethWWKK</a>さんの
     <a href="https://docs.google.com/document/d/1tqYyqzdc1RT_fYDKFMcUId0kOZHCdGpVsObm6yt-Yco/edit?usp=sharing" target="_blank">艦これ改のソフトって解析翻訳</a>をご参照下さい。</p>
@@ -435,6 +441,7 @@
     <br>
     履歴
     <p>
+      Ver1.1.3 2017/01/10 デッキビルダーとの互換機能追加<br>
       Ver1.1.2 2017/01/10 バグ修正<br>
       Ver1.1.1 2017/01/10 バグ修正、最低撃墜数追加<br>
       Ver1.1.0 2017/01/09 艦娘の対空砲火バグ修正<br>
