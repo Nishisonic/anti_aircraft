@@ -31,6 +31,9 @@ BODY{
 .result{
   text-align: right;
 }
+.input{
+  text-align: left;
+}
 #alv{
   color:#45A9A5
 }
