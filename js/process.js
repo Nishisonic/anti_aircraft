@@ -5,7 +5,6 @@ $(function(){
     for(let j = 1;j <= 6;j++){
       $('#f' + i + 's' + j + 'name').load('name_f.html');
       $('#f' + i + 's' + j + 'name').change(i * 10 + j,setStatus);
-      $('#f' + i + 's' + j + 'name').change(calc);
       for(let k = 1;k <= 5;k++){
         $('#f' + i + 's' + j + 'item' + k).load('item_f.html');
         $('#f' + i + 's' + j + 'item' + k).change(i * 100 + j * 10 + k,resetAlv);
@@ -30,11 +29,12 @@ function setStatus(e){
   document.getElementById(t_tyku).innerHTML = tyku;
   for(let i = 1;i <= 5;i++){
     let t_item = '#f' + fleet + 's' + ship + 'item' + i;
-    let t_item_alv = '#f' + no + 's' + i + 'item' + j + 'alv';
+    let t_item_alv = '#f' + fleet + 's' + ship + 'item' + i + 'alv';
     let item = $(target).data('i' + i);
     $(t_item).children('[name=item]').val(item);
     $(t_item_alv).children().val(0);
   }
+  calc();
 }
 
 function calc(e){
@@ -59,8 +59,8 @@ function calc(e){
       }
     }
   }
-  // 艦隊防空補正 = int( 陣型補正*(int(∑(1スロット裝備の艦隊防空補正))) )
-  kantaiAirBonus = Math.floor($('#formationBox').children().val() * Math.floor(kantaiAirBonus));
+  // 艦隊防空補正 = int( 陣型補正*(∑(1スロット裝備の艦隊防空補正)) )
+  kantaiAirBonus = Math.floor($('#formationBox').children().val() * kantaiAirBonus);
   $('#kantaiLabel').val(kantaiAirBonus);
   let shipNum = 0;
   let annihilationCnt = 0;
@@ -158,7 +158,6 @@ function initialize(){
     for(let j = 1;j <= 6;j++){
       $('#f' + i + 's' + j + 'name').load(nameSource);
       $('#f' + i + 's' + j + 'name').change(i * 10 + j,setStatus);
-      $('#f' + i + 's' + j + 'name').change(calc);
       for(let k = 1;k <= 5;k++){
         $('#f' + i + 's' + j + 'item' + k).load(itemSource);
         $('#f' + i + 's' + j + 'item' + k).change(calc);
