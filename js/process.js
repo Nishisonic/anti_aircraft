@@ -44,6 +44,7 @@ function calc(e){
     for(let j = 1;j <= 6;j++){
       for(let k = 1;k <= 5;k++){
         let t_item = '#f' + i + 's' + j + 'item' + k + ' option:selected';
+        let t_alv = '#f' + i + 's' + j + 'item' + k + 'alv option:selected';
         let id = $(t_item).val();
         let tyku = $(t_item).data('tyku');
         let alv = $(t_alv).val();
@@ -73,7 +74,7 @@ function calc(e){
       let sum = 0;
       for(let k = 1;k <= 5;k++){
         let t_item = '#f' + i + 's' + j + 'item' + k + ' option:selected';
-        let t_alv = '#f' + i + 's' + j + 'item' + k + 'alv option:selected'
+        let t_alv = '#f' + i + 's' + j + 'item' + k + 'alv option:selected';
         let itemTyku = $(t_item).data('tyku');
         let type = $(t_item).data('type');
         let alv = $(t_alv).val();
