@@ -31,7 +31,7 @@ function setStatus(e){
     let t_item = '#f' + fleet + 's' + ship + 'item' + i;
     let t_item_alv = '#f' + fleet + 's' + ship + 'item' + i + 'alv';
     let item = $(target).data('i' + i);
-    $(t_item).children('[name=item]').val(item);
+    $(t_item).children().val(item);
     $(t_item_alv).children().val(0);
   }
   calc();
@@ -134,13 +134,13 @@ function calc(e){
 function reset(no){
   for(let i = 1;i <= 6;i++){
     let target = '#f' + no + 's' + i + 'name';
-    $(target).children('[name=name]').val(-1);
+    $(target).children().val(-1);
     let t_tyku = 'f' + no + 's' + i + 'tyku';
     document.getElementById(t_tyku).innerHTML = 0;
     for(let j = 1;j <= 5;j++){
       let t_item = '#f' + no + 's' + i + 'item' + j;
       let t_item_alv = '#f' + no + 's' + i + 'item' + j + 'alv';
-      $(t_item).children('[name=item]').val(-1);
+      $(t_item).children().val(-1);
       $(t_item_alv).children().val(0);
     }
   }
