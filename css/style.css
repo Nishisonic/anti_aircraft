@@ -28,7 +28,7 @@ BODY{
 #header1,#header2,#header1_,#header2_{
   text-align: center;
 }
-table{
+.result{
   text-align: right;
 }
 #alv{
