@@ -107,9 +107,9 @@ function calc(e){
         if((minA + minB) >= slotNum){
           annihilationCnt += 2 * 2;
         } else {
-          if(maxA >= slotNum) annihilationCnt += 2;
-          if(maxB >= slotNum) annihilationCnt += 2;
-          if(!(maxA >= slotNum || maxB >= slotNum) && (maxA + maxB) >= slotNum){
+          if((maxA + minB) >= slotNum) annihilationCnt += 2;
+          if((minA + maxB) >= slotNum) annihilationCnt += 2;
+          if(!((maxA + minB) >= slotNum || (minA + maxB) >= slotNum) && (maxA + maxB) >= slotNum){
             annihilationCnt++;
           }
           if(maxA >= slotNum && maxB >= slotNum) annihilationCnt -= 2;
