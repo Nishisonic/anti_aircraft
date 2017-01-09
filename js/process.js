@@ -50,12 +50,16 @@ function calc(e){
         let alv = $(t_alv).val();
         if(tyku <= 0) continue;
         let type = $(t_item).data('type');
+        // 艦隊防空加重對空值 = 裝備對空值*艦隊防空裝備定數A
         let kantaiKajuValue = tyku * getKantaiItem_A(type,id);
+        // 艦隊防空裝備改修補正 = 艦隊防空裝備定數B*sqrt(★)
         let kaishuBonus = getKantaiItem_B(type,id) * Math.sqrt(alv);
+        // 1スロット裝備の艦隊防空補正 = int(艦隊防空加重對空值 + 艦隊防空裝備改修補正)
         kantaiAirBonus += Math.floor(kantaiKajuValue + kaishuBonus);
       }
     }
   }
+  // 艦隊防空補正 = int( 陣型補正*(int(∑(1スロット裝備の艦隊防空補正))) )
   kantaiAirBonus = Math.floor($('#formationBox').children().val() * Math.floor(kantaiAirBonus));
   $('#kantaiLabel').val(kantaiAirBonus);
   let shipNum = 0;
@@ -78,15 +82,22 @@ function calc(e){
         let itemTyku = $(t_item).data('tyku');
         let type = $(t_item).data('type');
         let alv = $(t_alv).val();
+        // 艦船對空改修補正 = 裝備定數B*sqrt(★)
         let kaishuBonus = getKansenItem_B(type,itemTyku) * Math.sqrt(alv);
         totalItemTyku += itemTyku;
+        // 裝備對空值*裝備定數A
         sum += itemTyku * getKansenItem_A(type) + kaishuBonus;
       }
       let isFriend = $('input[name=isFriend]:checked').val() === 'true';
-      let kaju = Math.sqrt(shipTyku + totalItemTyku) + sum;
+      // 味方艦船加重對空值 = 素對空值 / 2 + ∑(裝備對空值*裝備定數A + 艦船對空改修補正)
+      // 相手艦船加重對空值 = sqrt(素對空值 + 裝備對空值) + ∑(裝備對空值*裝備定數A + 艦船對空改修補正)
+      let kaju = (isFriend ? (shipTyku / 2) : (Math.sqrt(shipTyku + totalItemTyku))) + sum;
+      // 最終加重對空值 = (艦船加重對空值 + 艦隊防空補正)*基本定數*味方相手補正(0.8(味方の対空砲火) or 0.75(相手の対空砲火))
       let kajuTotal = (kaju + kantaiAirBonus) * AIR_BATTLE_FACTOR * (isFriend ? FRIEND_FACTOR : ENEMY_FACTOR);
       let taikuCIkind = $('#taiku_cutinBox').children().val();
+      // 擊墜數A = int( 最終加重對空值*((0 or 1)の一様な乱数)*対空カットイン定數C + 対空カットイン定數A )
       let a = getA(kajuTotal,taikuCIkind,isFriend);
+      // 擊墜數B = int( 0.02*基本定數*機數*艦船加重對空值*((0 or 1)の一様な乱数) + 対空カットイン定數B )
       let b = getB(kaju,slotNum,taikuCIkind,isFriend);
       if($(t_name).val() != -1){
         shipNum++;
@@ -98,6 +109,7 @@ function calc(e){
         document.getElementById(t_kaju).innerHTML = (kajuTotal).toFixed(2);
         document.getElementById(t_shotDownA).innerHTML = a;
         document.getElementById(t_shotDownB).innerHTML = b;
+        // 最終擊墜數 = 擊墜數A + 擊墜數B
         document.getElementById(t_total).innerHTML = a + b;
       } else {
         document.getElementById(t_kaju).innerHTML = "0.00";
