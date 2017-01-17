@@ -42,24 +42,30 @@ function calc(e){
   // 艦隊防空値
   for(let i = 1;i <= 2;i++){
     for(let j = 1;j <= 6;j++){
+      let shipKantaiAirBonus = 0;
       for(let k = 1;k <= 5;k++){
         let t_item = '#f' + i + 's' + j + 'item' + k + ' option:selected';
         let t_alv = '#f' + i + 's' + j + 'item' + k + 'alv option:selected';
         let id = $(t_item).val();
         let tyku = $(t_item).data('tyku');
         let alv = $(t_alv).val();
-        if(tyku <= 0) continue;
         let type = $(t_item).data('type');
+        // (裝備對空值>0 の場合適用)
+        if(tyku <= 0) continue;
         // 艦隊防空加重對空值 = 裝備對空值*艦隊防空裝備定數A
         let kantaiKajuValue = tyku * getKantaiItem_A(type,id);
         // 艦隊防空裝備改修補正 = 艦隊防空裝備定數B*sqrt(★)
         let kaishuBonus = getKantaiItem_B(type,id) * Math.sqrt(alv);
-        // 1スロット裝備の艦隊防空補正 = int(艦隊防空加重對空值 + 艦隊防空裝備改修補正)
-        kantaiAirBonus += Math.floor(kantaiKajuValue + kaishuBonus);
+        // 1スロット裝備の艦隊防空補正 = 艦隊防空加重對空值 + 艦隊防空裝備改修補正
+        let slotKantaiAirBonus = kantaiKajuValue + kaishuBonus;
+        // 1艦娘の艦隊防空補正 = ∑(1スロット裝備の艦隊防空補正)
+        shipKantaiAirBonus += slotKantaiAirBonus;
       }
+      // ∑(int(1艦娘の艦隊防空補正))
+      kantaiAirBonus += Math.floor(shipKantaiAirBonus);
     }
   }
-  // 艦隊防空補正 = int( 陣型補正*(∑(1スロット裝備の艦隊防空補正)) )
+  // 艦隊防空補正 = int( 陣型補正*(∑(1艦娘の艦隊防空補正)) )
   kantaiAirBonus = Math.floor($('#formationBox').children().val() * kantaiAirBonus);
   $('#kantaiLabel').val(kantaiAirBonus);
   let shipNum = 0;
