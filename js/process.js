@@ -5,16 +5,15 @@ $(function(){
     for(let j = 1;j <= 6;j++){
       //$('#f' + i + 's' + j + 'name').change(i * 10 + j,setStatus);
       $('#f' + i + 's' + j + 'name').on( "click", function() {
-        $('#shipDialog').dialog('close');
-        $('#shipDialog').dialog('option', 'position', { my: 'left top', at: 'right bottom', of: $(this)});
-        $('#shipDialog').attr('parent', '#f' + i + 's' + j + 'name');
-        $('#shipDialog').attr('friend',$('input[name=isFriend]:checked').val() === 'true');
-        $('#shipDialog').dialog('open');
+        $('#friendShipDialog').dialog('close');
+        $('#friendShipDialog').dialog('option', 'position', { my: 'left top', at: 'center', of: $(this)});
+        $('#friendShipDialog').attr('parent', '#f' + i + 's' + j + 'name');
+        $('#friendShipDialog').dialog('open');
       });
       for(let k = 1;k <= 5;k++){
         $('#f' + i + 's' + j + 'item' + k).on( "click", function() {
           $('#friendItemDialog').dialog('close');
-          $('#friendItemDialog').dialog('option', 'position', { my: 'left top', at: 'right bottom', of: $(this)});
+          $('#friendItemDialog').dialog('option', 'position', { my: 'left top', at: 'center', of: $(this)});
           $('#friendItemDialog').attr('parent', '#f' + i + 's' + j + 'item' + k);
           $('#friendItemDialog').dialog('open');
         });

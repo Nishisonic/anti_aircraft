@@ -33,6 +33,10 @@ BODY{
 }
 .input{
   text-align: left;
+  width: 170px;
+  height: 40px;
+  padding: 5px 5px 5px 5px;
+  font-size:smaller;
 }
 #alv{
   color:#45A9A5;
