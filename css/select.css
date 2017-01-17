@@ -38,7 +38,7 @@
   -moz-border-radius: 0 4px 4px 4px;
   -webkit-border-radius: 0 4px 4px 4px;
 }
-.selectItemTable {
+.selectItemTable, .selectShipTable {
   margin-top: 15px;
   text-align: center;
   width: 100%;

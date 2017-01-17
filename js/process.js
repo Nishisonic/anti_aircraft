@@ -3,16 +3,22 @@ $(function(){
   $('#taiku_cutinBox').load('taiku_cutin.html');
   for(let i = 1;i <= 2;i++){
     for(let j = 1;j <= 6;j++){
-      //$('#f' + i + 's' + j + 'name').load('name_f.html');
       //$('#f' + i + 's' + j + 'name').change(i * 10 + j,setStatus);
+      $('#f' + i + 's' + j + 'name').on( "click", function() {
+        $('#shipDialog').dialog('close');
+        $('#shipDialog').dialog('option', 'position', { my: 'left top', at: 'right bottom', of: $(this)});
+        $('#shipDialog').attr('parent', '#f' + i + 's' + j + 'name');
+        $('#shipDialog').attr('friend',$('input[name=isFriend]:checked').val() === 'true');
+        $('#shipDialog').dialog('open');
+      });
       for(let k = 1;k <= 5;k++){
-        //$('#f' + i + 's' + j + 'item' + k).load('item_f.html');
-        //$('#f' + i + 's' + j + 'item' + k).change(i * 100 + j * 10 + k,resetAlv);
         $('#f' + i + 's' + j + 'item' + k).on( "click", function() {
-          $( "#dialog" ).dialog( "open" );
+          $('#itemDialog').dialog('close');
+          $('#itemDialog').dialog('option', 'position', { my: 'left top', at: 'right bottom', of: $(this)});
+          $('#itemDialog').attr('parent', '#f' + i + 's' + j + 'item' + k);
+          $('#itemDialog').attr('friend',$('input[name=isFriend]:checked').val() === 'true');
+          $('#itemDialog').dialog('open');
         });
-        $('#f' + i + 's' + j + 'item' + k + 'alv').load('alv.html');
-        $('#f' + i + 's' + j + 'item' + k + 'alv').change(calc);
       }
       document.getElementById('f' + i + 's' + j + 'tyku').innerHTML = 0;
       document.getElementById('f' + i + 's' + j + 'kaju').innerHTML = "0.00";
@@ -175,15 +181,6 @@ function initialize(){
       }
     }
   }
-}
-
-function resetAlv(e){
-  let fleet = Math.floor(e.data / 100);
-  let ship = Math.floor(e.data / 10) % 10;
-  let item = e.data % 10;
-  let target = '#f' + fleet + 's' + ship + 'item' + item + 'alv';
-  $(target).children().val(0);
-  calc();
 }
 
 function parse(){
