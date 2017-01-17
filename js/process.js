@@ -13,11 +13,11 @@ $(function(){
       });
       for(let k = 1;k <= 5;k++){
         $('#f' + i + 's' + j + 'item' + k).on( "click", function() {
-          $('#itemDialog').dialog('close');
-          $('#itemDialog').dialog('option', 'position', { my: 'left top', at: 'right bottom', of: $(this)});
-          $('#itemDialog').attr('parent', '#f' + i + 's' + j + 'item' + k);
-          $('#itemDialog').attr('friend',$('input[name=isFriend]:checked').val() === 'true');
-          $('#itemDialog').dialog('open');
+          $('#friendItemDialog').dialog('close');
+          $('#friendItemDialog').dialog('option', 'position', { my: 'left top', at: 'right bottom', of: $(this)});
+          $('#friendItemDialog').attr('parent', '#f' + i + 's' + j + 'item' + k);
+          $('#friendItemDialog').attr('friend',$('input[name=isFriend]:checked').val() === 'true');
+          $('#friendItemDialog').dialog('open');
         });
       }
       document.getElementById('f' + i + 's' + j + 'tyku').innerHTML = 0;

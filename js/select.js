@@ -1,7 +1,7 @@
 $(function() {
   createItemTabs(true);
-  createShipTabs(true);
-  $("#itemDialog").dialog({
+  //createShipTabs(true);
+  $("#friendItemDialog").dialog({
     autoOpen: false,
     height: 650,
     width: 800,
@@ -24,26 +24,29 @@ $(function() {
 });
 
 function createItemTabs(isFriend){
-  let insert = $('<ul>').attr("id","eItemtabs").attr("class","etabs");
+  let container = isFriend ? '#friendItemTab-container' : '#enemyItemTab-container';
+  let prefix = isFriend ? 'friend' : 'enemy';
+  let insert = $('<ul>').attr("class","etabs");
 
   for(let type in ITEM_TYPE_DATA){
-    let newLi = $('<li>').addClass('tab').prepend('<a href="#itemTabs'+type+'"><img src="img/'+type+'.png" width="30" height="30">'+ITEM_TYPE_DATA[type]+'</a>');
+    let newLi = $('<li>').addClass('tab').prepend('<a href="#'+prefix+'ItemTabs'+type+'"><img src="img/'+type+'.png" width="30" height="30">'+ITEM_TYPE_DATA[type]+'</a>');
     insert.append(newLi);
   }
-  $('#itemTab-container').append(insert);
+  $(container).append(insert);
 
   for(let type in ITEM_TYPE_DATA){
-    let newLi = $('<div>').attr("id","itemTabs"+type);
+    let newLi = $('<div>').attr("id",prefix+"ItemTabs"+type);
     insert.append(newLi);
   }
-  $('#itemTab-container').append(insert);
+  $(container).append(insert);
   createItemTable(isFriend);
 }
 
 function createItemTable(isFriend){
+  let prefix = isFriend ? 'friend' : 'enemy';
   for(let type in ITEM_TYPE_DATA){
-    let table = $('<table>').attr("id","itemType"+type+"table").addClass('selectItemTable').attr("border",1);
-    $('#itemTabs'+type).append(table);
+    let table = $('<table>').attr("id",prefix+"ItemType"+type+"Table").addClass('selectItemTable').attr("border",1);
+    $('#'+prefix+'ItemTabs'+type).append(table);
   }
 
   let typelist = {};
@@ -58,7 +61,7 @@ function createItemTable(isFriend){
   }
 
   for(let type in ITEM_TYPE_DATA){
-    $('#itemType'+type+'table').append('<thead><tr><th colspan="5">'+ITEM_TYPE_DATA[type]+'</th></tr></thead>');
+    $('#'+prefix+'ItemType'+type+'Table').append('<thead><tr><th colspan="5">'+ITEM_TYPE_DATA[type]+'</th></tr></thead>');
     let insert = $('<tbody>');
     insert.append('<tr>');
     for(let id in typelist[type]){
@@ -66,27 +69,28 @@ function createItemTable(isFriend){
       let itemid = typelist[type][id];
       let name = ITEM_DATA[itemid].name;
       let tyku = ITEM_DATA[itemid].tyku;
-      insert.append('<td class="btn" onclick="onSelectItem('+itemid+')" title="'+itemid+':'+name+' 対空+'+tyku+'">'+name+'</td>');
+      insert.append('<td class="btn" onclick="onSelectItem('+itemid+','+isFriend+')" title="'+itemid+':'+name+' 対空+'+tyku+'">'+name+'</td>');
     }
     insert.append('</tr>');
-    $('#itemType'+type+'table').append(insert);
+    $('#'+prefix+'ItemType'+type+'Table').append(insert);
   }
 }
 
-function onSelectItem(itemid){
-  let parent = $('#itemDialog').attr('parent');
+function onSelectItem(itemid,isFriend){
+  let dialog = isFriend ? '#friendItemDialog' : '#enemyItemDialog';
+  let parent = $(dialog).attr('parent');
   // 無理やり登録
   $(parent).val(itemid);
   $(parent).html(ITEM_DATA[itemid].name + ' <select id="'+parent.substring(1)+'alv'+'" style="color:#45A9A5"></select>');
-  createAlvSelection();
+  if(isFriend) createAlvSelection();
   $(parent+'alv').on("click",function(event){
     event.stopPropagation();
   });
-  $('#itemDialog').dialog("close");
+  $(dialog).dialog("close");
 }
 
 function createAlvSelection(){
-  let parent = $('#itemDialog').attr('parent');
+  let parent = $('#friendItemDialog').attr('parent');
   let select = document.getElementById(parent.substring(1)+'alv');
   let selectBox = ["","★+1","★+2","★+3","★+4","★+5","★+6","★+7","★+8","★+9","★max"];
   
@@ -99,7 +103,7 @@ function createAlvSelection(){
 }
 
 function createShipTabs(isFriend){
-  let insert = $('<ul>').attr("id","eShiptabs").attr("class","etabs");
+  let insert = $('<ul>').attr("class","etabs");
 
   for(let type in SHIP_TYPE_DATA){
     let newLi = $('<li>').addClass('tab').prepend('<a href="#shipTabs'+type+'">'+SHIP_TYPE_DATA[type]+'</a>');
