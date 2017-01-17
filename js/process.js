@@ -16,7 +16,6 @@ $(function(){
           $('#friendItemDialog').dialog('close');
           $('#friendItemDialog').dialog('option', 'position', { my: 'left top', at: 'right bottom', of: $(this)});
           $('#friendItemDialog').attr('parent', '#f' + i + 's' + j + 'item' + k);
-          $('#friendItemDialog').attr('friend',$('input[name=isFriend]:checked').val() === 'true');
           $('#friendItemDialog').dialog('open');
         });
       }

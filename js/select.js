@@ -1,7 +1,17 @@
 $(function() {
   createItemTabs(true);
+  createItemTabs(false);
   //createShipTabs(true);
   $("#friendItemDialog").dialog({
+    autoOpen: false,
+    height: 650,
+    width: 800,
+    uiTabs: true,
+    open:function(event,ui){
+      $(this).val("");
+    },
+  });
+  $("#enemyItemDialog").dialog({
     autoOpen: false,
     height: 650,
     width: 800,
@@ -20,6 +30,7 @@ $(function() {
     },
   });
   $('#friendItemTab-container').easytabs();
+  $('#enemyItemTab-container').easytabs();
   $('#shipTab-container').easytabs();
 });
 
@@ -81,16 +92,21 @@ function onSelectItem(itemid,isFriend){
   let parent = $(dialog).attr('parent');
   // 無理やり登録
   $(parent).val(itemid);
-  $(parent).html(ITEM_DATA[itemid].name + ' <select id="'+parent.substring(1)+'alv'+'" style="color:#45A9A5"></select>');
-  if(isFriend) createAlvSelection();
-  $(parent+'alv').on("click",function(event){
-    event.stopPropagation();
-  });
+  if(isFriend){
+    $(parent).html(ITEM_DATA[itemid].name + ' <select id="'+parent.substring(1)+'alv'+'" style="color:#45A9A5"></select>');
+    createAlvSelection(isFriend);
+    $(parent+'alv').on("click",function(event){
+      event.stopPropagation();
+    });
+  } else {
+    $(parent).html(ITEM_DATA[itemid].name);
+  }
   $(dialog).dialog("close");
 }
 
-function createAlvSelection(){
-  let parent = $('#friendItemDialog').attr('parent');
+function createAlvSelection(isFriend){
+  let dialog = isFriend ? '#friendItemDialog' : '#enemyItemDialog';
+  let parent = $(dialog).attr('parent');
   let select = document.getElementById(parent.substring(1)+'alv');
   let selectBox = ["","★+1","★+2","★+3","★+4","★+5","★+6","★+7","★+8","★+9","★max"];
   
