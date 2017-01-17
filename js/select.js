@@ -9,9 +9,6 @@ $(function() {
     open:function(event,ui){
       $(this).val("");
     },
-    close:function(event,ui){
-      $(this).remove();
-    }
   });
   $("#shipDialog").dialog({
     autoOpen: false,
@@ -21,9 +18,6 @@ $(function() {
     open:function(event,ui){
       $(this).val("");
     },
-    close:function(event,ui){
-      $(this).remove();
-    }
   });
   $('#itemTab-container').easytabs();
   $('#shipTab-container').easytabs();
