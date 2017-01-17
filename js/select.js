@@ -49,37 +49,42 @@ function createItemTabs(isFriend){
   let container = isFriend ? '#friendItemTab-container' : '#enemyItemTab-container';
   let prefix = isFriend ? 'friend' : 'enemy';
   let insert = $('<ul>').attr("class","etabs");
-
-  for(let type in ITEM_TYPE_DATA){
-    let newLi = $('<li>').addClass('tab').prepend('<a href="#'+prefix+'ItemTabs'+type+'"><img src="img/itemicon/'+type+'.png" width="30" height="30">'+ITEM_TYPE_DATA[type]+'</a>');
-    insert.append(newLi);
-  }
-  $(container).append(insert);
-
-  for(let type in ITEM_TYPE_DATA){
-    let newLi = $('<div>').attr("id",prefix+"ItemTabs"+type);
-    insert.append(newLi);
-  }
-  $(container).append(insert);
-  createItemTable(isFriend);
-}
-
-function createItemTable(isFriend){
-  let prefix = isFriend ? 'friend' : 'enemy';
-  for(let type in ITEM_TYPE_DATA){
-    let table = $('<table>').attr("id",prefix+"ItemType"+type+"Table").addClass('selectItemTable').attr("border",1);
-    $('#'+prefix+'ItemTabs'+type).append(table);
-  }
-
   let typelist = {};
 
+  // 初期化
   for(let type in ITEM_TYPE_DATA){
     typelist[type] = [];
   }
+
   for(let id in ITEM_DATA){
     if((isFriend && id > 0 && id <= 500)||(!isFriend && id > 500)){
       typelist[ITEM_DATA[id].type].push(id);
     }
+  }
+
+  for(let type in ITEM_TYPE_DATA){
+    if(typelist[type].length > 0){
+      let newLi = $('<li>').addClass('tab').prepend('<a href="#'+prefix+'ItemTabs'+type+'"><img src="img/itemicon/'+type+'.png" width="30" height="30">'+ITEM_TYPE_DATA[type]+'</a>');
+      insert.append(newLi);
+    }
+  }
+  $(container).append(insert);
+
+  for(let type in ITEM_TYPE_DATA){
+    if(typelist[type].length > 0){
+      let newLi = $('<div>').attr("id",prefix+"ItemTabs"+type);
+      insert.append(newLi);
+    }
+  }
+  $(container).append(insert);
+  createItemTable(isFriend,typelist);
+}
+
+function createItemTable(isFriend,typelist){
+  let prefix = isFriend ? 'friend' : 'enemy';
+  for(let type in ITEM_TYPE_DATA){
+    let table = $('<table>').attr("id",prefix+"ItemType"+type+"Table").addClass('selectItemTable').attr("border",1);
+    $('#'+prefix+'ItemTabs'+type).append(table);
   }
 
   for(let type in ITEM_TYPE_DATA){
@@ -144,33 +149,12 @@ function createShipTabs(isFriend){
   let container = isFriend ? '#friendShipTab-container' : '#enemyShipTab-container';
   let prefix = isFriend ? 'friend' : 'enemy';
   let insert = $('<ul>').attr("class","etabs");
-
-  for(let type in SHIP_TYPE_DATA){
-    let newLi = $('<li>').addClass('tab').prepend('<a href="#'+prefix+'ShipTabs'+type+'">'+SHIP_TYPE_DATA[type]+'</a>');
-    insert.append(newLi);
-  }
-  $(container).append(insert);
-
-  for(let type in SHIP_TYPE_DATA){
-    let newLi = $('<div>').attr("id",prefix+"ShipTabs"+type);
-    insert.append(newLi);
-  }
-  $(container).append(insert);
-  createShipTable(isFriend);
-}
-
-function createShipTable(isFriend){
-  let prefix = isFriend ? 'friend' : 'enemy';
-  for(let type in SHIP_TYPE_DATA){
-    let table = $('<table>').attr("id",prefix+"ShipType"+type+"Table").addClass('selectShipTable').attr("border",1);
-    $('#'+prefix+'ShipTabs'+type).append(table);
-  }
-
   let typelist = {};
 
   for(let type in SHIP_TYPE_DATA){
     typelist[type] = [];
   }
+
   for(let id in SHIP_DATA){
     if((isFriend && id > 0 && id <= 500)||(!isFriend && id > 500)){
       if(SHIP_DATA[id].fr){
@@ -179,6 +163,31 @@ function createShipTable(isFriend){
         typelist[0].push(id);
       }
     }
+  }
+
+  for(let type in SHIP_TYPE_DATA){
+    if(typelist[type].length > 0){
+      let newLi = $('<li>').addClass('tab').prepend('<a href="#'+prefix+'ShipTabs'+type+'">'+SHIP_TYPE_DATA[type]+'</a>');
+      insert.append(newLi);
+    }
+  }
+  $(container).append(insert);
+
+  for(let type in SHIP_TYPE_DATA){
+    if(typelist[type].length > 0){
+      let newLi = $('<div>').attr("id",prefix+"ShipTabs"+type);
+      insert.append(newLi);
+    }
+  }
+  $(container).append(insert);
+  createShipTable(isFriend,typelist);
+}
+
+function createShipTable(isFriend,typelist){
+  let prefix = isFriend ? 'friend' : 'enemy';
+  for(let type in SHIP_TYPE_DATA){
+    let table = $('<table>').attr("id",prefix+"ShipType"+type+"Table").addClass('selectShipTable').attr("border",1);
+    $('#'+prefix+'ShipTabs'+type).append(table);
   }
 
   for(let type in SHIP_TYPE_DATA){
