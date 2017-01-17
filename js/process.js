@@ -3,11 +3,14 @@ $(function(){
   $('#taiku_cutinBox').load('taiku_cutin.html');
   for(let i = 1;i <= 2;i++){
     for(let j = 1;j <= 6;j++){
-      $('#f' + i + 's' + j + 'name').load('name_f.html');
-      $('#f' + i + 's' + j + 'name').change(i * 10 + j,setStatus);
+      //$('#f' + i + 's' + j + 'name').load('name_f.html');
+      //$('#f' + i + 's' + j + 'name').change(i * 10 + j,setStatus);
       for(let k = 1;k <= 5;k++){
-        $('#f' + i + 's' + j + 'item' + k).load('item_f.html');
-        $('#f' + i + 's' + j + 'item' + k).change(i * 100 + j * 10 + k,resetAlv);
+        //$('#f' + i + 's' + j + 'item' + k).load('item_f.html');
+        //$('#f' + i + 's' + j + 'item' + k).change(i * 100 + j * 10 + k,resetAlv);
+        $('#f' + i + 's' + j + 'item' + k).on( "click", function() {
+          $( "#dialog" ).dialog( "open" );
+        });
         $('#f' + i + 's' + j + 'item' + k + 'alv').load('alv.html');
         $('#f' + i + 's' + j + 'item' + k + 'alv').change(calc);
       }
@@ -48,8 +51,8 @@ function calc(e){
         let id = $(t_item).val();
         let tyku = $(t_item).data('tyku');
         let alv = $(t_alv).val();
-        if(tyku <= 0) continue;
         let type = $(t_item).data('type');
+        if(tyku <= 0) continue;
         // 艦隊防空加重對空值 = 裝備對空值*艦隊防空裝備定數A
         let kantaiKajuValue = tyku * getKantaiItem_A(type,id);
         // 艦隊防空裝備改修補正 = 艦隊防空裝備定數B*sqrt(★)
