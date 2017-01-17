@@ -1,7 +1,7 @@
 $(function() {
-  createItemTabs();
-  createShipTabs();
-  $( "#itemDialog" ).dialog({
+  createItemTabs(true);
+  createShipTabs(true);
+  $("#itemDialog").dialog({
     autoOpen: false,
     height: 650,
     width: 800,
@@ -13,7 +13,7 @@ $(function() {
       $(this).remove();
     }
   });
-  $( "#shipDialog" ).dialog({
+  $("#shipDialog").dialog({
     autoOpen: false,
     height: 650,
     width: 800,
@@ -29,7 +29,7 @@ $(function() {
   $('#shipTab-container').easytabs();
 });
 
-function createItemTabs(){
+function createItemTabs(isFriend){
   let insert = $('<ul>').attr("id","eItemtabs").attr("class","etabs");
 
   for(let type in ITEM_TYPE_DATA){
@@ -43,10 +43,10 @@ function createItemTabs(){
     insert.append(newLi);
   }
   $('#itemTab-container').append(insert);
-  createItemTable($('#itemDialog').attr('friend'));
+  createItemTable(isFriend);
 }
 
-function createItemTable(isFriend = true){
+function createItemTable(isFriend){
   for(let type in ITEM_TYPE_DATA){
     let table = $('<table>').attr("id","itemType"+type+"table").addClass('selectItemTable').attr("border",1);
     $('#itemTabs'+type).append(table);
@@ -104,7 +104,7 @@ function createAlvSelection(){
   }
 }
 
-function createShipTabs(){
+function createShipTabs(isFriend){
   let insert = $('<ul>').attr("id","eShiptabs").attr("class","etabs");
 
   for(let type in SHIP_TYPE_DATA){
@@ -121,7 +121,7 @@ function createShipTabs(){
   createShipTable($('#shipDialog').attr('friend'));
 }
 
-function createShipTable(isFriend = true){
+function createShipTable(isFriend){
   for(let type in SHIP_TYPE_DATA){
     let table = $('<table>').attr("id","shipType"+type+"table").addClass('selectShipTable').attr("border",1);
     $('#shipTabs'+type).append(table);
