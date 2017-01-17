@@ -19,7 +19,7 @@ $(function() {
       $(this).val("");
     },
   });
-  $('#itemTab-container').easytabs();
+  $('#friendItemTab-container').easytabs();
   $('#shipTab-container').easytabs();
 });
 
