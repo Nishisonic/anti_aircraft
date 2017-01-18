@@ -76,7 +76,7 @@ function calc(){
         // 艦隊防空加重對空值 = 裝備對空值*艦隊防空裝備定數A
         let kantaiKajuValue = tyku * getKantaiItem_A(type,itemid);
         // 艦隊防空裝備改修補正 = 艦隊防空裝備定數B*sqrt(★)
-        let kaishuBonus = getKantaiItem_B(type,id) * Math.sqrt(alv);
+        let kaishuBonus = getKantaiItem_B(type,itemid) * Math.sqrt(alv);
         // 1スロット裝備の艦隊防空補正 = 艦隊防空加重對空值 + 艦隊防空裝備改修補正
         let slotKantaiAirBonus = kantaiKajuValue + kaishuBonus;
         // 1艦娘の艦隊防空補正 = ∑(1スロット裝備の艦隊防空補正)
