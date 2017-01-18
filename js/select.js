@@ -108,6 +108,7 @@ function clearItem(){
   let parent = $(dialog).attr('parent');
   $(parent).empty();
   $(parent).val(0);
+  calc();
   $(dialog).dialog("close");
 }
 
@@ -128,12 +129,13 @@ function onSelectItem(itemid,isFriend){
   } else {
     $(parent).html(img+ITEM_DATA[itemid].name);
   }
+  calc();
   $(dialog).dialog("close");
 }
 
-function createAlvSelection(isFriend){
+function createAlvSelection(isFriend,parent){
   let dialog = isFriend ? '#friendItemDialog' : '#enemyItemDialog';
-  let parent = $(dialog).attr('parent');
+  parent = parent || $(dialog).attr('parent');
   let select = document.getElementById(parent.substring(1)+'alv');
   let selectBox = ["","★+1","★+2","★+3","★+4","★+5","★+6","★+7","★+8","★+9","★max"];
   
@@ -143,6 +145,9 @@ function createAlvSelection(isFriend){
     option.innerHTML = selectBox[i];
     select.appendChild(option);
   }
+  $(parent+'alv').on('change',function(){
+    calc();
+  });
 }
 
 function createShipTabs(isFriend){
@@ -212,6 +217,7 @@ function clearShip(){
   let parent = $(dialog).attr('parent');
   $(parent).empty();
   $(parent).val(0);
+  calc();
   $(dialog).dialog("close");
 }
 
@@ -223,5 +229,6 @@ function onSelectShip(shipid,isFriend){
   // 無理やり登録
   $(parent).val(shipid);
   $(parent).html('<img src="img/ship/'+shipid+'.png" width="160" height="40" title="'+shipid+':'+name+' 対空:'+tyku+'">');
+  setStatus(parent,shipid,isFriend);
   $(dialog).dialog("close");
 }
