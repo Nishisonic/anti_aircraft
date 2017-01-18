@@ -1,6 +1,6 @@
 $(function(){
   $('#formationBox').load('formation.html');
-  $('#taiku_cutinBox').load('taiku_cutin.html');
+  $('#tyku_cutinBox').load('tyku_cutin.html');
   for(let i = 1;i <= 2;i++){
     for(let j = 1;j <= 6;j++){
       $('#f' + i + 's' + j + 'name').on( "click", function() {
@@ -21,9 +21,13 @@ $(function(){
       document.getElementById('f' + i + 's' + j + 'kaju').innerHTML = "0.00";
       document.getElementById('f' + i + 's' + j + 'shotDownA').innerHTML = 0;
       document.getElementById('f' + i + 's' + j + 'shotDownB').innerHTML = 0;
+      document.getElementById('f' + i + 's' + j + 'proportionShotDown').innerHTML = "0 (0%)";
+      document.getElementById('f' + i + 's' + j + 'fixedShotDown').innerHTML = 0;
+      document.getElementById('f' + i + 's' + j + 'guaranteedShotDown').innerHTML = 0;
       document.getElementById('f' + i + 's' + j + 'total').innerHTML = 0;
     }
   }
+  changeShowRow();
 });
 
 // parent = #f1s1name
@@ -98,6 +102,9 @@ function calc(){
       let t_kaju = 'f' + i + 's' + j + 'kaju';
       let t_shotDownA = 'f' + i + 's' + j + 'shotDownA';
       let t_shotDownB = 'f' + i + 's' + j + 'shotDownB';
+      let t_proportionShotDown = 'f' + i + 's' + j + 'proportionShotDown';
+      let t_fixedShotDown = 'f' + i + 's' + j + 'fixedShotDown';
+      let t_guaranteedShotDown = 'f' + i + 's' + j + 'guaranteedShotDown';
       let t_total = 'f' + i + 's' + j + 'total';
       let t_name = '#f' + i + 's' + j + 'name';
       let shipid = $(t_name).val();
@@ -125,14 +132,21 @@ function calc(){
         let kaju = (isFriend ? (shipTyku / 2) : (Math.sqrt(shipTyku + totalItemTyku))) + sum;
         // 最終加重對空值 = (艦船加重對空值 + 艦隊防空補正)*基本定數*味方相手補正(0.8(味方の対空砲火) or 0.75(相手の対空砲火))
         let kajuTotal = (kaju + kantaiAirBonus) * AIR_BATTLE_FACTOR * (isFriend ? FRIEND_FACTOR : ENEMY_FACTOR);
-        let taikuCIkind = $('#taiku_cutinBox').children().val();
-        let factor = getTaikuCuinFactor(taikuCIkind,isFriend);
+        let tykuCIkind = $('#tyku_cutinBox').children().val();
+        let factor = getTykuCuinFactor(tykuCIkind,isFriend);
         // 擊墜數A = int( 最終加重對空值*((0 or 1)の一様な乱数)*対空カットイン定數C + 対空カットイン定數A )
         let minA = factor.A;
-        let maxA = getA(kajuTotal,taikuCIkind,isFriend);
+        let maxA = getA(kajuTotal,tykuCIkind,isFriend);
         // 擊墜數B = int( 0.02*基本定數*機數*艦船加重對空值*((0 or 1)の一様な乱数) + 対空カットイン定數B )
         let minB = factor.B;
-        let maxB = getB(kaju,slotNum,taikuCIkind,isFriend);
+        let maxB = getB(kaju,slotNum,tykuCIkind,isFriend);
+        // 割合撃墜
+        let proportionShotDown = getProportion(kaju);
+        let proportionShotDownNum = getProportionNum(kaju,slotNum);
+        // 固定撃墜
+        let fixedShotDown = getFixedNum(kajuTotal,tykuCIkind,isFriend);
+        // 最低保証
+        let guaranteedShotDown = getGuaranteedNum(tykuCIkind,isFriend);
 
         // 確率計算
         shipNum++;
@@ -150,6 +164,9 @@ function calc(){
         document.getElementById(t_kaju).innerHTML = (kajuTotal).toFixed(2);
         document.getElementById(t_shotDownA).innerHTML = minA + " - " + maxA;
         document.getElementById(t_shotDownB).innerHTML = minB + " - " + maxB;
+        document.getElementById(t_proportionShotDown).innerHTML = proportionShotDownNum + " (" + (proportionShotDown * 100).toFixed(2) + "%)";
+        document.getElementById(t_fixedShotDown).innerHTML = fixedShotDown;
+        document.getElementById(t_guaranteedShotDown).innerHTML = guaranteedShotDown;
         // 最終擊墜數 = 擊墜數A + 擊墜數B
         document.getElementById(t_total).innerHTML = (minA + minB) + " - " + (maxA + maxB);
       } else {
@@ -157,6 +174,9 @@ function calc(){
         document.getElementById(t_kaju).innerHTML = "0.00";
         document.getElementById(t_shotDownA).innerHTML = 0;
         document.getElementById(t_shotDownB).innerHTML = 0;
+        document.getElementById(t_proportionShotDown).innerHTML = "0 (0%)";
+        document.getElementById(t_fixedShotDown).innerHTML = 0;
+        document.getElementById(t_guaranteedShotDown).innerHTML = 0;
         document.getElementById(t_total).innerHTML = 0;
       }
     }
@@ -195,7 +215,7 @@ function initialize(){
   }
   $('#formationBox').children().prop('selectedIndex', 0);
   $('#slotNumSpinner').val(0);
-  $('#taiku_cutinBox').children().prop('selectedIndex', 0);
+  $('#tyku_cutinBox').children().prop('selectedIndex', 0);
   for(let i = 1;i <= 2;i++){
     for(let j = 1;j <= 6;j++){
       $('#f' + i + 's' + j + 'name').off('click');
@@ -270,4 +290,36 @@ function parse(){
       clearInterval(time);
     }
   },500);
+}
+
+function changeShowRow(){
+  for(let i = 1;i <= 2;i++){
+    if($('input[name=isShowUsualRow]:checked').val() === 'true'){
+      $('#f'+i+'shotDownAheader').hide();
+      $('#f'+i+'shotDownBheader').hide();
+      $('#f'+i+'proportionShotDownHeader').show();
+      $('#f'+i+'fixedShotDownHeader').show();
+      $('#f'+i+'guaranteedShotDownHeader').show();
+      for(let j = 1;j <= 6;j++){
+        $('#f'+i+'s'+j+'shotDownA').hide();
+        $('#f'+i+'s'+j+'shotDownB').hide();
+        $('#f'+i+'s'+j+'proportionShotDown').show();
+        $('#f'+i+'s'+j+'fixedShotDown').show();
+        $('#f'+i+'s'+j+'guaranteedShotDown').show();
+      }
+    } else {
+      $('#f'+i+'shotDownAheader').show();
+      $('#f'+i+'shotDownBheader').show();
+      $('#f'+i+'proportionShotDownHeader').hide();
+      $('#f'+i+'fixedShotDownHeader').hide();
+      $('#f'+i+'guaranteedShotDownHeader').hide();
+      for(let j = 1;j <= 6;j++){
+        $('#f'+i+'s'+j+'shotDownA').show();
+        $('#f'+i+'s'+j+'shotDownB').show();
+        $('#f'+i+'s'+j+'proportionShotDown').hide();
+        $('#f'+i+'s'+j+'fixedShotDown').hide();
+        $('#f'+i+'s'+j+'guaranteedShotDown').hide();
+      }
+    }
+  }
 }

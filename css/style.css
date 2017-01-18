@@ -30,6 +30,7 @@ BODY{
 }
 .result{
   text-align: right;
+  padding-left: 5px;
 }
 .input{
   text-align: left;
