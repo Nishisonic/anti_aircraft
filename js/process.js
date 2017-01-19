@@ -226,7 +226,8 @@ function parseDeckFormat(){
   initialize();
   /* 解析 */
   let time = setInterval(function(){
-    let json = $('#parseDeckFormatLabel').val();
+    let str = $('#parseDeckFormatLabel').val();
+    let json = str.substring(str.indexOf('{'));
     let object = JSON.parse(json);
     if(object['version'] == 4){
       for(let i = 1;i <= 2;i++){
