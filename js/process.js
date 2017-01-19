@@ -187,13 +187,13 @@ function initialize(){
   if($('input[name=isFriend]:checked').val() === 'true'){
     nameSource = '#friendShipDialog';
     itemSource = '#friendItemDialog';
-    $('.parseID').hide();
-    $('.parseDeckFormat').show();
+    $('.parseEnemy').hide();
+    $('.parseFriend').show();
   } else {
     nameSource = '#enemyShipDialog';
     itemSource = '#enemyItemDialog';
-    $('.parseDeckFormat').hide();
-    $('.parseID').show();
+    $('.parseFriend').hide();
+    $('.parseEnemy').show();
   }
   $('#formationBox').children().prop('selectedIndex', 0);
   $('#slotNumSpinner').val(0);

@@ -38,12 +38,12 @@
       <input type="number" name="slotNum" id="slotNumSpinner" value="0" min="0" oninput="calc()" onchange="calc()">
       対空カットイン種別：
       <span id="tyku_cutinBox"></span>
-      <span class="parseDeckFormat">
+      <span class="parseFriend">
         デッキビルダーから反映：
         <input id="parseDeckFormatLabel" title="艦隊シミュレーター＆デッキビルダーで排出されたフォーマットをここに入力して、反映ボタンをクリックするとこの画面に反映されます。">
         <input type="button" value="反映" onclick="parseDeckFormat()">
       </span>
-      <span class="parseID">
+      <span class="parseEnemy">
         IDから反映：
         <input id="parseIDLabel" title="艦IDから反映します。カンマ「,」で区切ること。第二艦隊分も繋げて書く。 例:「501,502,503,504,505,506」、「501,502,503,504,505,506,507,508,509,510,511,512」">
         <input type="button" value="反映" onclick="parseID()">
