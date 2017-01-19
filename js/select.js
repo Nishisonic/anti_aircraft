@@ -103,11 +103,13 @@ function createItemTable(isFriend,typelist){
   }
 }
 
-function clearItem(){
+function clearItem(isFriend = true){
   let dialog = isFriend ? '#friendItemDialog' : '#enemyItemDialog';
   let parent = $(dialog).attr('parent');
-  $(parent).empty();
-  $(parent).val(0);
+  let i = parent.substring(2,3);
+  let j = parent.substring(4,5);
+  let k = parent.substring(9,10);
+  resetItem(i,j,k);
   calc();
   $(dialog).dialog("close");
 }
@@ -115,39 +117,13 @@ function clearItem(){
 function onSelectItem(itemid,isFriend){
   let dialog = isFriend ? '#friendItemDialog' : '#enemyItemDialog';
   let parent = $(dialog).attr('parent');
-  let img = '<img src="img/itemicon/'+ITEM_DATA[itemid].type+'.png" width="30" height="30" style="float:left;margin-right:5px;">';
+  let i = parent.substring(2,3);
+  let j = parent.substring(4,5);
+  let k = parent.substring(9,10);
   // 無理やり登録
-  $(parent).val(itemid);
-  $(parent).attr('title',"対空+"+ITEM_DATA[itemid].tyku);
-  if(isFriend){
-    let style = '<select id="'+parent.substring(1)+'alv'+'" style="color:#45A9A5"></select>';
-    $(parent).html(img+ITEM_DATA[itemid].name+' '+style);
-    createAlvSelection(isFriend);
-    $(parent+'alv').on("click",function(event){
-      event.stopPropagation();
-    });
-  } else {
-    $(parent).html(img+ITEM_DATA[itemid].name);
-  }
+  setItem(i,j,k,itemid,0,isFriend);
   calc();
   $(dialog).dialog("close");
-}
-
-function createAlvSelection(isFriend,parent){
-  let dialog = isFriend ? '#friendItemDialog' : '#enemyItemDialog';
-  parent = parent || $(dialog).attr('parent');
-  let select = document.getElementById(parent.substring(1)+'alv');
-  let selectBox = ["","★+1","★+2","★+3","★+4","★+5","★+6","★+7","★+8","★+9","★max"];
-  
-  for(i = 0;i < selectBox.length;i++){
-    let option = document.createElement('option');
-    option.setAttribute('value', i);
-    option.innerHTML = selectBox[i];
-    select.appendChild(option);
-  }
-  $(parent+'alv').on('change',function(){
-    calc();
-  });
 }
 
 function createShipTabs(isFriend){
@@ -196,7 +172,7 @@ function createShipTable(isFriend,typelist){
   }
 
   for(let type in SHIP_TYPE_DATA){
-    $('#'+prefix+'ShipType'+type+'Table').append('<thead><tr><th colspan="5">'+SHIP_TYPE_DATA[type]+'　<input type="button" value="'+ (isFriend ? "艦娘" : "深海棲艦") + 'を外す" onclick="clearShip()"></th></tr></thead>');
+    $('#'+prefix+'ShipType'+type+'Table').append('<thead><tr><th colspan="5">'+SHIP_TYPE_DATA[type]+'　<input type="button" value="'+ (isFriend ? "艦娘" : "深海棲艦") + 'を外す" onclick="clearShip('+isFriend+')"></th></tr></thead>');
     let insert = $('<tbody>');
     insert.append('<tr>');
     for(let id in typelist[type]){
@@ -212,11 +188,12 @@ function createShipTable(isFriend,typelist){
   }
 }
 
-function clearShip(){
+function clearShip(isFriend){
   let dialog = isFriend ? '#friendShipDialog' : '#enemyShipDialog';
   let parent = $(dialog).attr('parent');
-  $(parent).empty();
-  $(parent).val(0);
+  let i = parent.substring(2,3);
+  let j = parent.substring(4,5);
+  resetShip(i,j);
   calc();
   $(dialog).dialog("close");
 }
@@ -224,11 +201,10 @@ function clearShip(){
 function onSelectShip(shipid,isFriend){
   let dialog = isFriend ? '#friendShipDialog' : '#enemyShipDialog';
   let parent = $(dialog).attr('parent');
-  let name = SHIP_DATA[shipid].name;
-  let tyku = SHIP_DATA[shipid].tyku;
+  let i = parent.substring(2,3);
+  let j = parent.substring(4,5);
   // 無理やり登録
-  $(parent).val(shipid);
-  $(parent).html('<img src="img/ship/'+shipid+'.png" width="160" height="40" title="'+shipid+':'+name+' 対空:'+tyku+'">');
+  setShip(i,j,shipid);
   setStatus(parent,shipid,isFriend);
   $(dialog).dialog("close");
 }

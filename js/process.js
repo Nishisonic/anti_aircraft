@@ -34,29 +34,12 @@ $(function(){
 function setStatus(parent,shipid,isFriend){
   let fleet = parent.substring(2,3);
   let ship = parent.substring(4,5);
-  let t_tyku = 'f' + fleet + 's' + ship + 'tyku';
-  let tyku = SHIP_DATA[shipid].tyku;
-  document.getElementById(t_tyku).innerHTML = tyku;
   for(let i = 1;i <= 5;i++){
-    let t_item = '#f' + fleet + 's' + ship + 'item' + i;
-    let t_item_alv = '#f' + fleet + 's' + ship + 'item' + i + 'alv';
     let itemid = SHIP_DATA[shipid]["i"+i];
     if(itemid === undefined || itemid === 0){
-      $(t_item).empty();
-      $(t_item).val(0);
+      resetItem(fleet,ship,i);
     } else {
-      let img = '<img src="img/itemicon/'+ITEM_DATA[itemid].type+'.png" width="30" height="30" style="float:left;margin-right:5px;">';
-      if(isFriend){
-        let style = '<select id="'+t_item_alv.substring(1)+'alv'+'" style="color:#45A9A5"></select>';
-        $(t_item).html(img+ITEM_DATA[itemid].name+' '+style);
-        createAlvSelection(isFriend,t_item);
-        $(t_item_alv).on("click",function(event){
-          event.stopPropagation();
-        });
-      } else {
-        $(t_item).html(img+ITEM_DATA[itemid].name);
-      }
-      $(t_item).val(itemid);
+      setItem(fleet,ship,i,itemid,0,isFriend);
     }
   }
   calc();
@@ -187,15 +170,9 @@ function calc(){
 
 function reset(no){
   for(let i = 1;i <= 6;i++){
-    let target = '#f' + no + 's' + i + 'name';
-    $(target).empty();
-    $(target).val(0);
-    let t_tyku = 'f' + no + 's' + i + 'tyku';
-    document.getElementById(t_tyku).innerHTML = 0;
+    resetShip(no,i);
     for(let j = 1;j <= 5;j++){
-      let t_item = '#f' + no + 's' + i + 'item' + j;
-      $(t_item).empty();
-      $(t_item).val(0);
+      resetItem(no,i,j);
     }
   }
   calc();
@@ -254,36 +231,20 @@ function parse(){
           let ship = fleet['s' + j];
           if(ship === undefined) continue;
           let shipid = ship['id'];
-          $('#f'+i+'s'+j+'name').val(shipid);
-          $('#f'+i+'s'+j+'name').html('<img src="img/ship/'+shipid+'.png" width="160" height="40" title="'+shipid+':'+SHIP_DATA[shipid].name+' 対空:'+SHIP_DATA[shipid].tyku+'">');
-          $('#f'+i+'s'+j+'tyku').val(SHIP_DATA[shipid].tyku);
+          setShip(i,j,shipid);
           let items = ship['items'];
           for(let k = 1;k <= 4;k++){
             let item = items['i' + k];
             if(item === undefined) continue;
             let itemid = item['id'];
-            let img = '<img src="img/itemicon/'+ITEM_DATA[itemid].type+'.png" width="30" height="30" style="float:left;margin-right:5px;">';
-            let style = '<select id="f'+i+'s'+j+'item'+k+'alv'+'" style="color:#45A9A5"></select>';
             let alv = item['rf'];
-            $('#f'+i+'s'+j+'item'+k).val(itemid);
-            $('#f'+i+'s'+j+'item'+k).html(img+ITEM_DATA[itemid].name+' '+style);
-            createAlvSelection(true,'#f'+i+'s'+j+'item'+k);
-            $('#f'+i+'s'+j+'item'+k+'alv').val(alv);
-            $('#f'+i+'s'+j+'item'+k+'alv').on("click",function(event){
-              event.stopPropagation();
-            });
+            setItem(i,j,k,itemid,alv,true);
           }
           let item = items['ix'];
           if(item === undefined) continue;
           let itemid = item['id'];
           let alv = item['rf'];
-          $('#f'+i+'s'+j+'item5').val(itemid);
-          $('#f'+i+'s'+j+'item5').html(img+ITEM_DATA[itemid].name+' '+style);
-          createAlvSelection(true,'#f'+i+'s'+j+'item5');
-          $('#f'+i+'s'+j+'item5alv').val(alv);
-          $('#f'+i+'s'+j+'item5alv').on("click",function(event){
-            event.stopPropagation();
-          });
+          setItem(i,j,5,itemid,alv,true);
         }
       }
       calc();
@@ -322,4 +283,45 @@ function changeShowRow(){
       }
     }
   }
+}
+
+function setShip(i,j,shipid){
+  $('#f'+i+'s'+j+'name').val(shipid);
+  $('#f'+i+'s'+j+'name').html('<img src="img/ship/'+shipid+'.png" width="160" height="40" title="'+shipid+':'+SHIP_DATA[shipid].name+' 対空:'+SHIP_DATA[shipid].tyku+'">');
+  $('#f'+i+'s'+j+'tyku').text(SHIP_DATA[shipid].tyku);
+}
+
+function resetShip(i,j){
+  $('#f'+i+'s'+j+'name').empty();
+  $('#f'+i+'s'+j+'name').val(0);
+  $('#f'+i+'s'+j+'tyku').text(0);
+}
+
+function setItem(i,j,k,itemid,alv,isFriend){
+  let img = '<img src="img/itemicon/'+ITEM_DATA[itemid].type+'.png" width="30" height="30" style="float:left;margin-right:5px;">';
+  $('#f'+i+'s'+j+'item'+k).val(itemid);
+  $('#f'+i+'s'+j+'item'+k).attr('title',"対空+"+ITEM_DATA[itemid].tyku);
+  if(isFriend){
+    let style = '<select id="f'+i+'s'+j+'item'+k+'alv'+'" style="color:#45A9A5"></select>';
+    $('#f'+i+'s'+j+'item'+k).html(img+ITEM_DATA[itemid].name+' '+style);
+    console.log(i,j,k)
+    /* 改修度部分 */
+    let selectBox = ["","★+1","★+2","★+3","★+4","★+5","★+6","★+7","★+8","★+9","★max"];
+    for(let l = 0;l < selectBox.length;l++){
+      let option = document.createElement('option');
+      option.setAttribute('value', l);
+      option.innerHTML = selectBox[l];
+      $('#f'+i+'s'+j+'item'+k+'alv').append(option);
+    }
+    $('#f'+i+'s'+j+'item'+k+'alv').val(alv);
+    $('#f'+i+'s'+j+'item'+k+'alv').on("click",function(event){ event.stopPropagation(); });
+    $('#f'+i+'s'+j+'item'+k+'alv').on('change',function(event){ calc(); });
+  } else {
+    $('#f'+i+'s'+j+'item'+k).html(img+ITEM_DATA[itemid].name);
+  }
+}
+
+function resetItem(i,j,k){
+  $('#f'+i+'s'+j+'item'+k).empty();
+  $('#f'+i+'s'+j+'item'+k).val(0);
 }
