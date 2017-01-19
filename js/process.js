@@ -28,6 +28,7 @@ $(function(){
     }
   }
   changeShowRow();
+  $('.parseID').hide();
 });
 
 // parent = #f1s1name
@@ -186,9 +187,13 @@ function initialize(){
   if($('input[name=isFriend]:checked').val() === 'true'){
     nameSource = '#friendShipDialog';
     itemSource = '#friendItemDialog';
+    $('.parseID').hide();
+    $('.parseDeckFormat').show();
   } else {
     nameSource = '#enemyShipDialog';
     itemSource = '#enemyItemDialog';
+    $('.parseDeckFormat').hide();
+    $('.parseID').show();
   }
   $('#formationBox').children().prop('selectedIndex', 0);
   $('#slotNumSpinner').val(0);
@@ -215,13 +220,13 @@ function initialize(){
   }
 }
 
-function parse(){
+function parseDeckFormat(){
   /* 初期化 */
   $('input[name=isFriend]').val([true]);
   initialize();
   /* 解析 */
-  var time = setInterval(function(){
-    let json = $('#parseLabel').val();
+  let time = setInterval(function(){
+    let json = $('#parseDeckFormatLabel').val();
     let object = JSON.parse(json);
     if(object['version'] == 4){
       for(let i = 1;i <= 2;i++){
@@ -246,6 +251,26 @@ function parse(){
           let alv = item['rf'];
           setItem(i,j,5,itemid,alv,true);
         }
+      }
+      calc();
+      clearInterval(time);
+    }
+  },500);
+}
+
+function parseID(){
+  /* 初期化 */
+  $('input[name=isFriend]').val([false]);
+  initialize();
+  /* 解析 */
+  let time = setInterval(function(){
+    let ids = $('#parseIDLabel').val().split(",");
+    for(let i = 1;i <= 2;i++){
+      for(let j = 1;j <= 6;j++){
+        if((i-1)*6+j-1==ids.length) break;
+        let shipid = ids[(i-1)*6+j-1];
+        setShip(i,j,shipid);
+        setStatus('#f'+i+'s'+j,shipid,false);
       }
       calc();
       clearInterval(time);
@@ -304,7 +329,6 @@ function setItem(i,j,k,itemid,alv,isFriend){
   if(isFriend){
     let style = '<select id="f'+i+'s'+j+'item'+k+'alv'+'" style="color:#45A9A5"></select>';
     $('#f'+i+'s'+j+'item'+k).html(img+ITEM_DATA[itemid].name+' '+style);
-    console.log(i,j,k)
     /* 改修度部分 */
     let selectBox = ["","★+1","★+2","★+3","★+4","★+5","★+6","★+7","★+8","★+9","★max"];
     for(let l = 0;l < selectBox.length;l++){
