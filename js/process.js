@@ -28,7 +28,7 @@ $(function(){
     }
   }
   changeShowRow();
-  $('.parseID').hide();
+  $('.parseEnemy').hide();
 });
 
 // parent = #f1s1name
@@ -277,6 +277,22 @@ function parseID(){
       clearInterval(time);
     }
   },500);
+}
+
+function searchID(target){
+  let matchList = {};
+  for(let shipid in SHIP_DATA){
+    let name = SHIP_DATA[shipid].name;
+    let count = 0;
+    for(let i = 0;i < name.length;i++){
+      for(let j = 0;j < target.length;j++){
+        if(name.charAt(i) == target.charAt(j)){
+          count++;
+          break;
+        }
+      }
+    }
+  }
 }
 
 function changeShowRow(){
