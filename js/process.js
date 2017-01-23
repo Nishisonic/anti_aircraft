@@ -330,18 +330,22 @@ function searchID(t){
   let target = String(t.replace(/[\s,\?,(,),\*\d,　]/g,""));
   for(let shipid in SHIP_DATA){
     if(shipid <= 500) continue;
-    let name = SHIP_DATA[shipid].name.replace(/[\s,\?,(,),\*\d,　]/g,"");
-    let count = 0;
-    if(name == target) return shipid;
-    for(let i = 0;i < name.length;i++){
-      for(let j = 0;j < target.length;j++){
-        if(name.charAt(i) == target.charAt(j)){
-          count++;
-          break;
+    let name = SHIP_DATA[shipid].name.replace(/[\s,\?,\*\d,　]/g,"");
+    let kind = name.substring(name.indexOf('(')).replace(/[(,)]/g,"").split(/[/]/g);
+    for(let k in kind){
+      let tmpName = name.replace(/\(.*\)/g,kind[k]);
+      let count = 0;
+      if(tmpName == target) return shipid;
+      for(let i = 0;i < tmpName.length;i++){
+        for(let j = 0;j < target.length;j++){
+          if(tmpName.charAt(i) == target.charAt(j)){
+            count++;
+            break;
+          }
         }
       }
+      matchList[shipid] = (matchList[shipid] !== undefined && matchList[shipid] > count) ? matchList[shipid] : count;
     }
-    matchList[shipid] = count;
   }
   let maxIndex = 0;
   for(let shipid in matchList){
