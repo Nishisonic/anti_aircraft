@@ -47,11 +47,28 @@ function setStatus(parent,shipid,isFriend){
 }
 
 function calc(){
+  let isCombined = (function(){
+    let isExist = [false,false];
+    for(let i = 1;i <= 2;i++){
+      for(let j = 1;j <= 6;j++){
+        let t_name = '#f' + i + 's' + j + 'name';
+        let shipid = $(t_name).val();
+        if(shipid > 0){
+          isExist[i-i] = true;
+          break;
+        }
+      }
+    }
+    return isExist[0] && isExist[1];
+  });
   let kantaiAirBonus = 0;
   // 艦隊防空値
   for(let i = 1;i <= 2;i++){
     for(let j = 1;j <= 6;j++){
       let shipKantaiAirBonus = 0;
+      let t_name = '#f' + i + 's' + j + 'name';
+      let shipid = $(t_name).val();
+      if(shipid <= 0) continue;
       for(let k = 1;k <= 5;k++){
         let t_item = '#f' + i + 's' + j + 'item' + k;
         let t_alv = '#f' + i + 's' + j + 'item' + k + 'alv option:selected';
@@ -268,7 +285,7 @@ function parseID(){
     let ids = toHalfWidth($('#parseIDLabel').val()).split(/\D/);
     for(let i = 1;i <= 2;i++){
       for(let j = 1;j <= 6;j++){
-        if((i-1)*6+j-1==ids.length) break;
+        if((i-1)*6+j-1>=ids.length) break;
         let shipid = ids[(i-1)*6+j-1];
         if(shipid=="") continue;
         setShip(i,j,shipid);
@@ -286,11 +303,36 @@ function toHalfWidth(value) {
   });
 }
 
-function searchID(target){
-  let matchList = {};
+function parseName(){
+  /* 初期化 */
+  $('input[name=isFriend]').val([false]);
+  initialize();
+  /* 解析 */
+  let time = setInterval(function(){
+    let names = $('#parseNameLabel').val().split(/[、,\,]/);
+    for(let i = 1;i <= 2;i++){
+      for(let j = 1;j <= 6;j++){
+        if((i-1)*6+j-1>=names.length) break;
+        let name = names[(i-1)*6+j-1];
+        if(name=="") continue;
+        let shipid = searchID(name);
+        setShip(i,j,shipid);
+        setStatus('#f'+i+'s'+j,shipid,false);
+      }
+      calc();
+      clearInterval(time);
+    }
+  },500);
+}
+
+function searchID(t){
+  let matchList = {0:0};
+  let target = String(t.replace(/[\s,\?,(,),\*\d,　]/g,""));
   for(let shipid in SHIP_DATA){
-    let name = SHIP_DATA[shipid].name;
+    if(shipid <= 500) continue;
+    let name = SHIP_DATA[shipid].name.replace(/[\s,\?,(,),\*\d,　]/g,"");
     let count = 0;
+    if(name == target) return shipid;
     for(let i = 0;i < name.length;i++){
       for(let j = 0;j < target.length;j++){
         if(name.charAt(i) == target.charAt(j)){
@@ -299,7 +341,15 @@ function searchID(target){
         }
       }
     }
+    matchList[shipid] = count;
   }
+  let maxIndex = 0;
+  for(let shipid in matchList){
+    if(matchList[shipid] > matchList[maxIndex]){
+      maxIndex = shipid;
+    }
+  }
+  return maxIndex;
 }
 
 function changeShowRow(){
