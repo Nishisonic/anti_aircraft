@@ -6,14 +6,14 @@ $(function(){
       $('#f' + i + 's' + j + 'name').on( "click", function() {
         $('#friendShipDialog').dialog('close');
         $('#friendShipDialog').dialog('option', 'position', { my: 'left top', at: 'right bottom', of: $(this)});
-        $('#friendShipDialog').attr('parent', '#f' + i + 's' + j + 'name');
+        $('#friendShipDialog').attr('parent', '#' + $(this).attr('id'));
         $('#friendShipDialog').dialog('open');
       });
       for(let k = 1;k <= 5;k++){
         $('#f' + i + 's' + j + 'item' + k).on( "click", function() {
           $('#friendItemDialog').dialog('close');
           $('#friendItemDialog').dialog('option', 'position', { my: 'left top', at: 'right bottom', of: $(this)});
-          $('#friendItemDialog').attr('parent', '#f' + i + 's' + j + 'item' + k);
+          $('#friendItemDialog').attr('parent', '#' + $(this).attr('id'));
           $('#friendItemDialog').dialog('open');
         });
       }
