@@ -103,7 +103,7 @@ function createItemTable(isFriend,typelist){
   }
 }
 
-function clearItem(isFriend = true){
+function clearItem(isFriend){
   let dialog = isFriend ? '#friendItemDialog' : '#enemyItemDialog';
   let parent = $(dialog).attr('parent');
   let i = parent.substring(2,3);
