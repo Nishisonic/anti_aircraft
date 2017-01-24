@@ -28,6 +28,7 @@ $(function(){
     }
   }
   changeShowRow();
+  setCombinedStatus(false);
   $('.parseEnemy').hide();
 });
 
@@ -46,6 +47,23 @@ function setStatus(parent,shipid,isFriend){
   calc();
 }
 
+function setCombinedStatus(isCombined){
+  let formation = $('#formationBox').children().children('option:selected').attr('kc-id');
+  if(isCombined){
+    $('#isCombinedLabel').text("連合艦隊");
+    if(formation <= 10){
+      $("#formationBox").children().children('[kc-id=14]').prop('selected', true);
+    }
+    showCombinedFormation();
+  } else {
+    $('#isCombinedLabel').text("通常艦隊");
+    if(formation > 10){
+      $("#formationBox").children().children('[kc-id=1]').prop('selected', true);
+    }
+    showNormalFormation();
+  }
+}
+
 function calc(){
   let isCombined = (function(){
     let isExist = [false,false];
@@ -54,13 +72,15 @@ function calc(){
         let t_name = '#f' + i + 's' + j + 'name';
         let shipid = $(t_name).val();
         if(shipid > 0){
-          isExist[i-i] = true;
+          isExist[i-1] = true;
           break;
         }
       }
     }
-    return isExist[0] && isExist[1];
-  });
+    return (isExist[0] && isExist[1]);
+  })();
+  // めんどいのでここで入れ替える
+  setCombinedStatus(isCombined);
   let kantaiAirBonus = 0;
   // 艦隊防空値
   for(let i = 1;i <= 2;i++){
@@ -137,15 +157,15 @@ function calc(){
         let factor = getTykuCuinFactor(tykuCIkind,isFriend);
         // 擊墜數A = int( 最終加重對空值*((0 or 1)の一様な乱数)*対空カットイン定數C + 対空カットイン定數A )
         let minA = factor.A;
-        let maxA = getA(kajuTotal,tykuCIkind,isFriend);
+        let maxA = getA(kajuTotal,tykuCIkind,isFriend,isCombined,i);
         // 擊墜數B = int( 0.02*基本定數*機數*艦船加重對空值*((0 or 1)の一様な乱数) + 対空カットイン定數B )
         let minB = factor.B;
-        let maxB = getB(kaju,slotNum,tykuCIkind,isFriend);
+        let maxB = getB(kaju,slotNum,tykuCIkind,isFriend,isCombined,i);
         // 割合撃墜
-        let proportionShotDown = getProportion(kaju);
-        let proportionShotDownNum = getProportionNum(kaju,slotNum);
+        let proportionShotDown = getProportion(kaju,isCombined,i);
+        let proportionShotDownNum = getProportionNum(kaju,slotNum,isCombined,i);
         // 固定撃墜
-        let fixedShotDown = getFixedNum(kajuTotal,tykuCIkind,isFriend);
+        let fixedShotDown = getFixedNum(kajuTotal,tykuCIkind,isFriend,isCombined,i);
         // 最低保証
         let guaranteedShotDown = getGuaranteedNum(tykuCIkind,isFriend);
 
@@ -189,9 +209,6 @@ function calc(){
 function reset(no){
   for(let i = 1;i <= 6;i++){
     resetShip(no,i);
-    for(let j = 1;j <= 5;j++){
-      resetItem(no,i,j);
-    }
   }
   calc();
 }
@@ -349,7 +366,7 @@ function searchID(t){
   }
   let maxIndex = 0;
   for(let shipid in matchList){
-    if(matchList[shipid] > matchList[maxIndex]){
+    if(matchList[shipid] > matchList[maxIndex] || (shipid !== 0 && maxIndex !== 0 && matchList[shipid] === matchList[maxIndex] && SHIP_DATA[maxIndex].name.length > SHIP_DATA[shipid].name.length)){
       maxIndex = shipid;
     }
   }
@@ -398,6 +415,9 @@ function resetShip(i,j){
   $('#f'+i+'s'+j+'name').empty();
   $('#f'+i+'s'+j+'name').val(0);
   $('#f'+i+'s'+j+'tyku').text(0);
+  for(let k = 1;k <= 5;k++){
+    resetItem(i,j,k);
+  }
 }
 
 function setItem(i,j,k,itemid,alv,isFriend){
@@ -426,4 +446,46 @@ function setItem(i,j,k,itemid,alv,isFriend){
 function resetItem(i,j,k){
   $('#f'+i+'s'+j+'item'+k).empty();
   $('#f'+i+'s'+j+'item'+k).val(0);
+}
+
+function showCombinedFormation(){
+  $("#formationBox").children().children('[kc-id=1]').prop('disabled', true);
+  $("#formationBox").children().children('[kc-id=2]').prop('disabled', true);
+  $("#formationBox").children().children('[kc-id=3]').prop('disabled', true);
+  $("#formationBox").children().children('[kc-id=4]').prop('disabled', true);
+  $("#formationBox").children().children('[kc-id=5]').prop('disabled', true);
+  $("#formationBox").children().children('[kc-id=11]').prop('disabled', false);
+  $("#formationBox").children().children('[kc-id=12]').prop('disabled', false);
+  $("#formationBox").children().children('[kc-id=13]').prop('disabled', false);
+  $("#formationBox").children().children('[kc-id=14]').prop('disabled', false);
+  $("#formationBox").children().children('[kc-id=1]').hide();
+  $("#formationBox").children().children('[kc-id=2]').hide();
+  $("#formationBox").children().children('[kc-id=3]').hide();
+  $("#formationBox").children().children('[kc-id=4]').hide();
+  $("#formationBox").children().children('[kc-id=5]').hide();
+  $("#formationBox").children().children('[kc-id=11]').show();
+  $("#formationBox").children().children('[kc-id=12]').show();
+  $("#formationBox").children().children('[kc-id=13]').show();
+  $("#formationBox").children().children('[kc-id=14]').show();
+}
+
+function showNormalFormation(){
+  $("#formationBox").children().children('[kc-id=1]').prop('disabled', false);
+  $("#formationBox").children().children('[kc-id=2]').prop('disabled', false);
+  $("#formationBox").children().children('[kc-id=3]').prop('disabled', false);
+  $("#formationBox").children().children('[kc-id=4]').prop('disabled', false);
+  $("#formationBox").children().children('[kc-id=5]').prop('disabled', false);
+  $("#formationBox").children().children('[kc-id=11]').prop('disabled', true);
+  $("#formationBox").children().children('[kc-id=12]').prop('disabled', true);
+  $("#formationBox").children().children('[kc-id=13]').prop('disabled', true);
+  $("#formationBox").children().children('[kc-id=14]').prop('disabled', true);
+  $("#formationBox").children().children('[kc-id=1]').show();
+  $("#formationBox").children().children('[kc-id=2]').show();
+  $("#formationBox").children().children('[kc-id=3]').show();
+  $("#formationBox").children().children('[kc-id=4]').show();
+  $("#formationBox").children().children('[kc-id=5]').show();
+  $("#formationBox").children().children('[kc-id=11]').hide();
+  $("#formationBox").children().children('[kc-id=12]').hide();
+  $("#formationBox").children().children('[kc-id=13]').hide();
+  $("#formationBox").children().children('[kc-id=14]').hide();
 }

@@ -88,7 +88,7 @@ function createItemTable(isFriend,typelist){
   }
 
   for(let type in ITEM_TYPE_DATA){
-    $('#'+prefix+'ItemType'+type+'Table').append('<thead><tr><th colspan="5">'+ITEM_TYPE_DATA[type]+'　<input type="button" value="装備を外す" onclick="clearItem()"></th></tr></thead>');
+    $('#'+prefix+'ItemType'+type+'Table').append('<thead><tr><th colspan="5">'+ITEM_TYPE_DATA[type]+'　<input type="button" value="装備を外す" onclick="clearItem('+isFriend+')"></th></tr></thead>');
     let insert = $('<tbody>');
     insert.append('<tr>');
     for(let id in typelist[type]){

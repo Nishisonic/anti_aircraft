@@ -13,7 +13,7 @@ BODY{
   margin-right:15px;
   width: 100px;
 }
-#radiogroup,#formation,#taiku_cutinBox{
+#radiogroup,#taiku_cutinBox{
   margin-right:15px;
 }
 #kantaiLabel{
@@ -50,4 +50,11 @@ BODY{
 }
 .space{
   margin-left:15px;
+}
+#formation{
+  width:10em;
+  margin-right:15px;
+}
+#isCombinedLabel{
+  font-weight: bold;
 }

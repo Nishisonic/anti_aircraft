@@ -1,6 +1,9 @@
 const AIR_BATTLE_FACTOR = 0.25;
 const FRIEND_FACTOR = 0.8;
 const ENEMY_FACTOR = 0.75;
+const COMBINED_FACTOR = 0.8;
+const FIRST_COMBINED_FACTOR = 0.9;
+const SECOND_COMBINED_FACTOR = 0.6;
 const FORMATION = {
   TANJU:1.0,
   FUKUJU:1.2,
@@ -106,14 +109,14 @@ function getFormationBonus(formation){
   }
 }
 // 撃墜数A
-function getA(kaju,ciKind = 0,isFriend = false){
+function getA(kaju,ciKind = 0,isFriend = false,isCombined = false,fleetno = 0){
   let ciFactor = getTykuCuinFactor(ciKind,isFriend);
-  return Math.floor(kaju * ciFactor.C + ciFactor.A);
+  return Math.floor(kaju * ciFactor.C * getCombinedFactor(isCombined,fleetno) + ciFactor.A);
 }
 // 撃墜数B
-function getB(kaju,slot,ciKind = 0,isFriend = false){
+function getB(kaju,slot,ciKind = 0,isFriend = false,isCombined = false,fleetno = 0){
   let ciFactor = getTykuCuinFactor(ciKind,isFriend);
-  return Math.floor(0.02 * AIR_BATTLE_FACTOR * slot * kaju + ciFactor.B);
+  return Math.floor(0.02 * AIR_BATTLE_FACTOR * slot * kaju * getCombinedFactor(isCombined,fleetno) + ciFactor.B);
 }
 function getTykuCuinFactor(ciKind,isFriend = false){
   if(TYKU_CUIIN[ciKind].A !== undefined){
@@ -122,20 +125,27 @@ function getTykuCuinFactor(ciKind,isFriend = false){
   return TYKU_CUIIN[ciKind][isFriend ? "FRIEND" : "ENEMY"];
 }
 // 割合撃墜確率
-function getProportion(kaju){
-  return 0.02 * AIR_BATTLE_FACTOR * kaju;
+function getProportion(kaju,isCombined = false,fleetno = 0){
+  return 0.02 * AIR_BATTLE_FACTOR * kaju * getCombinedFactor(isCombined,fleetno);
 }
 // 割合撃墜数
-function getProportionNum(kaju,slot){
-  return Math.floor(0.02 * AIR_BATTLE_FACTOR * slot * kaju);
+function getProportionNum(kaju,slot,isCombined = false,fleetno = 0){
+  return Math.floor(0.02 * AIR_BATTLE_FACTOR * slot * kaju * getCombinedFactor(isCombined,fleetno));
 }
 // 固定撃墜数
-function getFixedNum(kaju,ciKind = 0,isFriend = false){
+function getFixedNum(kaju,ciKind = 0,isFriend = false,isCombined = false,fleetno = 0){
   let ciFactor = getTykuCuinFactor(ciKind,isFriend);
-  return Math.floor(kaju * ciFactor.C);
+  return Math.floor(kaju * ciFactor.C * getCombinedFactor(isCombined,fleetno));
 }
 // 最低保証数
 function getGuaranteedNum(ciKind = 0,isFriend = false){
   let ciFactor = getTykuCuinFactor(ciKind,isFriend);
   return ciFactor.A + ciFactor.B;
+}
+
+function getCombinedFactor(isCombined,fleetno){
+  if(isCombined){
+    return (fleetno === 1 ? FIRST_COMBINED_FACTOR : SECOND_COMBINED_FACTOR) * COMBINED_FACTOR;
+  }
+  return 1.0;
 }
