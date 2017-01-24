@@ -153,7 +153,7 @@ function calc(){
         let kaju = (isFriend ? (shipTyku / 2) : (Math.sqrt(shipTyku + totalItemTyku))) + sum;
         // 最終加重對空值 = (艦船加重對空值 + 艦隊防空補正)*基本定數*味方相手補正(0.8(味方の対空砲火) or 0.75(相手の対空砲火))
         let kajuTotal = (kaju + kantaiAirBonus) * AIR_BATTLE_FACTOR * (isFriend ? FRIEND_FACTOR : ENEMY_FACTOR);
-        let tykuCIkind = $('#tyku_cutinBox').children().val();
+        let tykuCIkind = $('#tyku_cutinBox').children().val()|0;
         let factor = getTykuCuinFactor(tykuCIkind,isFriend);
         // 擊墜數A = int( 最終加重對空值*((0 or 1)の一様な乱数)*対空カットイン定數C + 対空カットイン定數A )
         let minA = factor.A;
