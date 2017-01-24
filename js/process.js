@@ -5,14 +5,14 @@ $(function(){
     for(let j = 1;j <= 6;j++){
       $('#f' + i + 's' + j + 'name').on( "click", function() {
         $('#friendShipDialog').dialog('close');
-        $('#friendShipDialog').dialog('option', 'position', { my: 'left top', at: 'right bottom', of: $(this)});
+        $('#friendShipDialog').dialog('option', 'position', { my: 'left center', at: 'right center', of: $(this)});
         $('#friendShipDialog').attr('parent', '#' + $(this).attr('id'));
         $('#friendShipDialog').dialog('open');
       });
       for(let k = 1;k <= 5;k++){
         $('#f' + i + 's' + j + 'item' + k).on( "click", function() {
           $('#friendItemDialog').dialog('close');
-          $('#friendItemDialog').dialog('option', 'position', { my: 'left top', at: 'right bottom', of: $(this)});
+          $('#friendItemDialog').dialog('option', 'position', { my: 'left center', at: 'right center', of: $(this)});
           $('#friendItemDialog').attr('parent', '#' + $(this).attr('id'));
           $('#friendItemDialog').dialog('open');
         });
@@ -237,7 +237,7 @@ function initialize(){
       $('#f' + i + 's' + j + 'name').off('click');
       $('#f' + i + 's' + j + 'name').on( "click", function() {
         $(nameSource).dialog('close');
-        $(nameSource).dialog('option', 'position', { my: 'left top', at: 'right bottom', of: $(this)});
+        $(nameSource).dialog('option', 'position', { my: 'left center', at: 'right center', of: $(this)});
         $(nameSource).attr('parent', '#' + $(this).attr('id'));
         $(nameSource).dialog('open');
       });
@@ -245,7 +245,7 @@ function initialize(){
         $('#f' + i + 's' + j + 'item' + k).off('click');
         $('#f' + i + 's' + j + 'item' + k).on( "click", function() {
           $(itemSource).dialog('close');
-          $(itemSource).dialog('option', 'position', { my: 'left top', at: 'right bottom', of: $(this)});
+          $(itemSource).dialog('option', 'position', { my: 'left center', at: 'right center', of: $(this)});
           $(itemSource).attr('parent', '#' + $(this).attr('id'));
           $(itemSource).dialog('open');
         });
