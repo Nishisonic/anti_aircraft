@@ -238,7 +238,7 @@ function initialize(){
       $('#f' + i + 's' + j + 'name').on( "click", function() {
         $(nameSource).dialog('close');
         $(nameSource).dialog('option', 'position', { my: 'left top', at: 'right bottom', of: $(this)});
-        $(nameSource).attr('parent', '#f' + i + 's' + j + 'name');
+        $(nameSource).attr('parent', '#' + $(this).attr('id'));
         $(nameSource).dialog('open');
       });
       for(let k = 1;k <= 5;k++){
@@ -246,7 +246,7 @@ function initialize(){
         $('#f' + i + 's' + j + 'item' + k).on( "click", function() {
           $(itemSource).dialog('close');
           $(itemSource).dialog('option', 'position', { my: 'left top', at: 'right bottom', of: $(this)});
-          $(itemSource).attr('parent', '#f' + i + 's' + j + 'item' + k);
+          $(itemSource).attr('parent', '#' + $(this).attr('id'));
           $(itemSource).dialog('open');
         });
       }
