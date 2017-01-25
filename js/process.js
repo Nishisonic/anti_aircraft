@@ -283,6 +283,7 @@ function parseDeckFormat(){
           let item = items['ix'];
           if(item === undefined) continue;
           let itemid = item['id'];
+          if(itemid === undefined) continue;
           let alv = item['rf'];
           setItem(i,j,5,itemid,alv,true);
         }
