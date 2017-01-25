@@ -786,6 +786,7 @@ const SHIP_DATA = {
   483:{name:"伊26",type:13,tyku:0,fr:false},
   486:{name:"浦波",type:2,tyku:39,fr:false},
   487:{name:"鬼怒改二",type:3,tyku:83,fr:true},
+  490:{name:"荒潮改二",type:2,tyku:70,fr:true},
   491:{name:"Commandant Teste",type:16,tyku:40,fr:false},
   501:{name:"駆逐イ級",type:2,tyku:6,fr:true,i1:501,i2:0,i3:0,i4:0,i5:0},
   502:{name:"駆逐ロ級",type:2,tyku:7,fr:true,i1:502,i2:0,i3:0,i4:0,i5:0},
