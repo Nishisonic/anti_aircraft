@@ -10,9 +10,7 @@
     <script src="js/jquery.xdomainajax.js"></script>
     <script src="js/data.js"></script>
     <script src="js/ecl.js"></script>
-    <!--
     <script src="js/preset.js"></script>
-    -->
     <script src="js/util.js"></script>
     <script src="js/process.js"></script>
     <script src="js/select.js"></script>
@@ -57,6 +55,27 @@
         <input id="parseNameLabel" title="艦名から反映します。読点「、」またはカンマ「,」で区切ること。第二艦隊分も繋げて書く。&#x0A; 例:「離島棲姫(B)*17、砲台小鬼(A)*18、砲台小鬼(B)*19、砲台小鬼(C)*20、集積地棲姫-壊(C)*21、軽巡ホ級flagship」">
         <input type="button" value="反映" onclick="parseName()">
       </span>
+    </p>
+    <p class="parseEnemy">
+      海域：
+      <select id="presetAreaIdBox" onchange="setPresetAreaNo()">
+      </select>
+      －
+      <select id="presetAreaNoBox" onchange="setPresetAreaCell()">
+      </select>
+      セル:
+      <select id="presetAreaCellBox" onchange="setPresetAreaDifficulty()">
+      </select>
+      難易度:
+      <select id="presetAreaDifficultyBox" onchange="setPresetAreaPattern()">
+        <option value=0>なし</option>
+        <option value=1>甲</option>
+        <option value=2>乙</option>
+        <option value=3>丙</option>
+      </select>
+      パターン:
+      <select id="presetAreaPatternBox" onchange="setPresetAreaOrganization()">
+      </select>
     </p>
     <Hr Width="100%">
     <p>

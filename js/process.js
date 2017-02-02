@@ -27,6 +27,7 @@ $(function(){
       document.getElementById('f' + i + 's' + j + 'total').innerHTML = 0;
     }
   }
+  setPresetAreaId();
   changeShowRow();
   setCombinedStatus(false);
   $('.parseEnemy').hide();
@@ -155,6 +156,7 @@ function calc(){
         let kajuTotal = (kaju + kantaiAirBonus) * AIR_BATTLE_FACTOR * (isFriend ? FRIEND_FACTOR : ENEMY_FACTOR);
         let tykuCIkind = $('#tyku_cutinBox').children().val()|0;
         let factor = getTykuCuinFactor(tykuCIkind,isFriend);
+        //console.log(kaju,tykuCIkind,kajuTotal)
         // 擊墜數A = int( 最終加重對空值*((0 or 1)の一様な乱数)*対空カットイン定數C + 対空カットイン定數A )
         let minA = factor.A;
         let maxA = getA(kajuTotal,tykuCIkind,isFriend,isCombined,i);
@@ -490,3 +492,37 @@ function showNormalFormation(){
   $("#formationBox").children().children('[kc-id=13]').hide();
   $("#formationBox").children().children('[kc-id=14]').hide();
 }
+
+function setPresetAreaId(){
+  for(let areaIdx in AREA_NAMES){
+    $('#presetAreaIdBox').append($('<option>').html(AREA_NAMES[areaIdx][0]).val(areaIdx));
+  }
+}
+
+function setPresetAreaNo(){
+  loadWikiData($('#presetAreaIdBox').val());
+}
+
+function _setPresetAreaNo(areaNo){
+  $('#presetAreaNoBox').append($('<option>').html(areaNo).val(areaNo));
+}
+
+function resetPresetAreaNo(){
+  $('#presetAreaNoBox option').remove();
+}
+
+function setPresetAreaCell(){
+  resetPresetAreaCell();
+  for(let cell in mapdata[$('#presetAreaIdBox').val()][$('#presetAreaNoBox').val()]){
+    _setPresetAreaCell(cell);
+  }
+}
+
+function _setPresetAreaCell(areaCell){
+  $('#presetAreaCellBox').append($('<option>').html(areaCell).val(areaCell));
+}
+
+function resetPresetAreaCell(){
+  $('#presetAreaCellBox option').remove();
+}
+
