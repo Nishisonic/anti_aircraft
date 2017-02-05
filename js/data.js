@@ -597,7 +597,7 @@ const SHIP_DATA = {
   248:{name:"朝潮改",type:2,tyku:49,fr:false},
   249:{name:"大潮改",type:2,tyku:49,fr:false},
   250:{name:"満潮改",type:2,tyku:49,fr:true},
-  251:{name:"荒潮改",type:2,tyku:49,fr:true},
+  251:{name:"荒潮改",type:2,tyku:49,fr:false},
   252:{name:"霰改",type:2,tyku:49,fr:true},
   253:{name:"霞改",type:2,tyku:49,fr:false},
   254:{name:"睦月改",type:2,tyku:39,fr:false},
