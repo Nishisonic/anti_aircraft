@@ -18,7 +18,7 @@
     <link rel="stylesheet" href="css/select.css">
   </head>
   <body>
-    <h2>対空砲火計算機　Ver1.2.0</h2>
+    <h2>対空砲火計算機　Ver1.2.1</h2>
     <p>対空砲火を調べることが出来るかも(╹‿ ╹.　)</p>
     <p><strong>注意：これは艦これ改の対空砲火計算式を元に制作しています。<u>本家(ブラウザ版)と多少結果が異なる可能性</u>があるのでご注意下さい。</strong></p>
     <p><strong><strike>連絡：連合艦隊は只今対応中です。現在仮置き状態ですので、次回以降のアップデート(1.1.6-)をお待ち下さい。</strike><span style="color:red">仮対応しました。</span></strong></p>
@@ -41,8 +41,9 @@
       <input type="number" name="slotNum" id="slotNumSpinner" value="0" min="0" oninput="calc()" onchange="calc()">
       対空カットイン種別：
       <span id="tyku_cutinBox"></span>
-      <span title="艦これブラウザ版の補正をかけます。艦これ改で計算する場合はチェックを外して下さい。"><input type="checkbox" id="useBrowserCheckBox" onchange="calc()" checked>ブラウザ版補正</span>
-      <span class="parseFriend space">
+      <span class="parseFriend">
+        <span title="艦これブラウザ版の補正をかけます。艦これ改で計算する場合はチェックを外して下さい。"><input type="checkbox" id="useBrowserCheckBox" onchange="calc()" checked>ブラウザ版補正</span>
+        <span class="space"></span>
         デッキビルダー反映：
         <input id="parseDeckFormatLabel" title="艦隊シミュレーター＆デッキビルダーで排出されたフォーマットをここに入力して、反映ボタンをクリックするとこの画面に反映されます。">
         <input type="button" value="反映" onclick="parseDeckFormat()">
