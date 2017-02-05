@@ -228,8 +228,8 @@ function setMapData(tbody,areaIdx,no){
   let oldRawPattern = null;
   // ヘッダーを弾く
   for(i = 1;i < table.length;i++){
-    //console.log(String(table[i][cellIdx].innerHTML))
-    let boss = String(table[i][cellIdx].innerHTML).match(/(<strong><span class=\"wikicolor\" style=\"color:Red\">|<span class=\"wikicolor\" style=\"color:Red\"><strong>)/) !== null;
+    //console.log(String(table[i][cellIdx].innerHTML).replace(/[\s,;]/g,""))
+    let boss = String(table[i][cellIdx].innerHTML).replace(/[\s,;]/g,"").match(/(<strong><spanclass="wikicolor"style="color:Red">|<spanclass="wikicolor"style="color:Red"><strong>)/i) !== null;
     let cell = table[i][cellIdx].innerText.substring(":")[0];
     let pattern = table[i][patternIdx].innerText.replace(/\D/g,"");
     let organization = table[i][organizationIdx].innerText;
