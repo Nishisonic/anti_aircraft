@@ -1,14 +1,74 @@
-// mapdata[海域Area(1)][海域No(1)][セル(A)][パターン(1)][編成or陣形orボス]
-// mapdata[海域Area(1)][海域No(1)][セル(A)][難易度(甲)][パターン(1)][編成or陣形orボス]
 let mapdata = {0:{}};
-const FILTER_PATTERN = /燃料|弾薬|鋼材|ボーキ|回避|編成|？/;
+const FILTER_PATTERN = /燃料|弾薬|鋼材|ボーキ|回避|編成|？|高速建造材|高速修復材|開発資材|家具箱/;
 
-function getDifficultyID(name){
+function toDifficultyID(name){
   switch(name){
     case "甲":return 1;
     case "乙":return 2;
     case "丙":return 3;
     default  :return 0;
+  }
+}
+
+function toDifficultyName(id){
+  switch(id|0){
+    case 1:return "甲";
+    case 2:return "乙";
+    case 3:return "丙";
+    default:return "なし";
+  }
+}
+
+function toFormatFormationArray(array){
+  let result = [];
+  array.forEach(function(value){
+    switch(true){
+      case /単縦/.test(value):
+        result.push(1);
+        break;
+      case /複縦/.test(value):
+        result.push(2);
+        break;
+      case /輪形/.test(value):
+        result.push(3);
+        break;
+      case /梯形/.test(value):
+        result.push(4);
+        break;
+      case /単横/.test(value):
+        result.push(5);
+        break;
+      case /第一/.test(value):
+        result.push(11);
+        break;
+      case /第二/.test(value):
+        result.push(12);
+        break;
+      case /第三/.test(value):
+        result.push(13);
+        break;
+      case /第四/.test(value):
+        result.push(14);
+        break;
+      default:
+        break;
+    }
+  });
+  return result;
+}
+
+function toFormationName(id){
+  switch(id){
+    case 1:return "単縦陣";
+    case 2:return "複縦陣";
+    case 3:return "輪形陣";
+    case 4:return "梯形陣";
+    case 5:return "単横陣";
+    case 11:return "第一警戒航行序列";
+    case 12:return "第二警戒航行序列";
+    case 13:return "第三警戒航行序列";
+    case 14:return "第四警戒航行序列";
+    default:return "";
   }
 }
 
@@ -48,356 +108,149 @@ function parseHtml(areaIdx,isExtend,responseText){
   let tables = html.getElementById('body').getElementsByTagName('table');
   let no = isExtend ? 5 : 1; // gbgb
   for(let i = 0;i < tables.length;i++){
-    /* 海域抽出 */
+    // 海域抽出
     let tbody = tables[i].getElementsByTagName('tbody')[0];
     let tbodyText = tbody.innerText.replace(/\s/g,"");
-    if(!tbodyText.match(/(難易度)?出現場所(戦闘開始時の司令(L|l)v|難易度)?パターン(海域EXP)?出現艦船陣形敵制空値優勢確保/)) continue;
-    /* 振り分け パターン1[出現場所,パターン,出現艦船,陣形,敵制空値,優勢,確保] */
-    if(tbodyText.match(/出現場所パターン出現艦船陣形敵制空値優勢確保/)){
+    if(!tbodyText.match(/(難易度)?出現場所(戦闘開始時の司令(部)?(L|l)v|難易度)?パターン(海域EXP)?出現艦船陣形(敵制空値優勢確保)?/)) continue;
+    if(areaIdx <= 30){
       mapdata[areaIdx][no] = {};
-      pattern1(tbody,areaIdx,no);
+      setMapData(tbody,areaIdx,no);
       no++;
-      break;
+    } else {
+      try{
+        tbody = tbody.getElementsByTagName('tr')[0].getElementsByTagName('td')[3].getElementsByTagName('div')[0].getElementsByTagName('table')[0].getElementsByTagName('tbody')[0];
+        if(tbodyText.match(/難易度出現場所パターン海域EXP出現艦船陣形敵制空値優勢確保/)){
+          if(getDifficulty(tbody) == 1) mapdata[areaIdx][no] = {};
+          setMapData(tbody,areaIdx,no);
+          if(getDifficulty(tbody) == 3) no++;
+          continue;
+        }
+      }catch(e){}
     }
-    return;
-    /* 振り分け パターン2[出現場所,戦闘開始時の司令lv,パターン,出現艦船,陣形,敵制空値,優勢,確保] */
-    if(tbodyText.match(/出現場所戦闘開始時の司令(L|l)vパターン出現艦船陣形敵制空値優勢確保/)){
-      mapdata[areaIdx][no] = {};
-      pattern2(tbody,areaIdx,no);
-      no++;
-      continue;
-    }
-    /* 振り分け パターン3[出現場所,難易度,パターン,海域EXP,出現艦船,陣形,敵制空値,優勢,確保] */
-    if(tbodyText.match(/出現場所難易度パターン海域EXP出現艦船陣形敵制空値優勢確保/)){
-      mapdata[areaIdx][no] = {};
-      pattern3(tbody,areaIdx,no);
-      no++;
-      continue;
-    }
-    /* 振り分け パターン4[出現場所,戦闘開始時の司令lv,パターン,海域EXP,出現艦船,陣形,敵制空値,優勢,確保] */
-    if(tbodyText.match(/出現場所戦闘開始時の司令(L|l)vパターン海域EXP出現艦船陣形敵制空値優勢確保/)){
-      mapdata[areaIdx][no] = {};
-      pattern4(tbody,areaIdx,no);
-      no++;
-      continue;
-    }
-    /* 振り分け パターン5[難易度,出現場所,パターン,海域EXP,出現艦船,陣形,敵制空値,優勢,確保] */
-    try{
-      tbody = tbody.getElementsByTagName('tr')[0].getElementsByTagName('td')[3].getElementsByTagName('div')[0].getElementsByTagName('table')[0].getElementsByTagName('tbody')[0];
-      if(tbodyText.match(/難易度出現場所パターン海域EXP出現艦船陣形敵制空値優勢確保/)){
-        if(getDifficulty(tbody) == 1) mapdata[areaIdx][no] = {};
-        pattern5(tbody,areaIdx,no);
-        if(getDifficulty(tbody) == 3) no++;
-        continue;
-      }
-    }catch(e){}
   }
 }
 
 // wikiから読み込み
 function loadWikiHtmlAsync(areaIdx,isExtend){
-  resetPresetAreaNo();
-  resetPresetAreaCell();
+  resetPresetAll();
   if(mapdata[areaIdx] !== undefined){
-    for(let no in mapdata[areaIdx]){
-      _setPresetAreaNo(no);
-    }
-    for(let no in mapdata[areaIdx]){
-      for(let cell in mapdata[areaIdx][no]){
-        _setPresetAreaCell(cell);
-      }
-      break;
-    }
+    setPresetAll(areaIdx);
     return;
   }
   let suffix = isExtend ? "/拡張作戦" : "";
   let areaUrl = EscapeEUCJP(AREA_NAMES[areaIdx][0] + suffix);
+  //console.log(areaUrl)
   $.ajax({
     url: 'http://wikiwiki.jp/kancolle/?' + areaUrl,
     type: 'GET',
     success:function(res){
+      //console.log(res)
       parseHtml(areaIdx,isExtend,res.responseText);
-      for(let no in mapdata[areaIdx]){
-        _setPresetAreaNo(no);
-      }
-      for(let no in mapdata[areaIdx]){
-        for(let cell in mapdata[areaIdx][no]){
-          _setPresetAreaCell(cell);
-        }
-        break;
-      }
-      /*
-      for(let no in mapdata[areaIdx]){
-        for(let cell in mapdata[areaIdx][no]){
-          _setPresetAreaCell(cell);
-        }
-        break;
-      }*/
-      console.log(mapdata)
+      setPresetAll(areaIdx);
+      //console.log(mapdata)
     }
   });
   if(isExtend) loadWikiHtmlAsync(areaIdx,false);
 }
 
-function createTable(trs,iniValue){
+// 初期テーブル作成
+function createIniTable(trs,iniValue){
   let table = [];
   let columns = 0;
   for(let i = 0;i < trs[0].getElementsByTagName('th').length;i++){
     columns += trs[0].getElementsByTagName('th')[i].colSpan;
   }
-  for(let i = 1;i < trs.length;i++){ // ヘッダーを弾く
+  for(let i = 0;i < trs.length;i++){
     table.push([]);
-    // 敵制空値、優勢、確保は邪魔なので弾く
-    for(let j = 0;j < columns - 3;j++){
-      table[i - 1].push(iniValue);
+    for(let j = 0;j < columns;j++){
+      table[i].push(iniValue);
     }
   }
   return table;
 }
 
-/* 振り分け パターン1[出現場所,パターン,出現艦船,陣形,敵制空値,優勢,確保] ~13秋までのマップに採用 */
-function pattern1(tbody,areaIdx,no){
+// 整形されたテーブルを作成する
+function createTable(tbody){
   let trs = tbody.getElementsByTagName('tr');
-  let table = createTable(trs,null);
+  let table = createIniTable(trs,null);
 
-  //console.log(table)
-  for(let i = 1;i < trs.length;i++){
-    let tds = trs[i].getElementsByTagName('td');
-    let j = 0;
-    while(j < tds.length - 3){
-      let rowSpan = tds[j].rowSpan;
-      let colSpan = tds[j].colSpan;
+  for(let i = 0,row = 0;i < trs.length;i++,row++){
+    let columns = i == 0 ? trs[i].getElementsByTagName('th') : trs[i].getElementsByTagName('td');
+    let column = 0;
+    for(let j = 0;j < columns.length;j++){
+      while(column < table[row].length && table[row][column] !== null) column++;
+      let rowSpan = columns[j].rowSpan;
+      let colSpan = columns[j].colSpan;
       for(let k = 0;k < rowSpan;k++){
         for(let l = 0;l < colSpan;l++){
-          let adjustValue = 0;
-          while(table[i + k - 1][j + l + adjustValue] != null){
-            //console.log('adjust',i + k - 1,j + l + adjustValue,table[i + k - 1][j + l + adjustValue])
-            adjustValue++;
-          }
-          //console.log('debug',i + k - 1,j + l + adjustValue,tds[j + l + adjustValue].innerText)
-          table[i + k - 1][j + l + adjustValue] = tds[j + l].innerText;
+          //console.log(i + k,j + l,columns[j + l].innerText)
+          //table[row + k][column + l] = columns[j].innerText + ' ' + [i,j,k,l] + ' ' + [rowSpan,colSpan];
+          table[row + k][column + l] = columns[j];
         }
       }
-      j += colSpan;
     }
   }
-  /*
-  for(let i = 1;i < trs.length;i++){
-    let tds = trs[i].getElementsByTagName('td');
-    let rowSpans = [];
-    table.push([]);
-    // 代入
-    for(let j = 0;j < tds.length;j++){
-      rowSpans[j] += tds[j].rowSpan;
-    }
-    for(let j = 0;j < tds.length;j++){
-      let colSpan = tds[j].colSpan;
-      table[row].push([rowSpan]);
-    }
-  }*/
-  console.log(table)
+  //console.log(table)
+  return table;
 }
 
-/* 振り分け パターン2[出現場所,戦闘開始時の司令lv,パターン,出現艦船,陣形,敵制空値,優勢,確保] ~14秋までのマップに採用 */
-function pattern2(tbody,areaIdx,no){
-  let trs = tbody.getElementsByTagName('tr');
-  let cell = {};
-  for(let j = 1;j < trs.length;j++){
-    let tds = trs[j].getElementsByTagName('td');
-    //console.log(areaIdx,no,cell.point,tds.length)
-    if(tds.length === 8){
-      cell['point'] = tds[0].innerText.substring(":")[0]; // セル(例：A,B,C)
-      cell['formation'] = tds[4].innerText.split(/[、,\s]/); // 陣形
-      cell['boss'] = String(tds[0].innerHTML).match(/^(?=.*<strong>)(?=.*style=\"color:Red\")/) !== null;
-      // 出現場所,戦闘開始時の司令lv,パターン,出現艦船,陣形,敵制空値,優勢,確保
-      if(tds[3].innerText.match(FILTER_PATTERN) || tds[2].innerText.replace(/\D/g,"") == "") continue;
-      let pattern = tds[2].innerText.replace(/\D/g,""); // パターン
-      mapdata[areaIdx][no][cell['point']] = {};
-      mapdata[areaIdx][no][cell['point']]['difficulty'] = {};
-      mapdata[areaIdx][no][cell['point']]['difficulty'][0] = {};
-      mapdata[areaIdx][no][cell['point']]['difficulty'][0]['pattern'] = {};
-      if(!Array.isArray(mapdata[areaIdx][no][cell['point']]['difficulty'][0]['pattern'][pattern])){
-        pattern = Object.keys(mapdata[areaIdx][no][cell['point']]['difficulty'][0]['pattern']).length + 1;
-        mapdata[areaIdx][no][cell['point']]['difficulty'][0]['pattern'][pattern] = {};
-      }
-      mapdata[areaIdx][no][cell['point']]['difficulty'][0]['pattern'][pattern]['organization'] = tds[3].innerText.split("、");
-      mapdata[areaIdx][no][cell['point']]['difficulty'][0]['pattern'][pattern]['formation'] = cell['formation'];
-    } else if(tds.length === 7){
-      cell['formation'] = tds[3].innerText.split(/[、,\s]/); // 陣形
-      // 戦闘開始時の司令lv,パターン,出現艦船,陣形,敵制空値,優勢,確保
-      if(tds[2].innerText.match(FILTER_PATTERN) || tds[1].innerText.replace(/\D/g,"") == "") continue;
-      let pattern = tds[1].innerText.replace(/\D/g,""); // パターン
-      if(!Array.isArray(mapdata[areaIdx][no][cell['point']]['difficulty'][0]['pattern'][pattern])){
-        pattern = Object.keys(mapdata[areaIdx][no][cell['point']]['difficulty'][0]['pattern']).length + 1;
-        mapdata[areaIdx][no][cell['point']]['difficulty'][0]['pattern'][pattern] = {};
-      }
-      mapdata[areaIdx][no][cell['point']]['difficulty'][0]['pattern'][pattern]['organization'] = tds[2].innerText.split("、");
-      mapdata[areaIdx][no][cell['point']]['difficulty'][0]['pattern'][pattern]['formation'] = cell['formation'];
-    } else {
-      if(tds.length === 1) continue; // ボスセリフ除外
-      // 戦闘開始時の司令lv,パターン,出現艦船,敵制空値,優勢,確保
-      if(tds[1].innerText.match(FILTER_PATTERN) || tds[0].innerText.replace(/\D/g,"") == "") continue;
-      let pattern = tds[0].innerText.replace(/\D/g,""); // パターン
-      if(!Array.isArray(mapdata[areaIdx][no][cell['point']]['difficulty'][0]['pattern'][pattern])){
-        pattern = Object.keys(mapdata[areaIdx][no][cell['point']]['difficulty'][0]['pattern']).length + 1;
-        mapdata[areaIdx][no][cell['point']]['difficulty'][0]['pattern'][pattern] = {};
-      }
-      // あとで14夏を踏まえた処理を追加する
-      mapdata[areaIdx][no][cell['point']]['difficulty'][0]['pattern'][pattern]['organization'] = tds[2].innerText.split("、"); // 14春
-      mapdata[areaIdx][no][cell['point']]['difficulty'][0]['pattern'][pattern]['formation'] = cell['formation'];
+function setMapData(tbody,areaIdx,no){
+  let table = createTable(tbody);
+  let cellIdx = -1;
+  let patternIdx = -1;
+  let organizationIdx = -1;
+  let formationIdx = -1;
+  let difficultyIdx = -1;
+  for(let i = 0;i < table[0].length;i++){
+    switch(table[0][i].innerText){
+      case "出現場所":
+        cellIdx = i;
+        break;
+      case "パターン":
+        patternIdx = i;
+        break;
+      case "出現艦船":
+        organizationIdx = i;
+        break;
+      case "陣形":
+        formationIdx = i;
+        break;
+      case "難易度":
+        difficultyIdx = i;
+        break;
+      default:
+        break;
     }
-    mapdata[areaIdx][no][cell['point']]['boss'] = cell['boss'];
+  }
+  let oldRawPattern = null;
+  // ヘッダーを弾く
+  for(i = 1;i < table.length;i++){
+    let boss = String(table[i][cellIdx].innerHTML).match(/^(?=.*<strong>)(?=.*style=\"color:Red\")/) !== null;
+    let cell = table[i][cellIdx].innerText.substring(":")[0];
+    let pattern = table[i][patternIdx].innerText.replace(/\D/g,"");
+    let organization = table[i][organizationIdx].innerText;
+    let formation = toFormatFormationArray(table[i][formationIdx].innerText.split(/[、,\s]/)); 
+    let difficulty = difficultyIdx === -1 ? 0 : toDifficultyID(table[i][difficultyIdx].innerText);
+    if(organization.match(FILTER_PATTERN) || pattern.replace(/\D/g,"") == "") continue;
+    // 連合艦隊処理用
+    if(table[i][patternIdx] !== oldRawPattern){
+      oldRawPattern = table[i][patternIdx]; // 入れ替え
+      if(!isAssociativeArray(mapdata[areaIdx][no][cell])){
+        mapdata[areaIdx][no][cell] = {'difficulty':{},'boss':boss};
+      }
+      if(!isAssociativeArray(mapdata[areaIdx][no][cell]['difficulty'][difficulty])){
+        mapdata[areaIdx][no][cell]['difficulty'][difficulty] = {'pattern':{}};
+      }
+      if(isAssociativeArray(mapdata[areaIdx][no][cell]['difficulty'][difficulty]['pattern'][pattern])){
+        while(isAssociativeArray(mapdata[areaIdx][no][cell]['difficulty'][difficulty]['pattern'][pattern])) pattern++;
+      }
+      mapdata[areaIdx][no][cell]['difficulty'][difficulty]['pattern'][pattern] = {'organization':[],'formation':[]};
+    }
+    mapdata[areaIdx][no][cell]['difficulty'][difficulty]['pattern'][pattern]['organization'] = mapdata[areaIdx][no][cell]['difficulty'][difficulty]['pattern'][pattern]['organization'].concat(organization.split("、"));
+    mapdata[areaIdx][no][cell]['difficulty'][difficulty]['pattern'][pattern]['formation'] = formation;
   }
 }
 
-/* 振り分け パターン3[出現場所,難易度,パターン,海域EXP,出現艦船,陣形,敵制空値,優勢,確保] 15冬マップに採用 */
-function pattern3(tbody,areaIdx,no){
-  let trs = tbody.getElementsByTagName('tr');
-  let cell = {};
-  for(let j = 1;j < trs.length;j++){
-    let tds = trs[j].getElementsByTagName('td');
-    if(tds.length === 9){
-      cell['point'] = tds[0].innerText.substring(":")[0]; // セル(例：A,B,C)
-      cell['difficulty'] = getDifficultyID(tds[1].innerText); // 難易度
-      cell['formation'] = tds[5].innerText.split(/[、,\s]/); // 陣形
-      cell['boss'] = String(tds[0].innerHTML).match(/^(?=.*<strong>)(?=.*style=\"color:Red\")/) !== null;
-      // 出現場所,難易度,パターン,海域EXP,出現艦船,陣形,敵制空値,優勢,確保
-      if(tds[4].innerText.match(FILTER_PATTERN) || tds[2].innerText.replace(/\D/g,"") == "") continue;
-      let pattern = tds[2].innerText.replace(/\D/g,""); // パターン
-      mapdata[areaIdx][no][cell['point']] = {};
-      mapdata[areaIdx][no][cell['point']][cell['difficulty']] = {};
-      mapdata[areaIdx][no][cell['point']][cell['difficulty']]['pattern'] = {};
-      mapdata[areaIdx][no][cell['point']][cell['difficulty']]['pattern'][pattern] = {};
-      mapdata[areaIdx][no][cell['point']][cell['difficulty']]['pattern'][pattern]['organization'] = tds[4].innerText.split("、");
-      mapdata[areaIdx][no][cell['point']][cell['difficulty']]['pattern'][pattern]['formation'] = cell['formation'];
-    } else if(tds.length === 8){
-      cell['difficulty'] = getDifficultyID(tds[0].innerText); // 難易度
-      cell['formation'] = tds[4].innerText.split(/[、,\s]/); // 陣形
-      // 難易度,パターン,海域EXP,出現艦船,陣形,敵制空値,優勢,確保
-      if(tds[3].innerText.match(FILTER_PATTERN) || tds[1].innerText.replace(/\D/g,"") == "") continue;
-      let pattern = tds[1].innerText.replace(/\D/g,""); // パターン
-      mapdata[areaIdx][no][cell['point']][cell['difficulty']] = {};
-      mapdata[areaIdx][no][cell['point']][cell['difficulty']]['pattern'] = {};
-      mapdata[areaIdx][no][cell['point']][cell['difficulty']]['pattern'][pattern] = {};
-      mapdata[areaIdx][no][cell['point']][cell['difficulty']]['pattern'][pattern]['organization'] = tds[3].innerText.split("、");
-      mapdata[areaIdx][no][cell['point']][cell['difficulty']]['pattern'][pattern]['formation'] = cell['formation'];
-    } else {
-      if(tds.length === 1) continue; // ボスセリフ除外
-      if(tds.length === 7){
-        cell['formation'] = tds[3].innerText.split(/[、,\s]/); // 陣形
-      }
-      // パターン,海域EXP,出現艦船,陣形,敵制空値,優勢,確保
-      if(tds[2].innerText.match(FILTER_PATTERN) || tds[0].innerText.replace(/\D/g,"") == "") continue;
-      let pattern = tds[0].innerText.replace(/\D/g,""); // パターン
-      mapdata[areaIdx][no][cell['point']][cell['difficulty']]['pattern'][pattern] = {};
-      mapdata[areaIdx][no][cell['point']][cell['difficulty']]['pattern'][pattern]['organization'] = tds[2].innerText.split("、");
-      mapdata[areaIdx][no][cell['point']][cell['difficulty']]['pattern'][pattern]['formation'] = cell['formation'];
-    }
-    mapdata[areaIdx][no][cell['point']]['boss'] = cell['boss'];
-  }
-}
-
-/* 振り分け パターン4[出現場所,戦闘開始時の司令lv,パターン,海域EXP,出現艦船,陣形,敵制空値,優勢,確保] 最近の通常海域マップに採用 */
-function pattern4(tbody,areaIdx,no){
-  let trs = tbody.getElementsByTagName('tr');
-  let cell = {};
-  for(let j = 1;j < trs.length;j++){
-    let tds = trs[j].getElementsByTagName('td');
-    if(tds.length === 10){
-      cell['point'] = tds[0].innerText.substring(":")[0]; // セル(例：A,B,C)
-      cell['formation'] = tds[6].innerText.split(/[、,\s]/); // 陣形
-      cell['boss'] = String(tds[0].innerHTML).match(/^(?=.*<strong>)(?=.*style=\"color:Red\")/) !== null;
-      // 出現場所,戦闘開始時の司令lv,前哨戦or最終形態,パターン,海域EXP,出現艦船,陣形,敵制空値,優勢,確保
-      if(tds[5].innerText.match(FILTER_PATTERN) || tds[3].innerText.replace(/\D/g,"") == "") continue;
-      let pattern = tds[3].innerText.replace(/\D/g,""); // パターン
-      mapdata[areaIdx][no][cell['point']] = {};
-      mapdata[areaIdx][no][cell['point']][0] = {};
-      mapdata[areaIdx][no][cell['point']][0]['pattern'] = {};
-      mapdata[areaIdx][no][cell['point']][0]['pattern'][pattern] = {};
-      mapdata[areaIdx][no][cell['point']][0]['pattern'][pattern]['organization'] = tds[5].innerText.split("、");
-      mapdata[areaIdx][no][cell['point']][0]['pattern'][pattern]['formation'] = cell['formation'];
-    } else if(tds.length === 9 || (tds.length === 8 && tds[1].innerText.match(/(前哨戦|最終形態)/))){ // 4-5専用処理
-      if(tds.length === 9){
-        cell['point'] = tds[0].innerText.substring(":")[0]; // セル(例：A,B,C)
-        cell['formation'] = tds[5].innerText.split(/[、,\s]/); // 陣形
-        cell['boss'] = String(tds[0].innerHTML).match(/^(?=.*<strong>)(?=.*style=\"color:Red\")/) !== null;
-      }
-      // 出現場所,戦闘開始時の司令lv,パターン,海域EXP,出現艦船,陣形,敵制空値,優勢,確保
-      if(tds[4].innerText.match(FILTER_PATTERN) || tds[2].innerText.replace(/\D/g,"") == "") continue;
-      let pattern = tds[2].innerText.replace(/\D/g,""); // パターン
-      mapdata[areaIdx][no][cell['point']] = {};
-      mapdata[areaIdx][no][cell['point']][0] = {};
-      mapdata[areaIdx][no][cell['point']][0]['pattern'] = {};
-      mapdata[areaIdx][no][cell['point']][0]['pattern'][pattern] = {};
-      mapdata[areaIdx][no][cell['point']][0]['pattern'][pattern]['organization'] = tds[4].innerText.split("、");
-      mapdata[areaIdx][no][cell['point']][0]['pattern'][pattern]['formation'] = cell['formation'];
-    } else {
-      if(tds.length === 1) continue; // ボスセリフ除外
-      if(tds.length === 8){
-        cell['formation'] = tds[4].innerText.split(/[、,\s]/); // 陣形
-      }
-      // 出現場所,戦闘開始時の司令lv,パターン,海域EXP,出現艦船,陣形,敵制空値,優勢,確保
-      if(tds[3].innerText.match(FILTER_PATTERN) || tds[1].innerText.replace(/\D/g,"") == "") continue;
-      let pattern = tds[1].innerText.replace(/\D/g,""); // パターン
-      mapdata[areaIdx][no][cell['point']][0]['pattern'][pattern] = {};
-      mapdata[areaIdx][no][cell['point']][0]['pattern'][pattern]['organization'] = tds[3].innerText.split("、");
-      mapdata[areaIdx][no][cell['point']][0]['pattern'][pattern]['formation'] = cell['formation'];
-    }
-    mapdata[areaIdx][no][cell['point']]['boss'] = cell['boss'];
-  }
-}
-
-/* 振り分け パターン5[難易度,出現場所,パターン,海域EXP,出現艦船,陣形,敵制空値,優勢,確保] 15春マップ以降に採用 */
-function pattern5(tbody,areaIdx,no){
-  let trs = tbody.getElementsByTagName('tr');
-  let cell = {};
-  for(let j = 1;j < trs.length;j++){
-    let tds = trs[j].getElementsByTagName('td');
-    if(tds.length === 9){
-      cell['difficulty'] = getDifficultyID(tds[0].innerText); // 難易度
-      cell['point'] = tds[1].innerText.substring(":")[0]; // セル(例：A,B,C)
-      cell['formation'] = tds[5].innerText.split(/[、,\s]/); // 陣形
-      cell['boss'] = String(tds[1].innerHTML).match(/^(?=.*<strong>)(?=.*style=\"color:Red\")/) !== null;
-      // 難易度,出現場所,パターン,海域EXP,出現艦船,陣形,敵制空値,優勢,確保
-      if(tds[4].innerText.match(FILTER_PATTERN) || tds[2].innerText.replace(/\D/g,"") == "") continue;
-      let pattern = tds[2].innerText.replace(/\D/g,""); // パターン
-      //mapdata[areaIdx][no][cell['point']] = {};
-      if(cell['difficulty'] === 1) mapdata[areaIdx][no][cell['point']] = {};
-      mapdata[areaIdx][no][cell['point']][cell['difficulty']] = {};
-      mapdata[areaIdx][no][cell['point']][cell['difficulty']]['pattern'] = {};
-      mapdata[areaIdx][no][cell['point']][cell['difficulty']]['pattern'][pattern] = {};
-      mapdata[areaIdx][no][cell['point']][cell['difficulty']]['pattern'][pattern]['organization'] = tds[4].innerText.split("、");
-      mapdata[areaIdx][no][cell['point']][cell['difficulty']]['pattern'][pattern]['formation'] = cell['formation'];
-    } else if(tds.length === 8){
-      cell['point'] = tds[0].innerText.substring(":")[0]; // セル(例：A,B,C)
-      cell['formation'] = tds[4].innerText.split(/[、,\s]/); // 陣形
-      cell['boss'] = String(tds[0].innerHTML).match(/^(?=.*<strong>)(?=.*style=\"color:Red\")/) !== null;
-      // 出現場所,パターン,海域EXP,出現艦船,陣形,敵制空値,優勢,確保
-      if(tds[3].innerText.match(FILTER_PATTERN) || tds[1].innerText.replace(/\D/g,"") == "") continue;
-      let pattern = tds[1].innerText.replace(/\D/g,""); // パターン
-      //mapdata[areaIdx][no][cell['point']] = {};
-      if(cell['difficulty'] === 1) mapdata[areaIdx][no][cell['point']] = {};
-      mapdata[areaIdx][no][cell['point']][cell['difficulty']] = {};
-      mapdata[areaIdx][no][cell['point']][cell['difficulty']]['pattern'] = {};
-      mapdata[areaIdx][no][cell['point']][cell['difficulty']]['pattern'][pattern] = {};
-      mapdata[areaIdx][no][cell['point']][cell['difficulty']]['pattern'][pattern]['organization'] = tds[3].innerText.split("、");
-      mapdata[areaIdx][no][cell['point']][cell['difficulty']]['pattern'][pattern]['formation'] = cell['formation'];
-    } else {
-      if(tds.length === 1) continue; // ボスセリフ除外
-      if(tds.length === 7){
-        cell['formation'] = tds[3].innerText.split(/[、,\s]/); // 陣形
-      }
-      // パターン,海域EXP,出現艦船,陣形,敵制空値,優勢,確保
-      if(tds[2].innerText.match(FILTER_PATTERN) || tds[0].innerText.replace(/\D/g,"") == "") continue;
-      let pattern = tds[0].innerText.replace(/\D/g,""); // パターン
-      mapdata[areaIdx][no][cell['point']][cell['difficulty']]['pattern'][pattern] = {};
-      mapdata[areaIdx][no][cell['point']][cell['difficulty']]['pattern'][pattern]['organization'] = tds[2].innerText.split("、");
-      mapdata[areaIdx][no][cell['point']][cell['difficulty']]['pattern'][pattern]['formation'] = cell['formation'];
-    }
-    mapdata[areaIdx][no][cell['point']]['boss'] = cell['boss'];
-  }
-}
-
-function getDifficulty(tbody){
-  return getDifficultyID(tbody.getElementsByTagName('tr')[1].getElementsByTagName('td')[0].innerText);
-}
+let isAssociativeArray = function(o) {
+  return (o instanceof Object && !(o instanceof Array));
+};

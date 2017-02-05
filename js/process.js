@@ -80,6 +80,8 @@ function calc(){
     }
     return (isExist[0] && isExist[1]);
   })();
+  let isFriend = $('input[name=isFriend]:checked').val() === 'true';
+  let isBrowser = $('#useBrowserCheckBox').prop('checked');
   // めんどいのでここで入れ替える
   setCombinedStatus(isCombined);
   let kantaiAirBonus = 0;
@@ -113,7 +115,8 @@ function calc(){
     }
   }
   // 艦隊防空補正 = int( 陣型補正*(∑(1艦娘の艦隊防空補正)) )
-  kantaiAirBonus = Math.floor($('#formationBox').children().val() * kantaiAirBonus);
+  // ブラウザ版補正(1.3で割る)
+  kantaiAirBonus = Math.floor($('#formationBox').children().val() * kantaiAirBonus / ((isBrowser && isFriend) ? 1.3 : 1.0));
   $('#kantaiLabel').val(kantaiAirBonus);
   let shipNum = 0;
   let annihilationCnt = 0;
@@ -148,7 +151,6 @@ function calc(){
           // 裝備對空值*裝備定數A
           sum += itemTyku * getKansenItem_A(type) + kaishuBonus;
         }
-        let isFriend = $('input[name=isFriend]:checked').val() === 'true';
         // 味方艦船加重對空值 = 素對空值 / 2 + ∑(裝備對空值*裝備定數A + 艦船對空改修補正)
         // 相手艦船加重對空值 = sqrt(素對空值 + 裝備對空值) + ∑(裝備對空值*裝備定數A + 艦船對空改修補正)
         let kaju = (isFriend ? (shipTyku / 2) : (Math.sqrt(shipTyku + totalItemTyku))) + sum;
@@ -323,29 +325,30 @@ function toHalfWidth(value) {
   });
 }
 
-function parseName(){
+function parseName(names,shouldCalc){
+  if(shouldCalc === null) shouldCalc = true;
   /* 初期化 */
   $('input[name=isFriend]').val([false]);
   initialize();
   /* 解析 */
   let time = setInterval(function(){
-    let names = $('#parseNameLabel').val().split(/[、,\,]/);
+    //let names = $('#parseNameLabel').val().split(/[、,\,]/);
     for(let i = 1;i <= 2;i++){
       for(let j = 1;j <= 6;j++){
         if((i-1)*6+j-1>=names.length) break;
         let name = names[(i-1)*6+j-1];
         if(name=="") continue;
-        let shipid = searchID(name);
+        let shipid = findID(name);
         setShip(i,j,shipid);
         setStatus('#f'+i+'s'+j,shipid,false);
       }
-      calc();
+      if(shouldCalc) calc();
       clearInterval(time);
     }
   },500);
 }
 
-function searchID(t){
+function findID(t){
   let matchList = {0:0};
   let target = String(t.replace(/[\s,\?,(,),\*\d,　]/g,""));
   for(let shipid in SHIP_DATA){
@@ -367,13 +370,13 @@ function searchID(t){
       matchList[shipid] = (matchList[shipid] !== undefined && matchList[shipid] > count) ? matchList[shipid] : count;
     }
   }
-  let maxIndex = 0;
+  let maxMatchIndex = 0;
   for(let shipid in matchList){
-    if(matchList[shipid] > matchList[maxIndex] || (shipid !== 0 && maxIndex !== 0 && matchList[shipid] === matchList[maxIndex] && SHIP_DATA[maxIndex].name.length > SHIP_DATA[shipid].name.length)){
-      maxIndex = shipid;
+    if(matchList[shipid] > matchList[maxMatchIndex] || (shipid !== 0 && maxMatchIndex !== 0 && matchList[shipid] === matchList[maxMatchIndex] && SHIP_DATA[maxMatchIndex].name.length > SHIP_DATA[shipid].name.length)){
+      maxMatchIndex = shipid;
     }
   }
-  return maxIndex;
+  return maxMatchIndex;
 }
 
 function changeShowRow(){
@@ -511,18 +514,113 @@ function resetPresetAreaNo(){
   $('#presetAreaNoBox option').remove();
 }
 
-function setPresetAreaCell(){
-  resetPresetAreaCell();
+function setPresetMapCell(){
+  resetPresetMapCell();
   for(let cell in mapdata[$('#presetAreaIdBox').val()][$('#presetAreaNoBox').val()]){
-    _setPresetAreaCell(cell);
+    let isBoss = mapdata[$('#presetAreaIdBox').val()][$('#presetAreaNoBox').val()][cell]['boss'];
+    _setPresetMapCell(cell,isBoss);
   }
 }
 
-function _setPresetAreaCell(areaCell){
-  $('#presetAreaCellBox').append($('<option>').html(areaCell).val(areaCell));
+function _setPresetMapCell(cell,isBoss){
+  $('#presetMapCellBox').append($('<option>').html(cell + (isBoss ? "(ボス)" : "")).val(cell));
 }
 
-function resetPresetAreaCell(){
-  $('#presetAreaCellBox option').remove();
+function resetPresetMapCell(){
+  $('#presetMapCellBox option').remove();
 }
 
+function setPresetMapDifficulty(){
+  resetPresetMapDifficulty();
+  for(let difficulty in mapdata[$('#presetAreaIdBox').val()][$('#presetAreaNoBox').val()][$('#presetMapCellBox').val()]['difficulty']){
+    _setPresetMapDifficulty(difficulty);
+  }
+  setPresetEnemyPattern();
+}
+
+function _setPresetMapDifficulty(difficulty){
+  $('#presetMapDifficultyBox').append($('<option>').html(toDifficultyName(difficulty)).val(difficulty));
+}
+
+function resetPresetMapDifficulty(){
+  $('#presetMapDifficultyBox option').remove();
+}
+
+function setPresetEnemyPattern(){
+  resetPresetEnemyPattern();
+  for(let id in mapdata[$('#presetAreaIdBox').val()][$('#presetAreaNoBox').val()][$('#presetMapCellBox').val()]['difficulty'][$('#presetMapDifficultyBox').val()]['pattern']){
+    _setPresetEnemyPattern(id);
+  }
+  setPresetEnemyFormation();
+}
+
+function _setPresetEnemyPattern(id){
+  $('#presetEnemyPatternBox').append($('<option>').html(id).val(id));
+}
+
+function resetPresetEnemyPattern(){
+  $('#presetEnemyPatternBox option').remove();
+}
+
+function setPresetEnemyFormation(){
+  resetPresetEnemyFormation();
+  //console.log($('#presetAreaIdBox').val(),$('#presetAreaNoBox').val(),$('#presetMapCellBox').val(),'difficulty',$('#presetMapDifficultyBox').val(),'pattern',$('#presetEnemyPatternBox').val(),'formation')
+  for(let id in mapdata[$('#presetAreaIdBox').val()][$('#presetAreaNoBox').val()][$('#presetMapCellBox').val()]['difficulty'][$('#presetMapDifficultyBox').val()]['pattern'][$('#presetEnemyPatternBox').val()]['formation']){
+    _setPresetEnemyFormation(mapdata[$('#presetAreaIdBox').val()][$('#presetAreaNoBox').val()][$('#presetMapCellBox').val()]['difficulty'][$('#presetMapDifficultyBox').val()]['pattern'][$('#presetEnemyPatternBox').val()]['formation'][id]);
+  }
+}
+
+function _setPresetEnemyFormation(id){
+  $('#presetEnemyFormationBox').append($('<option>').html(toFormationName(id)).val(id));
+}
+
+function resetPresetEnemyFormation(){
+  $('#presetEnemyFormationBox option').remove();
+}
+
+function setPresetAll(areaIdx){
+  for(let no in mapdata[areaIdx]){
+    _setPresetAreaNo(no);
+  }
+  let no = Object.keys(mapdata[areaIdx])[0];
+  for(let cell in mapdata[areaIdx][no]){
+    let isBoss = mapdata[areaIdx][no][cell]['boss'];
+    _setPresetMapCell(cell,isBoss);
+  }
+  let cell = Object.keys(mapdata[areaIdx][no])[0];
+  for(let difficulty in mapdata[areaIdx][no][cell]['difficulty']){
+    _setPresetMapDifficulty(difficulty);
+  }
+  let difficulty = Object.keys(mapdata[areaIdx][no][cell]['difficulty'])[0];
+  for(let pattern in mapdata[areaIdx][no][cell]['difficulty'][difficulty]['pattern']){
+    _setPresetEnemyPattern(pattern);
+  }
+  let pattern = Object.keys(mapdata[areaIdx][no][cell]['difficulty'][difficulty]['pattern'])[0];
+  for(let formation in mapdata[areaIdx][no][cell]['difficulty'][difficulty]['pattern'][pattern]['formation']){
+    _setPresetEnemyFormation(mapdata[areaIdx][no][cell]['difficulty'][difficulty]['pattern'][pattern]['formation'][formation]);
+  }
+  allowFind();
+}
+
+function setPresetEnemyData(){
+  let data = mapdata[$('#presetAreaIdBox').val()][$('#presetAreaNoBox').val()][$('#presetMapCellBox').val()]['difficulty'][$('#presetMapDifficultyBox').val()]['pattern'][$('#presetEnemyPatternBox').val()];
+  let formation = $('#presetEnemyFormationBox').val();
+  let organization = data['organization'];
+
+  //console.log(formation,organization)
+  parseName(organization,false);
+  $("#formationBox").children().children('[kc-id=' + formation + ']').prop('selected', true);
+  calc();
+}
+
+function resetPresetAll(){
+  resetPresetAreaNo();
+  resetPresetMapCell();
+  resetPresetMapDifficulty();
+  resetPresetEnemyPattern();
+  resetPresetEnemyFormation();
+}
+
+function allowFind(){
+  $('#presetButton').prop('disabled', false);
+}

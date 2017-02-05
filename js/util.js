@@ -4,17 +4,7 @@ const ENEMY_FACTOR = 0.75;
 const COMBINED_FACTOR = 0.8;
 const FIRST_COMBINED_FACTOR = 0.9;
 const SECOND_COMBINED_FACTOR = 0.6;
-const FORMATION = {
-  TANJU:1.0,
-  FUKUJU:1.2,
-  RINKEI:1.6,
-  TEIKEI:1.0,
-  TANOU:1.0,
-  DAIICHI:1.1,
-  DAINI:1.0,
-  DAISAN:1.5,
-  DAIYON:1.0,
-};
+
 const TYKU_CUIIN = [
   {"FRIEND":{A:1,B:0,C:1},"ENEMY":{A:0,B:0,C:1}},
   {A:3,B:5,C:1.75}, // 1
