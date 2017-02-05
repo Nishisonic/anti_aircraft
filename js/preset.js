@@ -123,11 +123,14 @@ function parseHtml(areaIdx,isExtend,responseText){
           if(getDifficulty(tbody) == 1) mapdata[areaIdx][no] = {};
           setMapData(tbody,areaIdx,no);
           if(getDifficulty(tbody) == 3) no++;
-          continue;
         }
       }catch(e){}
     }
   }
+}
+
+function getDifficulty(tbody){
+  return toDifficultyID(tbody.getElementsByTagName('tr')[1].getElementsByTagName('td')[0].innerText);
 }
 
 // wikiから読み込み
@@ -225,7 +228,8 @@ function setMapData(tbody,areaIdx,no){
   let oldRawPattern = null;
   // ヘッダーを弾く
   for(i = 1;i < table.length;i++){
-    let boss = String(table[i][cellIdx].innerHTML).match(/^(?=.*<strong>)(?=.*style=\"color:Red\")/) !== null;
+    //console.log(String(table[i][cellIdx].innerHTML))
+    let boss = String(table[i][cellIdx].innerHTML).match(/(<strong><span class=\"wikicolor\" style=\"color:Red\">|<span class=\"wikicolor\" style=\"color:Red\"><strong>)/) !== null;
     let cell = table[i][cellIdx].innerText.substring(":")[0];
     let pattern = table[i][patternIdx].innerText.replace(/\D/g,"");
     let organization = table[i][organizationIdx].innerText;
