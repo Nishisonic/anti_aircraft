@@ -95,6 +95,7 @@ const AREA_NAMES = {
   34:["開設！基地航空隊",true], // 7
   35:["迎撃！第二次マレー沖海戦",false], // 4
   36:["発令！「艦隊作戦第三法」",false], // 5
+  36:["偵察戦力緊急展開！「光」作戦",false], // 3
 };
 
 function loadWikiData(areaIdx){
