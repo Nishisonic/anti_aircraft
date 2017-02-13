@@ -39,8 +39,8 @@ const ITEM_TYPE_DATA = {
   38:"局地戦闘機",
   39:"噴式戦闘爆撃機(噴式景雲改)",
   40:"噴式戦闘爆撃機(橘花改)",
-  41:"",
-  42:"",
+  41:"輸送機材",
+  42:"潜水艦装備",
 };
 
 const ITEM_DATA = {
@@ -1014,10 +1014,10 @@ const SHIP_DATA = {
   713:{name:"深海海月姫(A)",type:9998,tyku:140,fr:true,i1:572,i2:557,i3:558,i4:572,i5:0},
   714:{name:"空母ヲ級改 flagship(陸爆弱)",type:11,tyku:90,fr:true,i1:556,i2:561,i3:561,i4:561,i5:0},
   715:{name:"空母ヲ級改 flagship(陸爆強)",type:11,tyku:90,fr:true,i1:556,i2:562,i3:562,i4:562,i5:0},
-  716:{name:"深海双子棲姫(C)",type:10,tyku:0,fr:true,i1:0,i2:0,i3:0,i4:0,i5:0},
-  717:{name:"深海双子棲姫(B)",type:10,tyku:0,fr:true,i1:0,i2:0,i3:0,i4:0,i5:0},
-  718:{name:"深海双子棲姫(A)",type:10,tyku:0,fr:true,i1:0,i2:0,i3:0,i4:0,i5:0},
-  719:{name:"深海双子棲姫-壊(C)",type:10,tyku:0,fr:true,i1:0,i2:0,i3:0,i4:0,i5:0},
-  720:{name:"深海双子棲姫-壊(B)",type:10,tyku:0,fr:true,i1:0,i2:0,i3:0,i4:0,i5:0},
-  721:{name:"深海双子棲姫-壊(A)",type:10,tyku:0,fr:true,i1:0,i2:0,i3:0,i4:0,i5:0},
+  716:{name:"深海双子棲姫(C)",type:9998,tyku:120,fr:true,i1:509,i2:509,i3:570,i4:573,i5:0},
+  717:{name:"深海双子棲姫(B)",type:9998,tyku:140,fr:true,i1:509,i2:509,i3:570,i4:573,i5:0},
+  718:{name:"深海双子棲姫(A)",type:9998,tyku:160,fr:true,i1:509,i2:509,i3:570,i4:573,i5:0},
+  719:{name:"深海双子棲姫-壊(C)",type:9998,tyku:110,fr:true,i1:509,i2:509,i3:570,i4:573,i5:0},
+  720:{name:"深海双子棲姫-壊(B)",type:9998,tyku:130,fr:true,i1:509,i2:509,i3:570,i4:573,i5:0},
+  721:{name:"深海双子棲姫-壊(A)",type:9998,tyku:150,fr:true,i1:509,i2:509,i3:570,i4:573,i5:0},
 };
