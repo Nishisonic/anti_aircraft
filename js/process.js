@@ -166,8 +166,8 @@ function calc(){
         let minB = factor.B;
         let maxB = getB(kaju,slotNum,tykuCIkind,isFriend,isCombined,i);
         // 割合撃墜
-        let proportionShotDown = getProportion(kaju,isCombined,i);
-        let proportionShotDownNum = getProportionNum(kaju,slotNum,isCombined,i);
+        let proportionShotDown = getProportion(kaju,isCombined,i,isFriend);
+        let proportionShotDownNum = getProportionNum(kaju,slotNum,isCombined,i,isFriend);
         // 固定撃墜
         let fixedShotDown = getFixedNum(kajuTotal,tykuCIkind,isFriend,isCombined,i);
         // 最低保証

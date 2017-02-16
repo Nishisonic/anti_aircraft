@@ -2,7 +2,8 @@ const AIR_BATTLE_FACTOR = 0.25;
 const FRIEND_FACTOR = 0.8;
 const ENEMY_FACTOR = 0.75;
 const COMBINED_FACTOR = 0.8;
-const FIRST_COMBINED_FACTOR = 0.9;
+const FRIEND_FIRST_COMBINED_FACTOR = 0.9;
+const ENEMY_FIRST_COMBINED_FACTOR = 1.0;
 const SECOND_COMBINED_FACTOR = 0.6;
 
 const TYKU_CUIIN = [
@@ -101,12 +102,12 @@ function getFormationBonus(formation){
 // 撃墜数A
 function getA(kaju,ciKind,isFriend,isCombined,fleetno){
   let ciFactor = getTykuCuinFactor(ciKind,isFriend);
-  return Math.floor(kaju * ciFactor.C * getCombinedFactor(isCombined,fleetno) + ciFactor.A);
+  return Math.floor(kaju * ciFactor.C * getCombinedFactor(isCombined,fleetno,isFriend) + ciFactor.A);
 }
 // 撃墜数B
 function getB(kaju,slot,ciKind,isFriend,isCombined,fleetno){
   let ciFactor = getTykuCuinFactor(ciKind,isFriend);
-  return Math.floor(0.02 * AIR_BATTLE_FACTOR * slot * kaju * getCombinedFactor(isCombined,fleetno) + ciFactor.B);
+  return Math.floor(0.02 * AIR_BATTLE_FACTOR * slot * kaju * getCombinedFactor(isCombined,fleetno,isFriend) + ciFactor.B);
 }
 function getTykuCuinFactor(ciKind,isFriend){
   if(TYKU_CUIIN[ciKind].A !== undefined){
@@ -115,17 +116,17 @@ function getTykuCuinFactor(ciKind,isFriend){
   return TYKU_CUIIN[ciKind][isFriend ? "FRIEND" : "ENEMY"];
 }
 // 割合撃墜確率
-function getProportion(kaju,isCombined,fleetno){
-  return 0.02 * AIR_BATTLE_FACTOR * kaju * getCombinedFactor(isCombined,fleetno);
+function getProportion(kaju,isCombined,fleetno,isFriend){
+  return 0.02 * AIR_BATTLE_FACTOR * kaju * getCombinedFactor(isCombined,fleetno,isFriend);
 }
 // 割合撃墜数
-function getProportionNum(kaju,slot,isCombined,fleetno){
-  return Math.floor(0.02 * AIR_BATTLE_FACTOR * slot * kaju * getCombinedFactor(isCombined,fleetno));
+function getProportionNum(kaju,slot,isCombined,fleetno,isFriend){
+  return Math.floor(0.02 * AIR_BATTLE_FACTOR * slot * kaju * getCombinedFactor(isCombined,fleetno,isFriend));
 }
 // 固定撃墜数
 function getFixedNum(kaju,ciKind,isFriend,isCombined,fleetno){
   let ciFactor = getTykuCuinFactor(ciKind,isFriend);
-  return Math.floor(kaju * ciFactor.C * getCombinedFactor(isCombined,fleetno));
+  return Math.floor(kaju * ciFactor.C * getCombinedFactor(isCombined,fleetno,isFriend));
 }
 // 最低保証数
 function getGuaranteedNum(ciKind,isFriend){
@@ -133,9 +134,12 @@ function getGuaranteedNum(ciKind,isFriend){
   return ciFactor.A + ciFactor.B;
 }
 
-function getCombinedFactor(isCombined,fleetno){
+function getCombinedFactor(isCombined,fleetno,isFriend){
   if(isCombined){
-    return (fleetno === 1 ? FIRST_COMBINED_FACTOR : SECOND_COMBINED_FACTOR) * COMBINED_FACTOR;
+    if(isFriend){
+      return (fleetno === 1 ? FRIEND_FIRST_COMBINED_FACTOR : SECOND_COMBINED_FACTOR) * COMBINED_FACTOR;
+    }
+    return (fleetno === 1 ? ENEMY_FIRST_COMBINED_FACTOR : SECOND_COMBINED_FACTOR) * COMBINED_FACTOR;
   }
   return 1.0;
 }
