@@ -50,6 +50,7 @@ function setStatus(parent,shipid,isFriend){
 
 function setCombinedStatus(isCombined){
   let formation = $('#formationBox').children().children('option:selected').attr('kc-id');
+  //console.log(formation,isCombined)
   if(isCombined){
     $('#isCombinedLabel').text("連合艦隊");
     if(formation <= 10){
@@ -331,21 +332,18 @@ function parseName(names,shouldCalc){
   $('input[name=isFriend]').val([false]);
   initialize();
   /* 解析 */
-  let time = setInterval(function(){
-    //let names = $('#parseNameLabel').val().split(/[、,\,]/);
-    for(let i = 1;i <= 2;i++){
-      for(let j = 1;j <= 6;j++){
-        if((i-1)*6+j-1>=names.length) break;
-        let name = names[(i-1)*6+j-1];
-        if(name=="") continue;
-        let shipid = findID(name);
-        setShip(i,j,shipid);
-        setStatus('#f'+i+'s'+j,shipid,false);
-      }
-      if(shouldCalc) calc();
-      clearInterval(time);
+  //let names = $('#parseNameLabel').val().split(/[、,\,]/);
+  for(let i = 1;i <= 2;i++){
+    for(let j = 1;j <= 6;j++){
+      if((i-1)*6+j-1>=names.length) break;
+      let name = names[(i-1)*6+j-1];
+      if(name=="") continue;
+      let shipid = findID(name);
+      setShip(i,j,shipid);
+      setStatus('#f'+i+'s'+j,shipid,false);
     }
-  },500);
+    if(shouldCalc) calc();
+  }
 }
 
 function findID(t){
@@ -548,14 +546,16 @@ function resetPresetMapDifficulty(){
 
 function setPresetEnemyPattern(){
   resetPresetEnemyPattern();
+  //console.log(mapdata)
   for(let id in mapdata[$('#presetAreaIdBox').val()][$('#presetAreaNoBox').val()][$('#presetMapCellBox').val()]['difficulty'][$('#presetMapDifficultyBox').val()]['pattern']){
-    _setPresetEnemyPattern(id);
+    let data = mapdata[$('#presetAreaIdBox').val()][$('#presetAreaNoBox').val()][$('#presetMapCellBox').val()]['difficulty'][$('#presetMapDifficultyBox').val()]['pattern'][id]['organization'];
+    _setPresetEnemyPattern(id,data);
   }
   setPresetEnemyFormation();
 }
 
-function _setPresetEnemyPattern(id){
-  $('#presetEnemyPatternBox').append($('<option>').html(id).val(id));
+function _setPresetEnemyPattern(id,data){
+  $('#presetEnemyPatternBox').append($('<option title=' + data + '>').html(id).val(id));
 }
 
 function resetPresetEnemyPattern(){
