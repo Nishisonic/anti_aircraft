@@ -252,6 +252,8 @@ const ITEM_DATA = {
   210:{name:"潜水艦搭載電探&水防式望遠鏡",type:42,tyku:1},
   211:{name:"潜水艦搭載電探&逆探(E27)",type:42,tyku:1},
   212:{name:"彩雲(東カロリン空)",type:9,tyku:0},
+  213:{name:"後期型艦首魚雷(6門)",type:5,tyku:0},
+  214:{name:"熟練聴音員＋後期型艦首魚雷(6門)",type:5,tyku:0},
   501:{name:"5inch単装砲",type:1,tyku:0},
   502:{name:"5inch連装砲",type:1,tyku:0},
   503:{name:"3inch単装高角砲",type:16,tyku:1},
