@@ -244,6 +244,7 @@ const ITEM_DATA = {
   198:{name:"F4F-4",type:6,tyku:5},
   199:{name:"噴式景雲改",type:39,tyku:6},
   200:{name:"橘花改",type:40,tyku:12},
+  203:{name:"艦本新設計 増設バルジ(中型艦)",type:23,tyku:0},
   204:{name:"艦本新設計 増設バルジ(大型艦)",type:23,tyku:0},
   205:{name:"F6F-3",type:6,tyku:8},
   207:{name:"瑞雲(六三一空)",type:10,tyku:1},
