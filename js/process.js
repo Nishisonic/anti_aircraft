@@ -411,7 +411,7 @@ function changeShowRow(){
 
 function setShip(i,j,shipid){
   $('#f'+i+'s'+j+'name').val(shipid);
-  $('#f'+i+'s'+j+'name').html('<img src="img/ship/'+shipid+'.png" width="160" height="40" title="'+shipid+':'+SHIP_DATA[shipid].name+' 対空:'+SHIP_DATA[shipid].tyku+'">');
+  $('#f'+i+'s'+j+'name').html('<img src="https://raw.githubusercontent.com/Nishisonic/KancolleArchive/master/Image/Ship/1/'+shipid+'.png" width="160" height="40" title="'+shipid+':'+SHIP_DATA[shipid].name+' 対空:'+SHIP_DATA[shipid].tyku+'">');
   $('#f'+i+'s'+j+'tyku').text(SHIP_DATA[shipid].tyku);
 }
 
