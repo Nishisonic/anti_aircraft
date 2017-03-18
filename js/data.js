@@ -41,6 +41,7 @@ const ITEM_TYPE_DATA = {
   40:"噴式戦闘爆撃機(橘花改)",
   41:"輸送機材",
   42:"潜水艦装備",
+  43:"水上戦闘機",
 };
 
 const ITEM_DATA = {
@@ -207,8 +208,8 @@ const ITEM_DATA = {
   161:{name:"16inch三連装砲 Mk.7",type:3,tyku:3},
   162:{name:"203mm/53 連装砲",type:2,tyku:1},
   163:{name:"Ro.43水偵",type:10,tyku:1},
-  164:{name:"Ro.44水上戦闘機",type:10,tyku:2},
-  165:{name:"二式水戦改",type:10,tyku:3},
+  164:{name:"Ro.44水上戦闘機",type:43,tyku:2},
+  165:{name:"二式水戦改",type:43,tyku:3},
   166:{name:"大発動艇(八九式中戦車&陸戦隊)",type:20,tyku:0},
   167:{name:"特二式内火艇",type:36,tyku:0},
   168:{name:"九六式陸攻",type:37,tyku:1},
@@ -255,6 +256,8 @@ const ITEM_DATA = {
   212:{name:"彩雲(東カロリン空)",type:9,tyku:0},
   213:{name:"後期型艦首魚雷(6門)",type:5,tyku:0},
   214:{name:"熟練聴音員＋後期型艦首魚雷(6門)",type:5,tyku:0},
+  215:{name:"Ro.44水上戦闘機bis",type:43,tyku:3},
+  216:{name:"二式水戦改(熟練)",type:43,tyku:5},
   501:{name:"5inch単装砲",type:1,tyku:0},
   502:{name:"5inch連装砲",type:1,tyku:0},
   503:{name:"3inch単装高角砲",type:16,tyku:1},
