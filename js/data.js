@@ -258,6 +258,8 @@ const ITEM_DATA = {
   214:{name:"熟練聴音員＋後期型艦首魚雷(6門)",type:5,tyku:0},
   215:{name:"Ro.44水上戦闘機bis",type:43,tyku:3},
   216:{name:"二式水戦改(熟練)",type:43,tyku:5},
+  217:{name:"強風改",type:43,tyku:5},
+  219:{name:"零式艦戦63型(爆戦)",type:7,tyku:5},
   501:{name:"5inch単装砲",type:1,tyku:0},
   502:{name:"5inch連装砲",type:1,tyku:0},
   503:{name:"3inch単装高角砲",type:16,tyku:1},
