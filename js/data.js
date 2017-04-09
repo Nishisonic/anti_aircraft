@@ -494,7 +494,7 @@ const SHIP_DATA = {
   126:{name:"伊168",type:13,tyku:0,fr:false},
   127:{name:"伊58",type:13,tyku:0,fr:false},
   128:{name:"伊8",type:13,tyku:0,fr:false},
-  129:{name:"鈴谷改",type:6,tyku:59,fr:true},
+  129:{name:"鈴谷改",type:6,tyku:59,fr:false},
   130:{name:"熊野改",type:6,tyku:59,fr:true},
   131:{name:"大和",type:9,tyku:94,fr:false},
   132:{name:"秋雲",type:2,tyku:39,fr:false},
