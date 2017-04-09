@@ -137,7 +137,7 @@ function createShipTabs(isFriend){
   }
 
   for(let id in SHIP_DATA){
-    if((isFriend && id > 0 && id <= 500)||(!isFriend && id > 500)){
+    if((isFriend && id > 0 && id <= 1000)||(!isFriend && id > 1500)){
       if(SHIP_DATA[id].fr){
         typelist[SHIP_DATA[id].type].push(id);
       } else {
