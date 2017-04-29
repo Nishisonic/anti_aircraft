@@ -42,6 +42,7 @@ const ITEM_TYPE_DATA = {
   41:"輸送機材",
   42:"潜水艦装備",
   43:"水上戦闘機",
+  44:"陸上戦闘機",
 };
 
 const ITEM_DATA = {
@@ -220,8 +221,8 @@ const ITEM_DATA = {
   173:{name:"Bofors 40mm四連装機関砲",type:15,tyku:10},
   174:{name:"53cm連装魚雷",type:5,tyku:0},
   175:{name:"雷電",type:38,tyku:6},
-  176:{name:"三式戦 飛燕",type:38,tyku:8},
-  177:{name:"三式戦 飛燕(飛行第244戦隊)",type:38,tyku:9},
+  176:{name:"三式戦 飛燕",type:44,tyku:8},
+  177:{name:"三式戦 飛燕(飛行第244戦隊)",type:44,tyku:9},
   178:{name:"PBY-5A Catalina",type:33,tyku:0},
   179:{name:"試製61cm六連装(酸素)魚雷",type:5,tyku:0},
   180:{name:"一式陸攻 二二型甲",type:37,tyku:3},
@@ -229,7 +230,7 @@ const ITEM_DATA = {
   182:{name:"零式艦戦32型(熟練)",type:6,tyku:8},
   183:{name:"16inch三連装砲 Mk.7+GFCS",type:3,tyku:3},
   184:{name:"Re.2001 OR改",type:6,tyku:6},
-  185:{name:"三式戦 飛燕一型丁",type:38,tyku:9},
+  185:{name:"三式戦 飛燕一型丁",type:44,tyku:9},
   186:{name:"一式陸攻 三四型",type:37,tyku:4},
   187:{name:"銀河",type:37,tyku:3},
   188:{name:"Re.2001 G改",type:8,tyku:4},
@@ -261,6 +262,10 @@ const ITEM_DATA = {
   217:{name:"強風改",type:43,tyku:5},
   219:{name:"零式艦戦63型(爆戦)",type:7,tyku:5},
   220:{name:"8cm高角砲改＋増設機銃",type:16,tyku:7},
+  221:{name:"一式戦 隼II型",type:44,tyku:6},
+  222:{name:"一式戦 隼III型甲",type:44,tyku:7},
+  223:{name:"一式戦 隼III型甲(54戦隊)",type:44,tyku:8},
+  225:{name:"一式戦 隼II型(64戦隊)",type:44,tyku:11},
   501:{name:"5inch単装砲",type:1,tyku:0},
   502:{name:"5inch連装砲",type:1,tyku:0},
   503:{name:"3inch単装高角砲",type:16,tyku:1},
