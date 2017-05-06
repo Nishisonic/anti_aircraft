@@ -96,6 +96,7 @@ const AREA_NAMES = {
   35:["迎撃！第二次マレー沖海戦",false], // 4
   36:["発令！「艦隊作戦第三法」",false], // 5
   36:["偵察戦力緊急展開！「光」作戦",false], // 3
+  36:["出撃！北東方面 第五艦隊",true], // 5
 };
 
 function loadWikiData(areaIdx){
