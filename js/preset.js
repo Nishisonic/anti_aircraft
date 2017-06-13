@@ -148,9 +148,12 @@ function loadWikiHtmlAsync(areaIdx,isExtend){
   $.ajax({
     url: 'http://wikiwiki.jp/kancolle/?' + areaUrl,
     type: 'GET',
-  }).done(function(res){
-    parseHtml(areaIdx,isExtend,res.responseText);
-    setPresetAll(areaIdx);
+    success:function(res){
+      //console.log(res)
+      parseHtml(areaIdx,isExtend,res.responseText);
+      setPresetAll(areaIdx);
+      //console.log(mapdata)
+    }
   });
   if(isExtend) loadWikiHtmlAsync(areaIdx,false);
 }
