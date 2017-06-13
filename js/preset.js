@@ -149,8 +149,8 @@ function loadWikiHtmlAsync(areaIdx,isExtend){
     url: 'http://wikiwiki.jp/kancolle/?' + areaUrl,
     type: 'GET',
     success:function(res){
-      //console.log(res)
-      parseHtml(areaIdx,isExtend,res.responseText);
+      //console.log(res.responseText.replace(/(&gt;)/g,">").replace(/&lt;/g,"<"))
+      parseHtml(areaIdx,isExtend,res.responseText.replace(/(&gt;)/g,">").replace(/&lt;/g,"<"));
       setPresetAll(areaIdx);
       //console.log(mapdata)
     }
