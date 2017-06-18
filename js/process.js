@@ -271,24 +271,24 @@ function parseDeckFormat(){
     if(object['version'] == 4){
       for(let i = 1;i <= 2;i++){
         let fleet = object['f' + i];
-        if(fleet === undefined) continue;
+        if(fleet == null) continue;
         for(let j = 1;j <= 6;j++){
           let ship = fleet['s' + j];
-          if(ship === undefined) continue;
+          if(ship == null) continue;
           let shipid = ship['id'];
           setShip(i,j,shipid);
           let items = ship['items'];
           for(let k = 1;k <= 4;k++){
             let item = items['i' + k];
-            if(item === undefined) continue;
+            if(item == null) continue;
             let itemid = item['id'];
             let alv = item['rf'];
             setItem(i,j,k,itemid,alv,true);
           }
           let item = items['ix'];
-          if(item === undefined) continue;
+          if(item == null) continue;
           let itemid = item['id'];
-          if(itemid === undefined) continue;
+          if(itemid == null) continue;
           let alv = item['rf'];
           setItem(i,j,5,itemid,alv,true);
         }
