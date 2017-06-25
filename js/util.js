@@ -28,6 +28,7 @@ const TYKU_CUIIN = [
   {A:1,B:2,C:1.2},  // 18
   {A:1,B:5,C:1.45}, // 19
   {A:1,B:3,C:1.25}, // 20
+  {A:1,B:5,C:1.45}, // 21
 ];
 // 装備定数A
 function getKansenItem_A(type){
