@@ -279,6 +279,7 @@ const ITEM_DATA = {
   236:{name:"41cm三連装砲改",type:3,tyku:6},
   237:{name:"瑞雲(六三四空/熟練)",type:10,tyku:4},
   238:{name:"零式水上偵察機11型乙",type:10,tyku:1},
+  241:{name:"戦闘糧食(特別なおにぎり)",type:34,tyku:0},
   501:{name:"5inch単装砲",type:1,tyku:0},
   502:{name:"5inch連装砲",type:1,tyku:0},
   503:{name:"3inch単装高角砲",type:16,tyku:1},
