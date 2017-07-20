@@ -150,7 +150,7 @@ function loadWikiHtmlAsync(areaIdx,isExtend){
     type: 'GET',
     success:function(res){
       //console.log(res.responseText)
-      parseHtml(areaIdx,isExtend,$($(res.responseText).text()));
+      parseHtml(areaIdx,isExtend,$(res.responseText).text());
       setPresetAll(areaIdx);
       //console.log(mapdata)
     }
