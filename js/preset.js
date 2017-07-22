@@ -72,8 +72,13 @@ function toFormationName(id){
   }
 }
 
+/**
+ * 海域
+ * 2ページある場合はtrue
+ * その場合、AREA_NAMES[2]にどの海域から2ページ目に入るかを記入
+ */
 const AREA_NAMES = {
-  0:["<海域を選択して下さい>",false], // 6
+  0:["<海域を選択して下さい>",false],
   1:["鎮守府海域",false], // 6
   2:["南西諸島海域",false], // 5
   3:["北方海域",false], // 5
@@ -89,14 +94,14 @@ const AREA_NAMES = {
   28:["発動！渾作戦",false], // 4
   29:["迎撃！トラック泊地強襲",false], // 5
   30:["発令！第十一号作戦",false], // 6
-  31:["反撃！第二次SN作戦",true], // 7
+  31:["反撃！第二次SN作戦",true,5], // 7
   32:["突入！海上輸送作戦",false], // 5
   33:["出撃！礼号作戦",false], // 3
-  34:["開設！基地航空隊",true], // 7
+  34:["開設！基地航空隊",true,5], // 7
   35:["迎撃！第二次マレー沖海戦",false], // 4
   36:["発令！「艦隊作戦第三法」",false], // 5
   37:["偵察戦力緊急展開！「光」作戦",false], // 3
-  38:["出撃！北東方面 第五艦隊",true], // 5
+  38:["出撃！北東方面 第五艦隊",true,4], // 5
 };
 
 function loadWikiData(areaIdx){
@@ -105,40 +110,33 @@ function loadWikiData(areaIdx){
 }
 
 function parseHtml(areaIdx,isExtend,responseText){
-  mapdata[areaIdx] = {};
-  let html = new DOMParser().parseFromString(responseText,"text/html");
-  let tables = html.getElementById('body').getElementsByTagName('table');
-  let no = isExtend ? 5 : 1; // gbgb
-  for(let i = 0;i < tables.length;i++){
-    // 海域抽出
-    let tbody = tables[i].getElementsByTagName('tbody')[0];
-    let tbodyText = tbody.innerText.replace(/\s/g,"");
-    if(!tbodyText.match(/(難易度)?出現場所(戦闘開始時の司令(部)?(L|l)v|難易度)?パターン(海域EXP)?出現艦船陣形(敵制空値優勢確保)?/)) continue;
-    if(areaIdx <= 30){
+  if(AREA_NAMES[areaIdx][1] === isExtend) mapdata[areaIdx] = {};
+  // 必要な所だけ先に正規表現で抜き出す(そのままDOMParserに渡すとデータが抜け落ちる可能性があるため)
+  let res = responseText.match(/<div .*class=\"ie5\".*?\/>|<div .*class=\"ie5\".*?>[\s\S\n]*?<\/div>/g);
+  let no = isExtend ? AREA_NAMES[areaIdx][2] : 1;
+  Array.prototype.map.call(res,function(data){
+    return new DOMParser().parseFromString(data,"text/html").getElementsByTagName('table')[0];
+  }).filter(function(table){
+    return !(!table.innerText.replace(/\s/g,"").match(/(難易度)?出現場所(戦闘開始時の司令(部)?(L|l)v|難易度)?パターン(海域EXP)?出現艦船陣形(敵制空値優勢確保)?/));
+  }).forEach(function(table,idx,tables){
+    if(areaIdx <= 29){
       mapdata[areaIdx][no] = {};
-      setMapData(tbody,areaIdx,no);
-      no++;
+      setMapData(table,areaIdx,no++);
     } else {
-      try{
-        tbody = tbody.getElementsByTagName('tr')[0].getElementsByTagName('td')[3].getElementsByTagName('div')[0].getElementsByTagName('table')[0].getElementsByTagName('tbody')[0];
-        if(tbodyText.match(/難易度出現場所パターン海域EXP出現艦船陣形敵制空値優勢確保/)){
-          if(getDifficulty(tbody) == 1) mapdata[areaIdx][no] = {};
-          setMapData(tbody,areaIdx,no);
-          if(getDifficulty(tbody) == 3) no++;
-        }
-      }catch(e){}
+      // console.log(no,table.innerText.match(/[甲乙丙]/)[0]);
+      // 中身2つの絶許方式回避
+      if(toDifficultyID(table.innerText.match(/[甲乙丙]/)[0]) == 1) mapdata[areaIdx][no] = {};
+      if(idx > 0 && tables[idx - 1].innerText.match(/丙/) && table.innerText.match(/丙/) && tables[idx - 1].innerText.match(/丙/)[0] === table.innerText.match(/丙/)[0]) no--;
+      setMapData(table,areaIdx,no);
+      if(toDifficultyID(table.innerText.match(/[甲乙丙]/)[0]) == 3) no++;
     }
-  }
-}
-
-function getDifficulty(tbody){
-  return toDifficultyID(tbody.getElementsByTagName('tr')[1].getElementsByTagName('td')[0].innerText);
+  });
 }
 
 // wikiから読み込み
 function loadWikiHtmlAsync(areaIdx,isExtend){
   resetPresetAll();
-  if(mapdata[areaIdx] !== undefined){
+  if(mapdata[areaIdx] !== undefined && AREA_NAMES[areaIdx][1] == isExtend){
     setPresetAll(areaIdx);
     return;
   }
@@ -149,13 +147,16 @@ function loadWikiHtmlAsync(areaIdx,isExtend){
     url: 'http://wikiwiki.jp/kancolle/?' + areaUrl,
     type: 'GET',
     success:function(res){
-      //console.log(res.responseText)
-      parseHtml(areaIdx,isExtend,$(res.responseText).text());
-      setPresetAll(areaIdx);
+      // console.log(res.responseText.replace(/(&gt;)/g,">").replace(/&lt;/g,"<").replace(/&amp;/g,"&").replace(/&#10;/g,"\n").replace(/&nbsp;/g," "))
+      parseHtml(areaIdx,isExtend,res.responseText.replace(/(&gt;)/g,">").replace(/&lt;/g,"<").replace(/&amp;/g,"&").replace(/&#10;/g,"\n").replace(/&nbsp;/g," "));
+      if(isExtend){
+        loadWikiHtmlAsync(areaIdx,false);
+      } else {
+        setPresetAll(areaIdx);
+      }
       //console.log(mapdata)
     }
   });
-  if(isExtend) loadWikiHtmlAsync(areaIdx,false);
 }
 
 // 初期テーブル作成
@@ -232,11 +233,12 @@ function setMapData(tbody,areaIdx,no){
   for(i = 1;i < table.length;i++){
     let boss = String(table[i][cellIdx].innerHTML).replace(/[\s,;]/g,"").match(/(<strong><spanclass="wikicolor"style="color:Red">|<spanclass="wikicolor"style="color:Red"><strong>)/i) !== null;
     let cell = table[i][cellIdx].innerText.replace(/[\s,\n]/g,"").substring(":")[0];
-    let pattern = table[i][patternIdx].innerText.replace(/\D/g,"");
+    let patterns = table[i][patternIdx].innerText.match(/\d/g);
+    let pattern = patterns ? patterns[0] : null;
     let organization = table[i][organizationIdx].innerText;
     let formation = toFormatFormationArray(table[i][formationIdx].innerText.split(/[、,\s]/)); 
-    let difficulty = difficultyIdx === -1 ? 0 : toDifficultyID(table[i][difficultyIdx].innerText);
-    if(organization.match(FILTER_PATTERN) || pattern.replace(/\D/g,"") == "") continue;
+    let difficulty = difficultyIdx === -1 ? 0 : toDifficultyID(table[i][difficultyIdx].innerText.replace(/\s/g,""));
+    if(organization.match(FILTER_PATTERN) || pattern == null) continue;
     // 連合艦隊処理用
     if(table[i][patternIdx] !== oldRawPattern){
       oldRawPattern = table[i][patternIdx]; // 入れ替え

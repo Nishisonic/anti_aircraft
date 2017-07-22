@@ -27,7 +27,7 @@ $(function(){
       document.getElementById('f' + i + 's' + j + 'total').innerHTML = 0;
     }
   }
-  setPresetAreaId();
+  iniPresetAreaId();
   changeShowRow();
   setCombinedStatus(false);
   $('.parseEnemy').hide();
@@ -494,40 +494,41 @@ function showNormalFormation(){
   $("#formationBox").children().children('[kc-id=14]').hide();
 }
 
-function setPresetAreaId(){
+/**
+ * イベント名
+ */
+function iniPresetAreaId(){
   for(let areaIdx in AREA_NAMES){
     $('#presetAreaIdBox').append($('<option>').html(AREA_NAMES[areaIdx][0]).val(areaIdx));
   }
 }
 
+/**
+ * 1-「X」以降をセット
+ * イベント名セット時
+ */
 function setPresetAreaNo(){
   loadWikiData($('#presetAreaIdBox').val());
 }
 
-function _setPresetAreaNo(areaNo){
-  $('#presetAreaNoBox').append($('<option>').html(areaNo).val(areaNo));
-}
-
-function resetPresetAreaNo(){
-  $('#presetAreaNoBox option').remove();
-}
-
+/**
+ * 1-1-「X」以降をセット
+ * 1-「X」セット時
+ */
 function setPresetMapCell(){
   resetPresetMapCell();
   for(let cell in mapdata[$('#presetAreaIdBox').val()][$('#presetAreaNoBox').val()]){
     let isBoss = mapdata[$('#presetAreaIdBox').val()][$('#presetAreaNoBox').val()][cell]['boss'];
     _setPresetMapCell(cell,isBoss);
   }
+  sortCell();
+  setPresetMapDifficulty();
 }
 
-function _setPresetMapCell(cell,isBoss){
-  $('#presetMapCellBox').append($('<option>').html(cell + (isBoss ? "(ボス)" : "")).val(cell));
-}
-
-function resetPresetMapCell(){
-  $('#presetMapCellBox option').remove();
-}
-
+/**
+ * 難易度以降をセット
+ * 1-1-「X」セット時
+ */
 function setPresetMapDifficulty(){
   resetPresetMapDifficulty();
   for(let difficulty in mapdata[$('#presetAreaIdBox').val()][$('#presetAreaNoBox').val()][$('#presetMapCellBox').val()]['difficulty']){
@@ -536,14 +537,10 @@ function setPresetMapDifficulty(){
   setPresetEnemyPattern();
 }
 
-function _setPresetMapDifficulty(difficulty){
-  $('#presetMapDifficultyBox').append($('<option>').html(toDifficultyName(difficulty)).val(difficulty));
-}
-
-function resetPresetMapDifficulty(){
-  $('#presetMapDifficultyBox option').remove();
-}
-
+/**
+ * パターン以降をセット
+ * 難易度セット時
+ */
 function setPresetEnemyPattern(){
   resetPresetEnemyPattern();
   //console.log(mapdata)
@@ -551,17 +548,14 @@ function setPresetEnemyPattern(){
     let data = mapdata[$('#presetAreaIdBox').val()][$('#presetAreaNoBox').val()][$('#presetMapCellBox').val()]['difficulty'][$('#presetMapDifficultyBox').val()]['pattern'][id]['organization'];
     _setPresetEnemyPattern(id,data);
   }
+  sortPattern();
   setPresetEnemyFormation();
 }
 
-function _setPresetEnemyPattern(id,data){
-  $('#presetEnemyPatternBox').append($('<option title=' + data + '>').html(id).val(id));
-}
-
-function resetPresetEnemyPattern(){
-  $('#presetEnemyPatternBox option').remove();
-}
-
+/**
+ * 陣形以降をセット
+ * パターンセット時
+ */
 function setPresetEnemyFormation(){
   resetPresetEnemyFormation();
   //console.log($('#presetAreaIdBox').val(),$('#presetAreaNoBox').val(),$('#presetMapCellBox').val(),'difficulty',$('#presetMapDifficultyBox').val(),'pattern',$('#presetEnemyPatternBox').val(),'formation')
@@ -570,8 +564,56 @@ function setPresetEnemyFormation(){
   }
 }
 
+/**
+ * 敵編成をセット
+ * 反映クリック時
+ */
+function setPresetEnemyData(){
+  let data = mapdata[$('#presetAreaIdBox').val()][$('#presetAreaNoBox').val()][$('#presetMapCellBox').val()]['difficulty'][$('#presetMapDifficultyBox').val()]['pattern'][$('#presetEnemyPatternBox').val()];
+  let formation = $('#presetEnemyFormationBox').val();
+  let organization = data['organization'];
+
+  //console.log(formation,organization)
+  parseName(organization,false);
+  $("#formationBox").children().children('[kc-id=' + formation + ']').prop('selected', true);
+  calc();
+}
+
+
+function _setPresetAreaNo(areaNo){
+  $('#presetAreaNoBox').append($('<option>').html(areaNo).val(areaNo));
+}
+
+function _setPresetMapCell(cell,isBoss){
+  $('#presetMapCellBox').append($('<option>').html(cell + (isBoss ? "(ボス)" : "")).val(cell));
+}
+
+function _setPresetMapDifficulty(difficulty){
+  $('#presetMapDifficultyBox').append($('<option>').html(toDifficultyName(difficulty)).val(difficulty));
+}
+
+function _setPresetEnemyPattern(id,data){
+  $('#presetEnemyPatternBox').append($('<option title=' + data + '>').html(id).val(id));
+}
+
 function _setPresetEnemyFormation(id){
   $('#presetEnemyFormationBox').append($('<option>').html(toFormationName(id)).val(id));
+}
+
+function resetPresetAreaNo(){
+  $('#presetAreaNoBox option').remove();
+}
+
+function resetPresetMapCell(){
+  $('#presetMapCellBox option').remove();
+}
+
+function resetPresetMapDifficulty(){
+  $('#presetMapDifficultyBox option').remove();
+}
+
+function resetPresetEnemyPattern(){
+  $('#presetEnemyPatternBox option').remove();
 }
 
 function resetPresetEnemyFormation(){
@@ -579,6 +621,7 @@ function resetPresetEnemyFormation(){
 }
 
 function setPresetAll(areaIdx){
+  resetPresetAll();
   for(let no in mapdata[areaIdx]){
     _setPresetAreaNo(no);
   }
@@ -600,17 +643,8 @@ function setPresetAll(areaIdx){
     _setPresetEnemyFormation(mapdata[areaIdx][no][cell]['difficulty'][difficulty]['pattern'][pattern]['formation'][formation]);
   }
   allowFind();
-}
-
-function setPresetEnemyData(){
-  let data = mapdata[$('#presetAreaIdBox').val()][$('#presetAreaNoBox').val()][$('#presetMapCellBox').val()]['difficulty'][$('#presetMapDifficultyBox').val()]['pattern'][$('#presetEnemyPatternBox').val()];
-  let formation = $('#presetEnemyFormationBox').val();
-  let organization = data['organization'];
-
-  //console.log(formation,organization)
-  parseName(organization,false);
-  $("#formationBox").children().children('[kc-id=' + formation + ']').prop('selected', true);
-  calc();
+  sortCell();
+  sortPattern();
 }
 
 function resetPresetAll(){
@@ -623,4 +657,42 @@ function resetPresetAll(){
 
 function allowFind(){
   $('#presetButton').prop('disabled', false);
+}
+
+function sortCell(){
+  $('#presetMapCellBox').children().sort(function(a,b){
+      var item = $("#presetMapCellBox").children().sort(function(a,b){
+       //textでソート
+        var sortA= a.text;
+        var sortB = b.text;
+        if (sortA > sortB) {
+          return 1;
+        } else if (sortA < sortB) {
+          return -1;
+        } else {
+          return 0;
+        }
+      });
+    $("#presetMapCellBox").append(item);
+  });
+  $('#presetMapCellBox').val($('#presetMapCellBox').children().first().val());
+}
+
+function sortPattern(){
+  $('#presetEnemyPatternBox').children().sort(function(a,b){
+      var item = $("#presetEnemyPatternBox").children().sort(function(a,b){
+       //textでソート
+        var sortA= a.text;
+        var sortB = b.text;
+        if (sortA > sortB) {
+          return 1;
+        } else if (sortA < sortB) {
+          return -1;
+        } else {
+          return 0;
+        }
+      });
+    $("#presetEnemyPatternBox").append(item);
+  });
+  $('#presetEnemyPatternBox').val($('#presetEnemyPatternBox').children().first().val());
 }
