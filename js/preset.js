@@ -102,6 +102,7 @@ const AREA_NAMES = {
   36:["発令！「艦隊作戦第三法」",false], // 5
   37:["偵察戦力緊急展開！「光」作戦",false], // 3
   38:["出撃！北東方面 第五艦隊",true,4], // 5
+  39:["西方再打通！欧州救援作戦",true,5], // 7
 };
 
 function loadWikiData(areaIdx){
@@ -236,7 +237,7 @@ function setMapData(tbody,areaIdx,no){
     let patterns = table[i][patternIdx].innerText.match(/\d/g);
     let pattern = patterns ? patterns[0] : null;
     let organization = table[i][organizationIdx].innerText;
-    let formation = toFormatFormationArray(table[i][formationIdx].innerText.split(/[、,\s]/)); 
+    let formation = toFormatFormationArray(table[i][formationIdx].innerText.split(/[、,\s]/));
     let difficulty = difficultyIdx === -1 ? 0 : toDifficultyID(table[i][difficultyIdx].innerText.replace(/\s/g,""));
     if(organization.match(FILTER_PATTERN) || pattern == null) continue;
     // 連合艦隊処理用
