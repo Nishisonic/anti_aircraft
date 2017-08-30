@@ -43,6 +43,7 @@ const ITEM_TYPE_DATA = {
   42:"潜水艦装備",
   43:"水上戦闘機",
   44:"陸上戦闘機",
+  45:"夜間戦闘機",
 };
 
 const ITEM_DATA = {
@@ -294,6 +295,8 @@ const ITEM_DATA = {
   251:{name:"Spitfire Mk.V",type:44,tyku:9},
   252:{name:"Seafire LF.Mk.III",type:6,tyku:0},
   253:{name:"Spitfire Mk.IX(熟練)",type:44,tyku:0},
+  254:{name:"F6F-3N",type:45,tyku:8},
+  255:{name:"F6F-5N",type:45,tyku:10},
   501:{name:"5inch単装砲",type:1,tyku:0},
   502:{name:"5inch連装砲",type:1,tyku:0},
   503:{name:"3inch単装高角砲",type:16,tyku:1},
