@@ -46,6 +46,12 @@ const ITEM_TYPE_DATA = {
   45:"夜間戦闘機",
 };
 
+/*
+ * iteminfo.csvでの正規表現書き換えについて
+ * 装備一覧.csv使用
+ * 対象:(.*?),.*?,(.*?),.*?,.*?,.*?,(.*?),.*?,.*?,.*?,.*?,.*?,.*?,.*?,(.*?),.*
+ * 置換:  $1:{name:"$2",type:$3,tyku:$4},
+ */
 const ITEM_DATA = {
   1:{name:"12cm単装砲",type:1,tyku:1},
   2:{name:"12.7cm連装砲",type:1,tyku:2},
@@ -290,13 +296,17 @@ const ITEM_DATA = {
   246:{name:"38cm四連装砲改",type:3,tyku:2},
   247:{name:"15.2cm三連装砲",type:4,tyku:1},
   248:{name:"Skua",type:7,tyku:2},
-  249:{name:"Fulmar",type:6,tyku:0},
+  249:{name:"Fulmar",type:6,tyku:3},
   250:{name:"Spitfire Mk.I",type:44,tyku:7},
   251:{name:"Spitfire Mk.V",type:44,tyku:9},
-  252:{name:"Seafire LF.Mk.III",type:6,tyku:0},
-  253:{name:"Spitfire Mk.IX(熟練)",type:44,tyku:0},
+  252:{name:"Seafire Mk.III改",type:6,tyku:9},
+  253:{name:"Spitfire Mk.IX(熟練)",type:44,tyku:10},
   254:{name:"F6F-3N",type:45,tyku:8},
   255:{name:"F6F-5N",type:45,tyku:10},
+  256:{name:"TBF",type:8,tyku:1},
+  257:{name:"TBM-3D",type:46,tyku:1},
+  258:{name:"夜間作戦航空要員",type:29,tyku:0},
+  259:{name:"夜間作戦航空要員+熟練甲板員",type:29,tyku:0},
   501:{name:"5inch単装砲",type:1,tyku:0},
   502:{name:"5inch連装砲",type:1,tyku:0},
   503:{name:"3inch単装高角砲",type:16,tyku:1},
@@ -819,7 +829,7 @@ const SHIP_DATA = {
   435:{name:"如月改二",type:2,tyku:57,fr:true},
   436:{name:"呂500",type:13,tyku:0,fr:true},
   437:{name:"暁改二",type:2,tyku:59,fr:true},
-  438:{name:"Saratoga改",type:11,tyku:93,fr:true},
+  438:{name:"Saratoga改",type:11,tyku:93,fr:false},
   439:{name:"Warspite",type:9,tyku:88,fr:false},
   440:{name:"Iowa",type:9,tyku:96,fr:false},
   441:{name:"Littorio",type:9,tyku:72,fr:false},
@@ -893,7 +903,9 @@ const SHIP_DATA = {
   535:{name:"Luigi Torelli",type:14,tyku:18,fr:false},
   539:{name:"UIT-25",type:14,tyku:25,fr:false},
   541:{name:"長門改二",type:9,tyku:100,fr:true},
+  545:{name:"Saratoga Mk.II",type:11,tyku:94,fr:true},
   548:{name:"文月改二",type:2,tyku:82,fr:true},
+  550:{name:"Saratoga Mk.II Mod.2",type:18,tyku:94,fr:true},
   605:{name:"Luigi Torelli改",type:14,tyku:22,fr:false},
   1501:{name:"駆逐イ級",type:2,tyku:6,fr:true,i1:501,i2:0,i3:0,i4:0,i5:0},
   1502:{name:"駆逐ロ級",type:2,tyku:7,fr:true,i1:502,i2:0,i3:0,i4:0,i5:0},
