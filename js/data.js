@@ -48,8 +48,7 @@ const ITEM_TYPE_DATA = {
 };
 
 /*
- * iteminfo.csvでの正規表現書き換えについて
- * 装備一覧.csv使用
+ * 装備一覧.csvでの正規表現書き換えについて
  * 対象:(.*?),.*?,(.*?),.*?,.*?,.*?,(.*?),.*?,.*?,.*?,.*?,.*?,.*?,.*?,(.*?),.*
  * 置換:  $1:{name:"$2",type:$3,tyku:$4},
  */
@@ -254,6 +253,8 @@ const ITEM_DATA = {
   198:{name:"F4F-4",type:6,tyku:5},
   199:{name:"噴式景雲改",type:39,tyku:6},
   200:{name:"橘花改",type:40,tyku:12},
+  201:{name:"紫電一一型",type:38,tyku:8},
+  202:{name:"紫電二一型 紫電改",type:38,tyku:9},
   203:{name:"艦本新設計 増設バルジ(中型艦)",type:23,tyku:0},
   204:{name:"艦本新設計 増設バルジ(大型艦)",type:23,tyku:0},
   205:{name:"F6F-3",type:6,tyku:8},
@@ -289,6 +290,7 @@ const ITEM_DATA = {
   236:{name:"41cm三連装砲改",type:3,tyku:6},
   237:{name:"瑞雲(六三四空/熟練)",type:10,tyku:4},
   238:{name:"零式水上偵察機11型乙",type:10,tyku:1},
+  240:{name:"22号対水上電探改四(後期調整型)",type:11,tyku:0},
   241:{name:"戦闘糧食(特別なおにぎり)",type:34,tyku:0},
   242:{name:"Swordfish",type:8,tyku:0},
   243:{name:"Swordfish Mk.II(熟練)",type:8,tyku:0},
