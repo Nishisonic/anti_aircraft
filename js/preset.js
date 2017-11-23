@@ -38,6 +38,9 @@ function toFormatFormationArray(array){
       case /単横/.test(value):
         result.push(5);
         break;
+      case /警戒/.test(value):
+        result.push(6);
+        break;
       case /第一/.test(value):
         result.push(11);
         break;
@@ -64,6 +67,7 @@ function toFormationName(id){
     case 3:return "輪形陣";
     case 4:return "梯形陣";
     case 5:return "単横陣";
+    case 6:return "警戒陣";
     case 11:return "第一警戒航行序列";
     case 12:return "第二警戒航行序列";
     case 13:return "第三警戒航行序列";
@@ -103,6 +107,7 @@ const AREA_NAMES = {
   37:["偵察戦力緊急展開！「光」作戦",false], // 3
   38:["出撃！北東方面 第五艦隊",true,4], // 5
   39:["西方再打通！欧州救援作戦",true,5], // 7
+  40:["捷号決戦！邀撃、レイテ沖海戦(前篇)",false], // 4
 };
 
 function loadWikiData(areaIdx){
