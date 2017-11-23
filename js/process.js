@@ -458,6 +458,7 @@ function showCombinedFormation(){
   $("#formationBox").children().children('[kc-id=3]').prop('disabled', true);
   $("#formationBox").children().children('[kc-id=4]').prop('disabled', true);
   $("#formationBox").children().children('[kc-id=5]').prop('disabled', true);
+  $("#formationBox").children().children('[kc-id=6]').prop('disabled', true);
   $("#formationBox").children().children('[kc-id=11]').prop('disabled', false);
   $("#formationBox").children().children('[kc-id=12]').prop('disabled', false);
   $("#formationBox").children().children('[kc-id=13]').prop('disabled', false);
@@ -467,6 +468,7 @@ function showCombinedFormation(){
   $("#formationBox").children().children('[kc-id=3]').hide();
   $("#formationBox").children().children('[kc-id=4]').hide();
   $("#formationBox").children().children('[kc-id=5]').hide();
+  $("#formationBox").children().children('[kc-id=6]').hide();
   $("#formationBox").children().children('[kc-id=11]').show();
   $("#formationBox").children().children('[kc-id=12]').show();
   $("#formationBox").children().children('[kc-id=13]').show();
@@ -479,6 +481,7 @@ function showNormalFormation(){
   $("#formationBox").children().children('[kc-id=3]').prop('disabled', false);
   $("#formationBox").children().children('[kc-id=4]').prop('disabled', false);
   $("#formationBox").children().children('[kc-id=5]').prop('disabled', false);
+  $("#formationBox").children().children('[kc-id=6]').prop('disabled', false);
   $("#formationBox").children().children('[kc-id=11]').prop('disabled', true);
   $("#formationBox").children().children('[kc-id=12]').prop('disabled', true);
   $("#formationBox").children().children('[kc-id=13]').prop('disabled', true);
@@ -488,6 +491,7 @@ function showNormalFormation(){
   $("#formationBox").children().children('[kc-id=3]').show();
   $("#formationBox").children().children('[kc-id=4]').show();
   $("#formationBox").children().children('[kc-id=5]').show();
+  $("#formationBox").children().children('[kc-id=6]').show();
   $("#formationBox").children().children('[kc-id=11]').hide();
   $("#formationBox").children().children('[kc-id=12]').hide();
   $("#formationBox").children().children('[kc-id=13]').hide();
