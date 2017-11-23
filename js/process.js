@@ -307,9 +307,9 @@ function parseID(){
   let time = setInterval(function(){
     let ids = toHalfWidth($('#parseIDLabel').val()).split(/\D/);
     for(let i = 1;i <= 2;i++){
-      for(let j = 1;j <= 7;j++){
-        if((i-1)*7+j-1>=ids.length) break;
-        let shipid = ids[(i-1)*7+j-1];
+      for(let j = 1;j <= 6;j++){
+        if((i-1)*6+j-1>=ids.length) break;
+        let shipid = ids[(i-1)*6+j-1];
         if(shipid=="") continue;
         setShip(i,j,shipid);
         setStatus('#f'+i+'s'+j,shipid,false);
@@ -334,9 +334,9 @@ function parseName(names,shouldCalc){
   /* 解析 */
   //let names = $('#parseNameLabel').val().split(/[、,\,]/);
   for(let i = 1;i <= 2;i++){
-    for(let j = 1;j <= 7;j++){
-      if((i-1)*7+j-1>=names.length) break;
-      let name = names[(i-1)*7+j-1];
+    for(let j = 1;j <= 6;j++){
+      if((i-1)*6+j-1>=names.length) break;
+      let name = names[(i-1)*6+j-1];
       if(name=="") continue;
       let shipid = findID(name);
       setShip(i,j,shipid);
@@ -625,6 +625,7 @@ function resetPresetEnemyFormation(){
 }
 
 function setPresetAll(areaIdx){
+  if(areaIdx == 0) return;
   resetPresetAll();
   for(let no in mapdata[areaIdx]){
     _setPresetAreaNo(no);
