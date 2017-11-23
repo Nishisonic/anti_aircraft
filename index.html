@@ -18,10 +18,11 @@
     <link rel="stylesheet" href="css/select.css">
   </head>
   <body>
-    <h2>対空砲火計算機　Ver1.2.5.13</h2>
+    <h2>対空砲火計算機　Ver1.2.5.14</h2>
     <p>対空砲火を調べることが出来るかも(╹‿ ╹.　)</p>
     <p><strong>注意：これは艦これ改の対空砲火計算式を元に制作しています。<u>本家(ブラウザ版)と多少結果が異なる可能性</u>があるのでご注意下さい。</strong></p>
     <p><strong><strike>連絡：連合艦隊は只今対応中です。現在仮置き状態ですので、次回以降のアップデート(1.1.6-)をお待ち下さい。</strike><span style="color:red">仮対応しました。</span></strong></p>
+    <p><strong><strike>連絡：七隻編成に雑に仮対応。</strike><span style="color:red">デッキビルダーのフォーマットがちゃんと機能していないので注意して下さい。</span></strong></p>
     <br>
     <p>
       表示形式：
@@ -218,6 +219,23 @@
           <td id="f1s6total" class="result"></td>
         </tr>
         <tr>
+          <td class="no">七</td>
+          <td id="f1s7name" class="input"></td>
+          <td id="f1s7item1" class="input"></td>
+          <td id="f1s7item2" class="input"></td>
+          <td id="f1s7item3" class="input"></td>
+          <td id="f1s7item4" class="input"></td>
+          <td id="f1s7item5" class="input"></td>
+          <td id="f1s7tyku" class="result"></td>
+          <td id="f1s7kaju" class="result"></td>
+          <td id="f1s7shotDownA" class="result"></td>
+          <td id="f1s7shotDownB" class="result"></td>
+          <td id="f1s7proportionShotDown" class="result"></td>
+          <td id="f1s7fixedShotDown" class="result"></td>
+          <td id="f1s7guaranteedShotDown" class="result"></td>
+          <td id="f1s7total" class="result"></td>
+        </tr>
+        <tr>
           <th colspan="15" id="header2">
             第ニ艦隊
             <input type="button" name="reset1" id="resetButton1" value="編成リセット" onclick="reset(2)">
@@ -341,6 +359,23 @@
           <td id="f2s6fixedShotDown" class="result"></td>
           <td id="f2s6guaranteedShotDown" class="result"></td>
           <td id="f2s6total" class="result"></td>
+        </tr>
+        <tr>
+          <td class="no">七</td>
+          <td id="f2s7name" class="input"></td>
+          <td id="f2s7item1" class="input"></td>
+          <td id="f2s7item2" class="input"></td>
+          <td id="f2s7item3" class="input"></td>
+          <td id="f2s7item4" class="input"></td>
+          <td id="f2s7item5" class="input"></td>
+          <td id="f2s7tyku" class="result"></td>
+          <td id="f2s7kaju" class="result"></td>
+          <td id="f2s7shotDownA" class="result"></td>
+          <td id="f2s7shotDownB" class="result"></td>
+          <td id="f2s7proportionShotDown" class="result"></td>
+          <td id="f2s7fixedShotDown" class="result"></td>
+          <td id="f2s7guaranteedShotDown" class="result"></td>
+          <td id="f2s7total" class="result"></td>
         </tr>
       </tbody>
     </table>

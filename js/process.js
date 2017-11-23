@@ -2,7 +2,7 @@ $(function(){
   $('#formationBox').load('formation.html');
   $('#tyku_cutinBox').load('tyku_cutin.html');
   for(let i = 1;i <= 2;i++){
-    for(let j = 1;j <= 6;j++){
+    for(let j = 1;j <= 7;j++){
       $('#f' + i + 's' + j + 'name').on( "click", function() {
         $('#friendShipDialog').dialog('close');
         $('#friendShipDialog').dialog('option', 'position', { my: 'left center', at: 'right center', of: $(this)});
@@ -70,7 +70,7 @@ function calc(){
   let isCombined = (function(){
     let isExist = [false,false];
     for(let i = 1;i <= 2;i++){
-      for(let j = 1;j <= 6;j++){
+      for(let j = 1;j <= 7;j++){
         let t_name = '#f' + i + 's' + j + 'name';
         let shipid = $(t_name).val();
         if(shipid > 0){
@@ -88,7 +88,7 @@ function calc(){
   let kantaiAirBonus = 0;
   // 艦隊防空値
   for(let i = 1;i <= 2;i++){
-    for(let j = 1;j <= 6;j++){
+    for(let j = 1;j <= 7;j++){
       let shipKantaiAirBonus = 0;
       let t_name = '#f' + i + 's' + j + 'name';
       let shipid = $(t_name).val();
@@ -124,7 +124,7 @@ function calc(){
   let slotNum = $('#slotNumSpinner').val();
   // 加重対空値
   for(let i = 1;i <= 2;i++){
-    for(let j = 1;j <= 6;j++){
+    for(let j = 1;j <= 7;j++){
       let t_kaju = 'f' + i + 's' + j + 'kaju';
       let t_shotDownA = 'f' + i + 's' + j + 'shotDownA';
       let t_shotDownB = 'f' + i + 's' + j + 'shotDownB';
@@ -212,7 +212,7 @@ function calc(){
 }
 
 function reset(no){
-  for(let i = 1;i <= 6;i++){
+  for(let i = 1;i <= 7;i++){
     resetShip(no,i);
   }
   calc();
@@ -238,7 +238,7 @@ function initialize(){
   // $('#slotNumSpinner').val(0);
   $('#tyku_cutinBox').children().prop('selectedIndex', 0);
   for(let i = 1;i <= 2;i++){
-    for(let j = 1;j <= 6;j++){
+    for(let j = 1;j <= 7;j++){
       $('#f' + i + 's' + j + 'name').off('click');
       $('#f' + i + 's' + j + 'name').on( "click", function() {
         $(nameSource).dialog('close');
@@ -272,7 +272,7 @@ function parseDeckFormat(){
       for(let i = 1;i <= 2;i++){
         let fleet = object['f' + i];
         if(fleet == null) continue;
-        for(let j = 1;j <= 6;j++){
+        for(let j = 1;j <= 7;j++){
           let ship = fleet['s' + j];
           if(ship == null) continue;
           let shipid = parseInt(ship['id']);
@@ -307,9 +307,9 @@ function parseID(){
   let time = setInterval(function(){
     let ids = toHalfWidth($('#parseIDLabel').val()).split(/\D/);
     for(let i = 1;i <= 2;i++){
-      for(let j = 1;j <= 6;j++){
-        if((i-1)*6+j-1>=ids.length) break;
-        let shipid = ids[(i-1)*6+j-1];
+      for(let j = 1;j <= 7;j++){
+        if((i-1)*7+j-1>=ids.length) break;
+        let shipid = ids[(i-1)*7+j-1];
         if(shipid=="") continue;
         setShip(i,j,shipid);
         setStatus('#f'+i+'s'+j,shipid,false);
@@ -334,9 +334,9 @@ function parseName(names,shouldCalc){
   /* 解析 */
   //let names = $('#parseNameLabel').val().split(/[、,\,]/);
   for(let i = 1;i <= 2;i++){
-    for(let j = 1;j <= 6;j++){
-      if((i-1)*6+j-1>=names.length) break;
-      let name = names[(i-1)*6+j-1];
+    for(let j = 1;j <= 7;j++){
+      if((i-1)*7+j-1>=names.length) break;
+      let name = names[(i-1)*7+j-1];
       if(name=="") continue;
       let shipid = findID(name);
       setShip(i,j,shipid);
@@ -385,7 +385,7 @@ function changeShowRow(){
       $('#f'+i+'proportionShotDownHeader').show();
       $('#f'+i+'fixedShotDownHeader').show();
       $('#f'+i+'guaranteedShotDownHeader').show();
-      for(let j = 1;j <= 6;j++){
+      for(let j = 1;j <= 7;j++){
         $('#f'+i+'s'+j+'shotDownA').hide();
         $('#f'+i+'s'+j+'shotDownB').hide();
         $('#f'+i+'s'+j+'proportionShotDown').show();
@@ -398,7 +398,7 @@ function changeShowRow(){
       $('#f'+i+'proportionShotDownHeader').hide();
       $('#f'+i+'fixedShotDownHeader').hide();
       $('#f'+i+'guaranteedShotDownHeader').hide();
-      for(let j = 1;j <= 6;j++){
+      for(let j = 1;j <= 7;j++){
         $('#f'+i+'s'+j+'shotDownA').show();
         $('#f'+i+'s'+j+'shotDownB').show();
         $('#f'+i+'s'+j+'proportionShotDown').hide();

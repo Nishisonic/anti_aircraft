@@ -90,14 +90,16 @@ function getKantaiItem_B(type,tyku){
 }
 function getFormationBonus(formation){
   switch (formation) {
-    case 2: // 複縦陣
+    case 2:  // 複縦陣
       return 1.2;
-    case 3: // 輪形陣
+    case 3:  // 輪形陣
       return 1.6;
     case 11: // 第一警戒航行序列
       return 1.1;
     case 13: // 第三警戒航行序列
       return 1.5;
+    case 6:  // 警戒陣
+      return 1.1;
     default:
       return 1.0;
   }
