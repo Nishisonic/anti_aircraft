@@ -153,8 +153,9 @@ function calc(){
           sum += itemTyku * getKansenItem_A(type) + kaishuBonus;
         }
         // 味方艦船加重對空值 = 素對空值 / 2 + ∑(裝備對空值*裝備定數A + 艦船對空改修補正)
-        // 相手艦船加重對空值 = sqrt(素對空值 + 裝備對空值) + ∑(裝備對空值*裝備定數A + 艦船對空改修補正)
-        let kaju = (isFriend ? (shipTyku / 2) : (Math.sqrt(shipTyku + totalItemTyku))) + sum;
+        // 相手艦船加重對空值 = sqrt(素對空值 + 裝備對空值) + ∑(裝備對空值*裝備定數A + 艦船對空改修補正) ※変更
+        // 相手艦船加重對空值 = Math.floor(sqrt(素對空值 + 裝備對空值)) + ∑(裝備對空值*裝備定數A + 艦船對空改修補正) ※ブラウザ版新補正
+        let kaju = (isFriend ? (shipTyku / 2) : (isBrowser ? Math.floor(Math.sqrt(shipTyku + totalItemTyku)) : Math.sqrt(shipTyku + totalItemTyku))) + sum;
         // 最終加重對空值 = (艦船加重對空值 + 艦隊防空補正)*基本定數*味方相手補正(0.8(味方の対空砲火) or 0.75(相手の対空砲火))
         let kajuTotal = (kaju + kantaiAirBonus) * AIR_BATTLE_FACTOR * (isFriend ? FRIEND_FACTOR : ENEMY_FACTOR);
         let tykuCIkind = $('#tyku_cutinBox').children().val()|0;
