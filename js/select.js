@@ -180,7 +180,7 @@ function createShipTable(isFriend,typelist){
       let shipid = typelist[type][id];
       let name = SHIP_DATA[shipid].name;
       let tyku = SHIP_DATA[shipid].tyku;
-      let img = '<img src="http://nishisonic.xsrv.jp/ship/banner/'+shipid+'.png" width="100%" title="'+shipid+':'+name+' 対空:'+tyku+'">';
+      let img = '<img src="https://www.nishikuma.net/ImgKCbuilder/static/ship/banner/'+shipid+'.png" width="100%" title="'+shipid+':'+name+' 対空:'+tyku+'">';
       insert.append('<td><table><tbody onclick="onSelectShip('+shipid+','+isFriend+')"><tr><td>'+img+'</td></tr><tr><td>'+name+'</td></tr></tbody></table></td>');
     }
     insert.append('</tr>');

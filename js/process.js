@@ -1,18 +1,26 @@
-$(function(){
+$(function () {
   $('#formationBox').load('formation.html');
   $('#tyku_cutinBox').load('tyku_cutin.html');
-  for(let i = 1;i <= 2;i++){
-    for(let j = 1;j <= 7;j++){
-      $('#f' + i + 's' + j + 'name').on( "click", function() {
+  for (let i = 1; i <= 2; i++) {
+    for (let j = 1; j <= 7; j++) {
+      $('#f' + i + 's' + j + 'name').on("click", function () {
         $('#friendShipDialog').dialog('close');
-        $('#friendShipDialog').dialog('option', 'position', { my: 'left center', at: 'right center', of: $(this)});
+        $('#friendShipDialog').dialog('option', 'position', {
+          my: 'left center',
+          at: 'right center',
+          of: $(this)
+        });
         $('#friendShipDialog').attr('parent', '#' + $(this).attr('id'));
         $('#friendShipDialog').dialog('open');
       });
-      for(let k = 1;k <= 5;k++){
-        $('#f' + i + 's' + j + 'item' + k).on( "click", function() {
+      for (let k = 1; k <= 5; k++) {
+        $('#f' + i + 's' + j + 'item' + k).on("click", function () {
           $('#friendItemDialog').dialog('close');
-          $('#friendItemDialog').dialog('option', 'position', { my: 'left center', at: 'right center', of: $(this)});
+          $('#friendItemDialog').dialog('option', 'position', {
+            my: 'left center',
+            at: 'right center',
+            of: $(this)
+          });
           $('#friendItemDialog').attr('parent', '#' + $(this).attr('id'));
           $('#friendItemDialog').dialog('open');
         });
@@ -34,47 +42,47 @@ $(function(){
 });
 
 // parent = #f1s1name
-function setStatus(parent,shipid,isFriend){
-  let fleet = parent.substring(2,3);
-  let ship = parent.substring(4,5);
-  for(let i = 1;i <= 5;i++){
-    let itemid = SHIP_DATA[shipid]["i"+i];
-    if(itemid === undefined || itemid === 0){
-      resetItem(fleet,ship,i);
+function setStatus(parent, shipid, isFriend) {
+  let fleet = parent.substring(2, 3);
+  let ship = parent.substring(4, 5);
+  for (let i = 1; i <= 5; i++) {
+    let itemid = SHIP_DATA[shipid]["i" + i];
+    if (itemid === undefined || itemid === 0) {
+      resetItem(fleet, ship, i);
     } else {
-      setItem(fleet,ship,i,itemid,0,isFriend);
+      setItem(fleet, ship, i, itemid, 0, isFriend);
     }
   }
   calc();
 }
 
-function setCombinedStatus(isCombined){
+function setCombinedStatus(isCombined) {
   let formation = $('#formationBox').children().children('option:selected').attr('kc-id');
   //console.log(formation,isCombined)
-  if(isCombined){
+  if (isCombined) {
     $('#isCombinedLabel').text("連合艦隊");
-    if(formation <= 10){
+    if (formation <= 10) {
       $("#formationBox").children().children('[kc-id=14]').prop('selected', true);
     }
     showCombinedFormation();
   } else {
     $('#isCombinedLabel').text("通常艦隊");
-    if(formation > 10){
+    if (formation > 10) {
       $("#formationBox").children().children('[kc-id=1]').prop('selected', true);
     }
     showNormalFormation();
   }
 }
 
-function calc(){
-  let isCombined = (function(){
-    let isExist = [false,false];
-    for(let i = 1;i <= 2;i++){
-      for(let j = 1;j <= 7;j++){
+function calc() {
+  let isCombined = (function () {
+    let isExist = [false, false];
+    for (let i = 1; i <= 2; i++) {
+      for (let j = 1; j <= 7; j++) {
         let t_name = '#f' + i + 's' + j + 'name';
         let shipid = $(t_name).val();
-        if(shipid > 0){
-          isExist[i-1] = true;
+        if (shipid > 0) {
+          isExist[i - 1] = true;
           break;
         }
       }
@@ -87,25 +95,25 @@ function calc(){
   setCombinedStatus(isCombined);
   let kantaiAirBonus = 0;
   // 艦隊防空値
-  for(let i = 1;i <= 2;i++){
-    for(let j = 1;j <= 7;j++){
+  for (let i = 1; i <= 2; i++) {
+    for (let j = 1; j <= 7; j++) {
       let shipKantaiAirBonus = 0;
       let t_name = '#f' + i + 's' + j + 'name';
       let shipid = $(t_name).val();
-      if(shipid <= 0) continue;
-      for(let k = 1;k <= 5;k++){
+      if (shipid <= 0) continue;
+      for (let k = 1; k <= 5; k++) {
         let t_item = '#f' + i + 's' + j + 'item' + k;
         let t_alv = '#f' + i + 's' + j + 'item' + k + 'alv option:selected';
         let itemid = $(t_item).val();
-        if(itemid <= 0) continue;
+        if (itemid <= 0) continue;
         let tyku = ITEM_DATA[itemid].tyku;
-        if(tyku <= 0) continue;
-        let alv = $(t_alv).val()|0;
+        if (tyku <= 0) continue;
+        let alv = $(t_alv).val() | 0;
         let type = ITEM_DATA[itemid].type;
         // 艦隊防空加重對空值 = 裝備對空值*艦隊防空裝備定數A
-        let kantaiKajuValue = tyku * getKantaiItem_A(type,itemid);
+        let kantaiKajuValue = tyku * getKantaiItem_A(type, itemid);
         // 艦隊防空裝備改修補正 = 艦隊防空裝備定數B*sqrt(★)
-        let kaishuBonus = getKantaiItem_B(type,itemid) * Math.sqrt(alv);
+        let kaishuBonus = getKantaiItem_B(type, itemid) * Math.sqrt(alv);
         // 1スロット裝備の艦隊防空補正 = 艦隊防空加重對空值 + 艦隊防空裝備改修補正
         let slotKantaiAirBonus = kantaiKajuValue + kaishuBonus;
         // 1艦娘の艦隊防空補正 = ∑(1スロット裝備の艦隊防空補正)
@@ -123,8 +131,8 @@ function calc(){
   let annihilationCnt = 0;
   let slotNum = $('#slotNumSpinner').val();
   // 加重対空値
-  for(let i = 1;i <= 2;i++){
-    for(let j = 1;j <= 7;j++){
+  for (let i = 1; i <= 2; i++) {
+    for (let j = 1; j <= 7; j++) {
       let t_kaju = 'f' + i + 's' + j + 'kaju';
       let t_shotDownA = 'f' + i + 's' + j + 'shotDownA';
       let t_shotDownB = 'f' + i + 's' + j + 'shotDownB';
@@ -134,20 +142,20 @@ function calc(){
       let t_total = 'f' + i + 's' + j + 'total';
       let t_name = '#f' + i + 's' + j + 'name';
       let shipid = $(t_name).val();
-      if(shipid > 0){
+      if (shipid > 0) {
         let shipTyku = SHIP_DATA[shipid].tyku;
         let totalItemTyku = 0;
         let sum = 0;
-        for(let k = 1;k <= 5;k++){
+        for (let k = 1; k <= 5; k++) {
           let t_item = '#f' + i + 's' + j + 'item' + k;
           let t_alv = '#f' + i + 's' + j + 'item' + k + 'alv option:selected';
           let itemid = $(t_item).val();
-          if(itemid <= 0) continue;
+          if (itemid <= 0) continue;
           let itemTyku = ITEM_DATA[itemid].tyku;
           let type = ITEM_DATA[itemid].type;
-          let alv = $(t_alv).val()|0;
+          let alv = $(t_alv).val() | 0;
           // 艦船對空改修補正 = 裝備定數B*sqrt(★)
-          let kaishuBonus = getKansenItem_B(type,itemTyku) * Math.sqrt(alv);
+          let kaishuBonus = getKansenItem_B(type, itemTyku) * Math.sqrt(alv);
           totalItemTyku += itemTyku;
           // 裝備對空值*裝備定數A
           sum += itemTyku * getKansenItem_A(type) + kaishuBonus;
@@ -158,34 +166,34 @@ function calc(){
         let kaju = (isFriend ? (shipTyku / 2) : (isBrowser ? Math.floor(Math.sqrt(shipTyku + totalItemTyku)) : Math.sqrt(shipTyku + totalItemTyku))) + sum;
         // 最終加重對空值 = (艦船加重對空值 + 艦隊防空補正)*基本定數*味方相手補正(0.8(味方の対空砲火) or 0.75(相手の対空砲火))
         let kajuTotal = (kaju + kantaiAirBonus) * AIR_BATTLE_FACTOR * (isFriend ? FRIEND_FACTOR : ENEMY_FACTOR);
-        let tykuCIkind = $('#tyku_cutinBox').children().val()|0;
-        let factor = getTykuCuinFactor(tykuCIkind,isFriend);
+        let tykuCIkind = $('#tyku_cutinBox').children().val() | 0;
+        let factor = getTykuCuinFactor(tykuCIkind, isFriend);
         //console.log(kaju,tykuCIkind,kajuTotal)
         // 擊墜數A = int( 最終加重對空值*((0 or 1)の一様な乱数)*対空カットイン定數C + 対空カットイン定數A )
         let minA = factor.A;
-        let maxA = getA(kajuTotal,tykuCIkind,isFriend,isCombined,i);
+        let maxA = getA(kajuTotal, tykuCIkind, isFriend, isCombined, i);
         // 擊墜數B = int( 0.02*基本定數*機數*艦船加重對空值*((0 or 1)の一様な乱数) + 対空カットイン定數B )
         let minB = factor.B;
-        let maxB = getB(kaju,slotNum,tykuCIkind,isFriend,isCombined,i);
+        let maxB = getB(kaju, slotNum, tykuCIkind, isFriend, isCombined, i);
         // 割合撃墜
-        let proportionShotDown = getProportion(kaju,isCombined,i,isFriend);
-        let proportionShotDownNum = getProportionNum(kaju,slotNum,isCombined,i,isFriend);
+        let proportionShotDown = getProportion(kaju, isCombined, i, isFriend);
+        let proportionShotDownNum = getProportionNum(kaju, slotNum, isCombined, i, isFriend);
         // 固定撃墜
-        let fixedShotDown = getFixedNum(kajuTotal,tykuCIkind,isFriend,isCombined,i);
+        let fixedShotDown = getFixedNum(kajuTotal, tykuCIkind, isFriend, isCombined, i);
         // 最低保証
-        let guaranteedShotDown = getGuaranteedNum(tykuCIkind,isFriend);
+        let guaranteedShotDown = getGuaranteedNum(tykuCIkind, isFriend);
 
         // 確率計算
         shipNum++;
-        if((minA + minB) >= slotNum){
+        if ((minA + minB) >= slotNum) {
           annihilationCnt += 2 * 2;
         } else {
-          if((maxA + minB) >= slotNum) annihilationCnt += 2;
-          if((minA + maxB) >= slotNum) annihilationCnt += 2;
-          if(!((maxA + minB) >= slotNum || (minA + maxB) >= slotNum) && (maxA + maxB) >= slotNum){
+          if ((maxA + minB) >= slotNum) annihilationCnt += 2;
+          if ((minA + maxB) >= slotNum) annihilationCnt += 2;
+          if (!((maxA + minB) >= slotNum || (minA + maxB) >= slotNum) && (maxA + maxB) >= slotNum) {
             annihilationCnt++;
           }
-          if(maxA >= slotNum && maxB >= slotNum) annihilationCnt -= 2;
+          if (maxA >= slotNum && maxB >= slotNum) annihilationCnt -= 2;
         }
         // 表示処理
         document.getElementById(t_kaju).innerHTML = (kajuTotal).toFixed(2);
@@ -212,19 +220,19 @@ function calc(){
   }
 }
 
-function reset(no){
-  for(let i = 1;i <= 7;i++){
-    resetShip(no,i);
+function reset(no) {
+  for (let i = 1; i <= 7; i++) {
+    resetShip(no, i);
   }
   calc();
 }
 
-function initialize(){
+function initialize() {
   reset(1);
   reset(2);
   let nameSource;
   let itemSource;
-  if($('input[name=isFriend]:checked').val() === 'true'){
+  if ($('input[name=isFriend]:checked').val() === 'true') {
     nameSource = '#friendShipDialog';
     itemSource = '#friendItemDialog';
     $('.parseEnemy').hide();
@@ -238,20 +246,28 @@ function initialize(){
   $('#formationBox').children().prop('selectedIndex', 0);
   // $('#slotNumSpinner').val(0);
   $('#tyku_cutinBox').children().prop('selectedIndex', 0);
-  for(let i = 1;i <= 2;i++){
-    for(let j = 1;j <= 7;j++){
+  for (let i = 1; i <= 2; i++) {
+    for (let j = 1; j <= 7; j++) {
       $('#f' + i + 's' + j + 'name').off('click');
-      $('#f' + i + 's' + j + 'name').on( "click", function() {
+      $('#f' + i + 's' + j + 'name').on("click", function () {
         $(nameSource).dialog('close');
-        $(nameSource).dialog('option', 'position', { my: 'left center', at: 'right center', of: $(this)});
+        $(nameSource).dialog('option', 'position', {
+          my: 'left center',
+          at: 'right center',
+          of: $(this)
+        });
         $(nameSource).attr('parent', '#' + $(this).attr('id'));
         $(nameSource).dialog('open');
       });
-      for(let k = 1;k <= 5;k++){
+      for (let k = 1; k <= 5; k++) {
         $('#f' + i + 's' + j + 'item' + k).off('click');
-        $('#f' + i + 's' + j + 'item' + k).on( "click", function() {
+        $('#f' + i + 's' + j + 'item' + k).on("click", function () {
           $(itemSource).dialog('close');
-          $(itemSource).dialog('option', 'position', { my: 'left center', at: 'right center', of: $(this)});
+          $(itemSource).dialog('option', 'position', {
+            my: 'left center',
+            at: 'right center',
+            of: $(this)
+          });
           $(itemSource).attr('parent', '#' + $(this).attr('id'));
           $(itemSource).dialog('open');
         });
@@ -260,107 +276,109 @@ function initialize(){
   }
 }
 
-function parseDeckFormat(){
+function parseDeckFormat() {
   /* 初期化 */
   $('input[name=isFriend]').val([true]);
   initialize();
   /* 解析 */
-  let time = setInterval(function(){
+  let time = setInterval(function () {
     let str = $('#parseDeckFormatLabel').val();
     let json = str.substring(str.indexOf('{'));
     let object = JSON.parse(json);
-    if(object['version'] == 4){
-      for(let i = 1;i <= 2;i++){
+    if (object['version'] == 4) {
+      for (let i = 1; i <= 2; i++) {
         let fleet = object['f' + i];
-        if(fleet == null) continue;
-        for(let j = 1;j <= 7;j++){
+        if (fleet == null) continue;
+        for (let j = 1; j <= 7; j++) {
           let ship = fleet['s' + j];
-          if(ship == null) continue;
+          if (ship == null) continue;
           let shipid = parseInt(ship['id']);
-          setShip(i,j,shipid);
+          setShip(i, j, shipid);
           let items = ship['items'];
-          for(let k = 1;k <= 4;k++){
+          for (let k = 1; k <= 4; k++) {
             let item = items['i' + k];
-            if(item == null) continue;
+            if (item == null) continue;
             let itemid = parseInt(item['id']);
             let alv = parseInt(item['rf']);
-            setItem(i,j,k,itemid,alv,true);
+            setItem(i, j, k, itemid, alv, true);
           }
           let item = items['ix'];
-          if(item == null) continue;
+          if (item == null) continue;
           let itemid = parseInt(item['id']);
-          if(itemid == null) continue;
+          if (itemid == null) continue;
           let alv = parseInt(item['rf']);
-          setItem(i,j,5,itemid,alv,true);
+          setItem(i, j, 5, itemid, alv, true);
         }
       }
       calc();
       clearInterval(time);
     }
-  },500);
+  }, 500);
 }
 
-function parseID(){
+function parseID() {
   /* 初期化 */
   $('input[name=isFriend]').val([false]);
   initialize();
   /* 解析 */
-  let time = setInterval(function(){
+  let time = setInterval(function () {
     let ids = toHalfWidth($('#parseIDLabel').val()).split(/\D/);
-    for(let i = 1;i <= 2;i++){
-      for(let j = 1;j <= 6;j++){
-        if((i-1)*6+j-1>=ids.length) break;
-        let shipid = ids[(i-1)*6+j-1];
-        if(shipid=="") continue;
-        setShip(i,j,shipid);
-        setStatus('#f'+i+'s'+j,shipid,false);
+    for (let i = 1; i <= 2; i++) {
+      for (let j = 1; j <= 6; j++) {
+        if ((i - 1) * 6 + j - 1 >= ids.length) break;
+        let shipid = ids[(i - 1) * 6 + j - 1];
+        if (shipid == "") continue;
+        setShip(i, j, shipid);
+        setStatus('#f' + i + 's' + j, shipid, false);
       }
       calc();
       clearInterval(time);
     }
-  },500);
+  }, 500);
 }
 
 function toHalfWidth(value) {
-  return value.replace(/[Ａ-Ｚａ-ｚ０-９]/g, function(s){
+  return value.replace(/[Ａ-Ｚａ-ｚ０-９]/g, function (s) {
     return String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
   });
 }
 
-function parseName(names,shouldCalc){
-  if(shouldCalc === null) shouldCalc = true;
+function parseName(names, shouldCalc) {
+  if (shouldCalc === null) shouldCalc = true;
   /* 初期化 */
   $('input[name=isFriend]').val([false]);
   initialize();
   /* 解析 */
   //let names = $('#parseNameLabel').val().split(/[、,\,]/);
-  for(let i = 1;i <= 2;i++){
-    for(let j = 1;j <= 6;j++){
-      if((i-1)*6+j-1>=names.length) break;
-      let name = names[(i-1)*6+j-1];
-      if(name=="") continue;
+  for (let i = 1; i <= 2; i++) {
+    for (let j = 1; j <= 6; j++) {
+      if ((i - 1) * 6 + j - 1 >= names.length) break;
+      let name = names[(i - 1) * 6 + j - 1];
+      if (name == "") continue;
       let shipid = findID(name);
-      setShip(i,j,shipid);
-      setStatus('#f'+i+'s'+j,shipid,false);
+      setShip(i, j, shipid);
+      setStatus('#f' + i + 's' + j, shipid, false);
     }
-    if(shouldCalc) calc();
+    if (shouldCalc) calc();
   }
 }
 
-function findID(t){
-  let matchList = {0:0};
-  let target = String(t.replace(/[\s,\?,(,),\*\d,　]/g,""));
-  for(let shipid in SHIP_DATA){
-    if(shipid <= 500) continue;
-    let name = SHIP_DATA[shipid].name.replace(/[\s,\?,\*\d,　]/g,"");
-    let kind = name.substring(name.indexOf('(')).replace(/[(,)]/g,"").split(/[/]/g);
-    for(let k in kind){
-      let tmpName = name.replace(/\(.*\)/g,kind[k]);
+function findID(t) {
+  let matchList = {
+    0: 0
+  };
+  let target = String(t.replace(/[\s,\?,(,),\*\d,　]/g, ""));
+  for (let shipid in SHIP_DATA) {
+    if (shipid <= 500) continue;
+    let name = SHIP_DATA[shipid].name.replace(/[\s,\?,\*\d,　]/g, "");
+    let kind = name.substring(name.indexOf('(')).replace(/[(,)]/g, "").split(/[/]/g);
+    for (let k in kind) {
+      let tmpName = name.replace(/\(.*\)/g, kind[k]);
       let count = 0;
-      if(tmpName == target) return shipid;
-      for(let i = 0;i < tmpName.length;i++){
-        for(let j = 0;j < target.length;j++){
-          if(tmpName.charAt(i) == target.charAt(j)){
+      if (tmpName == target) return shipid;
+      for (let i = 0; i < tmpName.length; i++) {
+        for (let j = 0; j < target.length; j++) {
+          if (tmpName.charAt(i) == target.charAt(j)) {
             count++;
             break;
           }
@@ -370,90 +388,94 @@ function findID(t){
     }
   }
   let maxMatchIndex = 0;
-  for(let shipid in matchList){
-    if(matchList[shipid] > matchList[maxMatchIndex] || (shipid !== 0 && maxMatchIndex !== 0 && matchList[shipid] === matchList[maxMatchIndex] && SHIP_DATA[maxMatchIndex].name.length > SHIP_DATA[shipid].name.length)){
+  for (let shipid in matchList) {
+    if (matchList[shipid] > matchList[maxMatchIndex] || (shipid !== 0 && maxMatchIndex !== 0 && matchList[shipid] === matchList[maxMatchIndex] && SHIP_DATA[maxMatchIndex].name.length > SHIP_DATA[shipid].name.length)) {
       maxMatchIndex = shipid;
     }
   }
   return maxMatchIndex;
 }
 
-function changeShowRow(){
-  for(let i = 1;i <= 2;i++){
-    if($('input[name=isShowUsualRow]:checked').val() === 'true'){
-      $('#f'+i+'shotDownAheader').hide();
-      $('#f'+i+'shotDownBheader').hide();
-      $('#f'+i+'proportionShotDownHeader').show();
-      $('#f'+i+'fixedShotDownHeader').show();
-      $('#f'+i+'guaranteedShotDownHeader').show();
-      for(let j = 1;j <= 7;j++){
-        $('#f'+i+'s'+j+'shotDownA').hide();
-        $('#f'+i+'s'+j+'shotDownB').hide();
-        $('#f'+i+'s'+j+'proportionShotDown').show();
-        $('#f'+i+'s'+j+'fixedShotDown').show();
-        $('#f'+i+'s'+j+'guaranteedShotDown').show();
+function changeShowRow() {
+  for (let i = 1; i <= 2; i++) {
+    if ($('input[name=isShowUsualRow]:checked').val() === 'true') {
+      $('#f' + i + 'shotDownAheader').hide();
+      $('#f' + i + 'shotDownBheader').hide();
+      $('#f' + i + 'proportionShotDownHeader').show();
+      $('#f' + i + 'fixedShotDownHeader').show();
+      $('#f' + i + 'guaranteedShotDownHeader').show();
+      for (let j = 1; j <= 7; j++) {
+        $('#f' + i + 's' + j + 'shotDownA').hide();
+        $('#f' + i + 's' + j + 'shotDownB').hide();
+        $('#f' + i + 's' + j + 'proportionShotDown').show();
+        $('#f' + i + 's' + j + 'fixedShotDown').show();
+        $('#f' + i + 's' + j + 'guaranteedShotDown').show();
       }
     } else {
-      $('#f'+i+'shotDownAheader').show();
-      $('#f'+i+'shotDownBheader').show();
-      $('#f'+i+'proportionShotDownHeader').hide();
-      $('#f'+i+'fixedShotDownHeader').hide();
-      $('#f'+i+'guaranteedShotDownHeader').hide();
-      for(let j = 1;j <= 7;j++){
-        $('#f'+i+'s'+j+'shotDownA').show();
-        $('#f'+i+'s'+j+'shotDownB').show();
-        $('#f'+i+'s'+j+'proportionShotDown').hide();
-        $('#f'+i+'s'+j+'fixedShotDown').hide();
-        $('#f'+i+'s'+j+'guaranteedShotDown').hide();
+      $('#f' + i + 'shotDownAheader').show();
+      $('#f' + i + 'shotDownBheader').show();
+      $('#f' + i + 'proportionShotDownHeader').hide();
+      $('#f' + i + 'fixedShotDownHeader').hide();
+      $('#f' + i + 'guaranteedShotDownHeader').hide();
+      for (let j = 1; j <= 7; j++) {
+        $('#f' + i + 's' + j + 'shotDownA').show();
+        $('#f' + i + 's' + j + 'shotDownB').show();
+        $('#f' + i + 's' + j + 'proportionShotDown').hide();
+        $('#f' + i + 's' + j + 'fixedShotDown').hide();
+        $('#f' + i + 's' + j + 'guaranteedShotDown').hide();
       }
     }
   }
 }
 
-function setShip(i,j,shipid){
-  $('#f'+i+'s'+j+'name').val(shipid);
-  $('#f'+i+'s'+j+'name').html('<img src="http://nishisonic.xsrv.jp/ship/banner/'+shipid+'.png" width="160" height="40" title="'+shipid+':'+SHIP_DATA[shipid].name+' 対空:'+SHIP_DATA[shipid].tyku+'">');
-  $('#f'+i+'s'+j+'tyku').text(SHIP_DATA[shipid].tyku);
+function setShip(i, j, shipid) {
+  $('#f' + i + 's' + j + 'name').val(shipid);
+  $('#f' + i + 's' + j + 'name').html('<img src="https://www.nishikuma.net/ImgKCbuilder/static/ship/banner/' + shipid + '.png" width="160" height="40" title="' + shipid + ':' + SHIP_DATA[shipid].name + ' 対空:' + SHIP_DATA[shipid].tyku + '">');
+  $('#f' + i + 's' + j + 'tyku').text(SHIP_DATA[shipid].tyku);
 }
 
-function resetShip(i,j){
-  $('#f'+i+'s'+j+'name').empty();
-  $('#f'+i+'s'+j+'name').val(0);
-  $('#f'+i+'s'+j+'tyku').text(0);
-  for(let k = 1;k <= 5;k++){
-    resetItem(i,j,k);
+function resetShip(i, j) {
+  $('#f' + i + 's' + j + 'name').empty();
+  $('#f' + i + 's' + j + 'name').val(0);
+  $('#f' + i + 's' + j + 'tyku').text(0);
+  for (let k = 1; k <= 5; k++) {
+    resetItem(i, j, k);
   }
 }
 
-function setItem(i,j,k,itemid,alv,isFriend){
-  let img = '<img src="img/itemicon/'+ITEM_DATA[itemid].type+'.png" width="30" height="30" style="float:left;margin-right:5px;">';
-  $('#f'+i+'s'+j+'item'+k).val(itemid);
-  $('#f'+i+'s'+j+'item'+k).attr('title',"対空+"+ITEM_DATA[itemid].tyku);
-  if(isFriend){
-    let style = '<select id="f'+i+'s'+j+'item'+k+'alv'+'" style="color:#45A9A5"></select>';
-    $('#f'+i+'s'+j+'item'+k).html(img+ITEM_DATA[itemid].name+' '+style);
+function setItem(i, j, k, itemid, alv, isFriend) {
+  let img = '<img src="img/itemicon/' + ITEM_DATA[itemid].type + '.png" width="30" height="30" style="float:left;margin-right:5px;">';
+  $('#f' + i + 's' + j + 'item' + k).val(itemid);
+  $('#f' + i + 's' + j + 'item' + k).attr('title', "対空+" + ITEM_DATA[itemid].tyku);
+  if (isFriend) {
+    let style = '<select id="f' + i + 's' + j + 'item' + k + 'alv' + '" style="color:#45A9A5"></select>';
+    $('#f' + i + 's' + j + 'item' + k).html(img + ITEM_DATA[itemid].name + ' ' + style);
     /* 改修度部分 */
-    let selectBox = ["","★+1","★+2","★+3","★+4","★+5","★+6","★+7","★+8","★+9","★max"];
-    for(let l = 0;l < selectBox.length;l++){
+    let selectBox = ["", "★+1", "★+2", "★+3", "★+4", "★+5", "★+6", "★+7", "★+8", "★+9", "★max"];
+    for (let l = 0; l < selectBox.length; l++) {
       let option = document.createElement('option');
       option.setAttribute('value', l);
       option.innerHTML = selectBox[l];
-      $('#f'+i+'s'+j+'item'+k+'alv').append(option);
+      $('#f' + i + 's' + j + 'item' + k + 'alv').append(option);
     }
-    $('#f'+i+'s'+j+'item'+k+'alv').val(alv);
-    $('#f'+i+'s'+j+'item'+k+'alv').on("click",function(event){ event.stopPropagation(); });
-    $('#f'+i+'s'+j+'item'+k+'alv').on('change',function(event){ calc(); });
+    $('#f' + i + 's' + j + 'item' + k + 'alv').val(alv);
+    $('#f' + i + 's' + j + 'item' + k + 'alv').on("click", function (event) {
+      event.stopPropagation();
+    });
+    $('#f' + i + 's' + j + 'item' + k + 'alv').on('change', function (event) {
+      calc();
+    });
   } else {
-    $('#f'+i+'s'+j+'item'+k).html(img+ITEM_DATA[itemid].name);
+    $('#f' + i + 's' + j + 'item' + k).html(img + ITEM_DATA[itemid].name);
   }
 }
 
-function resetItem(i,j,k){
-  $('#f'+i+'s'+j+'item'+k).empty();
-  $('#f'+i+'s'+j+'item'+k).val(0);
+function resetItem(i, j, k) {
+  $('#f' + i + 's' + j + 'item' + k).empty();
+  $('#f' + i + 's' + j + 'item' + k).val(0);
 }
 
-function showCombinedFormation(){
+function showCombinedFormation() {
   $("#formationBox").children().children('[kc-id=1]').prop('disabled', true);
   $("#formationBox").children().children('[kc-id=2]').prop('disabled', true);
   $("#formationBox").children().children('[kc-id=3]').prop('disabled', true);
@@ -476,7 +498,7 @@ function showCombinedFormation(){
   $("#formationBox").children().children('[kc-id=14]').show();
 }
 
-function showNormalFormation(){
+function showNormalFormation() {
   $("#formationBox").children().children('[kc-id=1]').prop('disabled', false);
   $("#formationBox").children().children('[kc-id=2]').prop('disabled', false);
   $("#formationBox").children().children('[kc-id=3]').prop('disabled', false);
@@ -502,8 +524,8 @@ function showNormalFormation(){
 /**
  * イベント名
  */
-function iniPresetAreaId(){
-  for(let areaIdx in AREA_NAMES){
+function iniPresetAreaId() {
+  for (let areaIdx in AREA_NAMES) {
     $('#presetAreaIdBox').append($('<option>').html(AREA_NAMES[areaIdx][0]).val(areaIdx));
   }
 }
@@ -512,7 +534,7 @@ function iniPresetAreaId(){
  * 1-「X」以降をセット
  * イベント名セット時
  */
-function setPresetAreaNo(){
+function setPresetAreaNo() {
   loadWikiData($('#presetAreaIdBox').val());
 }
 
@@ -520,11 +542,11 @@ function setPresetAreaNo(){
  * 1-1-「X」以降をセット
  * 1-「X」セット時
  */
-function setPresetMapCell(){
+function setPresetMapCell() {
   resetPresetMapCell();
-  for(let cell in mapdata[$('#presetAreaIdBox').val()][$('#presetAreaNoBox').val()]){
+  for (let cell in mapdata[$('#presetAreaIdBox').val()][$('#presetAreaNoBox').val()]) {
     let isBoss = mapdata[$('#presetAreaIdBox').val()][$('#presetAreaNoBox').val()][cell]['boss'];
-    _setPresetMapCell(cell,isBoss);
+    _setPresetMapCell(cell, isBoss);
   }
   sortCell();
   setPresetMapDifficulty();
@@ -534,9 +556,9 @@ function setPresetMapCell(){
  * 難易度以降をセット
  * 1-1-「X」セット時
  */
-function setPresetMapDifficulty(){
+function setPresetMapDifficulty() {
   resetPresetMapDifficulty();
-  for(let difficulty in mapdata[$('#presetAreaIdBox').val()][$('#presetAreaNoBox').val()][$('#presetMapCellBox').val()]['difficulty']){
+  for (let difficulty in mapdata[$('#presetAreaIdBox').val()][$('#presetAreaNoBox').val()][$('#presetMapCellBox').val()]['difficulty']) {
     _setPresetMapDifficulty(difficulty);
   }
   setPresetEnemyPattern();
@@ -546,12 +568,12 @@ function setPresetMapDifficulty(){
  * パターン以降をセット
  * 難易度セット時
  */
-function setPresetEnemyPattern(){
+function setPresetEnemyPattern() {
   resetPresetEnemyPattern();
   //console.log(mapdata)
-  for(let id in mapdata[$('#presetAreaIdBox').val()][$('#presetAreaNoBox').val()][$('#presetMapCellBox').val()]['difficulty'][$('#presetMapDifficultyBox').val()]['pattern']){
+  for (let id in mapdata[$('#presetAreaIdBox').val()][$('#presetAreaNoBox').val()][$('#presetMapCellBox').val()]['difficulty'][$('#presetMapDifficultyBox').val()]['pattern']) {
     let data = mapdata[$('#presetAreaIdBox').val()][$('#presetAreaNoBox').val()][$('#presetMapCellBox').val()]['difficulty'][$('#presetMapDifficultyBox').val()]['pattern'][id]['organization'];
-    _setPresetEnemyPattern(id,data);
+    _setPresetEnemyPattern(id, data);
   }
   sortPattern();
   setPresetEnemyFormation();
@@ -561,10 +583,10 @@ function setPresetEnemyPattern(){
  * 陣形以降をセット
  * パターンセット時
  */
-function setPresetEnemyFormation(){
+function setPresetEnemyFormation() {
   resetPresetEnemyFormation();
   //console.log($('#presetAreaIdBox').val(),$('#presetAreaNoBox').val(),$('#presetMapCellBox').val(),'difficulty',$('#presetMapDifficultyBox').val(),'pattern',$('#presetEnemyPatternBox').val(),'formation')
-  for(let id in mapdata[$('#presetAreaIdBox').val()][$('#presetAreaNoBox').val()][$('#presetMapCellBox').val()]['difficulty'][$('#presetMapDifficultyBox').val()]['pattern'][$('#presetEnemyPatternBox').val()]['formation']){
+  for (let id in mapdata[$('#presetAreaIdBox').val()][$('#presetAreaNoBox').val()][$('#presetMapCellBox').val()]['difficulty'][$('#presetMapDifficultyBox').val()]['pattern'][$('#presetEnemyPatternBox').val()]['formation']) {
     _setPresetEnemyFormation(mapdata[$('#presetAreaIdBox').val()][$('#presetAreaNoBox').val()][$('#presetMapCellBox').val()]['difficulty'][$('#presetMapDifficultyBox').val()]['pattern'][$('#presetEnemyPatternBox').val()]['formation'][id]);
   }
 }
@@ -573,79 +595,79 @@ function setPresetEnemyFormation(){
  * 敵編成をセット
  * 反映クリック時
  */
-function setPresetEnemyData(){
+function setPresetEnemyData() {
   let data = mapdata[$('#presetAreaIdBox').val()][$('#presetAreaNoBox').val()][$('#presetMapCellBox').val()]['difficulty'][$('#presetMapDifficultyBox').val()]['pattern'][$('#presetEnemyPatternBox').val()];
   let formation = $('#presetEnemyFormationBox').val();
   let organization = data['organization'];
 
   //console.log(formation,organization)
-  parseName(organization,false);
+  parseName(organization, false);
   $("#formationBox").children().children('[kc-id=' + formation + ']').prop('selected', true);
   calc();
 }
 
 
-function _setPresetAreaNo(areaNo){
+function _setPresetAreaNo(areaNo) {
   $('#presetAreaNoBox').append($('<option>').html(areaNo).val(areaNo));
 }
 
-function _setPresetMapCell(cell,isBoss){
+function _setPresetMapCell(cell, isBoss) {
   $('#presetMapCellBox').append($('<option>').html(cell + (isBoss ? "(ボス)" : "")).val(cell));
 }
 
-function _setPresetMapDifficulty(difficulty){
+function _setPresetMapDifficulty(difficulty) {
   $('#presetMapDifficultyBox').append($('<option>').html(toDifficultyName(difficulty)).val(difficulty));
 }
 
-function _setPresetEnemyPattern(id,data){
+function _setPresetEnemyPattern(id, data) {
   $('#presetEnemyPatternBox').append($('<option title=' + data + '>').html(id).val(id));
 }
 
-function _setPresetEnemyFormation(id){
+function _setPresetEnemyFormation(id) {
   $('#presetEnemyFormationBox').append($('<option>').html(toFormationName(id)).val(id));
 }
 
-function resetPresetAreaNo(){
+function resetPresetAreaNo() {
   $('#presetAreaNoBox option').remove();
 }
 
-function resetPresetMapCell(){
+function resetPresetMapCell() {
   $('#presetMapCellBox option').remove();
 }
 
-function resetPresetMapDifficulty(){
+function resetPresetMapDifficulty() {
   $('#presetMapDifficultyBox option').remove();
 }
 
-function resetPresetEnemyPattern(){
+function resetPresetEnemyPattern() {
   $('#presetEnemyPatternBox option').remove();
 }
 
-function resetPresetEnemyFormation(){
+function resetPresetEnemyFormation() {
   $('#presetEnemyFormationBox option').remove();
 }
 
-function setPresetAll(areaIdx){
-  if(areaIdx == 0) return;
+function setPresetAll(areaIdx) {
+  if (areaIdx == 0) return;
   resetPresetAll();
-  for(let no in mapdata[areaIdx]){
+  for (let no in mapdata[areaIdx]) {
     _setPresetAreaNo(no);
   }
   let no = Object.keys(mapdata[areaIdx])[0];
-  for(let cell in mapdata[areaIdx][no]){
+  for (let cell in mapdata[areaIdx][no]) {
     let isBoss = mapdata[areaIdx][no][cell]['boss'];
-    _setPresetMapCell(cell,isBoss);
+    _setPresetMapCell(cell, isBoss);
   }
   let cell = Object.keys(mapdata[areaIdx][no])[0];
-  for(let difficulty in mapdata[areaIdx][no][cell]['difficulty']){
+  for (let difficulty in mapdata[areaIdx][no][cell]['difficulty']) {
     _setPresetMapDifficulty(difficulty);
   }
   let difficulty = Object.keys(mapdata[areaIdx][no][cell]['difficulty'])[0];
-  for(let pattern in mapdata[areaIdx][no][cell]['difficulty'][difficulty]['pattern']){
+  for (let pattern in mapdata[areaIdx][no][cell]['difficulty'][difficulty]['pattern']) {
     _setPresetEnemyPattern(pattern);
   }
   let pattern = Object.keys(mapdata[areaIdx][no][cell]['difficulty'][difficulty]['pattern'])[0];
-  for(let formation in mapdata[areaIdx][no][cell]['difficulty'][difficulty]['pattern'][pattern]['formation']){
+  for (let formation in mapdata[areaIdx][no][cell]['difficulty'][difficulty]['pattern'][pattern]['formation']) {
     _setPresetEnemyFormation(mapdata[areaIdx][no][cell]['difficulty'][difficulty]['pattern'][pattern]['formation'][formation]);
   }
   allowFind();
@@ -653,7 +675,7 @@ function setPresetAll(areaIdx){
   sortPattern();
 }
 
-function resetPresetAll(){
+function resetPresetAll() {
   resetPresetAreaNo();
   resetPresetMapCell();
   resetPresetMapDifficulty();
@@ -661,43 +683,43 @@ function resetPresetAll(){
   resetPresetEnemyFormation();
 }
 
-function allowFind(){
+function allowFind() {
   $('#presetButton').prop('disabled', false);
 }
 
-function sortCell(){
-  $('#presetMapCellBox').children().sort(function(a,b){
-      var item = $("#presetMapCellBox").children().sort(function(a,b){
-       //textでソート
-        var sortA= a.text;
-        var sortB = b.text;
-        if (sortA > sortB) {
-          return 1;
-        } else if (sortA < sortB) {
-          return -1;
-        } else {
-          return 0;
-        }
-      });
+function sortCell() {
+  $('#presetMapCellBox').children().sort(function (a, b) {
+    var item = $("#presetMapCellBox").children().sort(function (a, b) {
+      //textでソート
+      var sortA = a.text;
+      var sortB = b.text;
+      if (sortA > sortB) {
+        return 1;
+      } else if (sortA < sortB) {
+        return -1;
+      } else {
+        return 0;
+      }
+    });
     $("#presetMapCellBox").append(item);
   });
   $('#presetMapCellBox').val($('#presetMapCellBox').children().first().val());
 }
 
-function sortPattern(){
-  $('#presetEnemyPatternBox').children().sort(function(a,b){
-      var item = $("#presetEnemyPatternBox").children().sort(function(a,b){
-       //textでソート
-        var sortA= a.text;
-        var sortB = b.text;
-        if (sortA > sortB) {
-          return 1;
-        } else if (sortA < sortB) {
-          return -1;
-        } else {
-          return 0;
-        }
-      });
+function sortPattern() {
+  $('#presetEnemyPatternBox').children().sort(function (a, b) {
+    var item = $("#presetEnemyPatternBox").children().sort(function (a, b) {
+      //textでソート
+      var sortA = a.text;
+      var sortB = b.text;
+      if (sortA > sortB) {
+        return 1;
+      } else if (sortA < sortB) {
+        return -1;
+      } else {
+        return 0;
+      }
+    });
     $("#presetEnemyPatternBox").append(item);
   });
   $('#presetEnemyPatternBox').val($('#presetEnemyPatternBox').children().first().val());
