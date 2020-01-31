@@ -3,7 +3,7 @@ $(function () {
     beforeSend : function(xhr) {
         xhr.overrideMimeType("text/plain; charset=shift_jis");
     },
-    url : '/assets/ShipParameterRecord.csv',
+    url : 'assets/ShipParameterRecord.csv',
     dataType : 'text'
   }).then(function(text) {
     const params = csv2json(text.split("\n")).filter(function(data){
@@ -13,7 +13,7 @@ $(function () {
       return p;
     }, {});
     $.ajax({
-      url : '/assets/START2.json',
+      url : 'assets/START2.json',
       dataType : 'json',
     }).then(function(master) {
       const data = master.api_data;
