@@ -11,7 +11,7 @@ $(function () {
         $('#friendShipDialog').attr('parent', '#' + $(this).attr('id'));
         $('#friendShipDialog').dialog('open');
       });
-      for (let k = 1; k <= 5; k++) {
+      for (let k = 1; k <= 6; k++) {
         $('#f' + i + 's' + j + 'item' + k).on("click", function () {
           $('#friendItemDialog').dialog('close');
           $('#friendItemDialog').dialog('option', 'position', {
@@ -103,7 +103,7 @@ function calc() {
       let t_name = '#f' + i + 's' + j + 'name';
       let shipid = $(t_name).val();
       if (shipid <= 0) continue;
-      for (let k = 1; k <= 5; k++) {
+      for (let k = 1; k <= 6; k++) {
         let t_item = '#f' + i + 's' + j + 'item' + k;
         let t_alv = '#f' + i + 's' + j + 'item' + k + 'alv option:selected';
         let itemid = $(t_item).val();
@@ -148,7 +148,7 @@ function calc() {
         let shipTyku = SHIP_DATA[shipid].tyku;
         let totalItemTyku = 0;
         let sum = 0;
-        for (let k = 1; k <= 5; k++) {
+        for (let k = 1; k <= 6; k++) {
           let t_item = '#f' + i + 's' + j + 'item' + k;
           let t_alv = '#f' + i + 's' + j + 'item' + k + 'alv option:selected';
           let itemid = $(t_item).val();
@@ -262,7 +262,7 @@ function initialize() {
         $(nameSource).attr('parent', '#' + $(this).attr('id'));
         $(nameSource).dialog('open');
       });
-      for (let k = 1; k <= 5; k++) {
+      for (let k = 1; k <= 6; k++) {
         $('#f' + i + 's' + j + 'item' + k).off('click');
         $('#f' + i + 's' + j + 'item' + k).on("click", function () {
           $(itemSource).dialog('close');
@@ -298,7 +298,7 @@ function parseDeckFormat() {
           let shipid = parseInt(ship['id']);
           setShip(i, j, shipid);
           let items = ship['items'];
-          for (let k = 1; k <= 4; k++) {
+          for (let k = 1; k <= 5; k++) {
             let item = items['i' + k];
             if (item == null) continue;
             let itemid = parseInt(item['id']);
@@ -310,7 +310,7 @@ function parseDeckFormat() {
           let itemid = parseInt(item['id']);
           if (itemid == null) continue;
           let alv = parseInt(item['rf']);
-          setItem(i, j, 5, itemid, alv, true);
+          setItem(i, j, 6, itemid, alv, true);
         }
       }
       calc();
@@ -441,7 +441,7 @@ function resetShip(i, j) {
   $('#f' + i + 's' + j + 'name').empty();
   $('#f' + i + 's' + j + 'name').val(0);
   $('#f' + i + 's' + j + 'tyku').text(0);
-  for (let k = 1; k <= 5; k++) {
+  for (let k = 1; k <= 6; k++) {
     resetItem(i, j, k);
   }
 }
