@@ -1,6 +1,4 @@
 $(function () {
-  $('#formationBox').load('formation.html');
-  $('#tyku_cutinBox').load('tyku_cutin.html');
   for (let i = 1; i <= 2; i++) {
     for (let j = 1; j <= 7; j++) {
       $('#f' + i + 's' + j + 'name').on("click", function () {
@@ -35,7 +33,6 @@ $(function () {
       document.getElementById('f' + i + 's' + j + 'total').innerHTML = 0;
     }
   }
-  iniPresetAreaId();
   changeShowRow();
   setCombinedStatus(false);
   $('.parseEnemy').hide();
@@ -57,18 +54,23 @@ function setStatus(parent, shipid, isFriend) {
 }
 
 function setCombinedStatus(isCombined) {
-  let formation = $('#formationBox').children().children('option:selected').attr('kc-id');
+  const isFriend = $('input[name=isFriend]:checked').val() === 'true';
+  let formation = $('#formation').children('option:selected').attr('kc-id');
   //console.log(formation,isCombined)
   if (isCombined) {
     $('#isCombinedLabel').text("連合艦隊");
+    if (isFriend) {
+      $('#airRaid').css("display", "inline");
+    }
     if (formation <= 10) {
-      $("#formationBox").children().children('[kc-id=14]').prop('selected', true);
+      $("#formation").children('[kc-id=14]').prop('selected', true);
     }
     showCombinedFormation();
   } else {
     $('#isCombinedLabel').text("通常艦隊");
+    $('#airRaid').css("display", "none");
     if (formation > 10) {
-      $("#formationBox").children().children('[kc-id=1]').prop('selected', true);
+      $("#formation").children('[kc-id=1]').prop('selected', true);
     }
     showNormalFormation();
   }
@@ -125,7 +127,7 @@ function calc() {
   }
   // 艦隊防空補正 = int( 陣型補正*(∑(1艦娘の艦隊防空補正)) )
   // ブラウザ版補正(1.3で割る)
-  kantaiAirBonus = Math.floor($('#formationBox').children().val() * kantaiAirBonus / ((isBrowser && isFriend) ? 1.3 : 1.0));
+  kantaiAirBonus = Math.floor($('#formation').val() * kantaiAirBonus / ((isBrowser && isFriend) ? 1.3 : 1.0));
   $('#kantaiLabel').val(kantaiAirBonus);
   let shipNum = 0;
   let annihilationCnt = 0;
@@ -162,24 +164,25 @@ function calc() {
         }
         // 味方艦船加重對空值 = 素對空值 / 2 + ∑(裝備對空值*裝備定數A + 艦船對空改修補正)
         // 相手艦船加重對空值 = sqrt(素對空值 + 裝備對空值) + ∑(裝備對空值*裝備定數A + 艦船對空改修補正) ※変更
-        // 相手艦船加重對空值 = Math.floor(sqrt(素對空值 + 裝備對空值)) + ∑(裝備對空值*裝備定數A + 艦船對空改修補正) ※ブラウザ版新補正
+        // 相手艦船加重對空值 = int(sqrt(素對空值 + 裝備對空值)) + ∑(裝備對空值*裝備定數A + 艦船對空改修補正) ※ブラウザ版新補正
         let kaju = (isFriend ? (shipTyku / 2) : (isBrowser ? Math.floor(Math.sqrt(shipTyku + totalItemTyku)) : Math.sqrt(shipTyku + totalItemTyku))) + sum;
         // 最終加重對空值 = (艦船加重對空值 + 艦隊防空補正)*基本定數*味方相手補正(0.8(味方の対空砲火) or 0.75(相手の対空砲火))
         let kajuTotal = (kaju + kantaiAirBonus) * AIR_BATTLE_FACTOR * (isFriend ? FRIEND_FACTOR : ENEMY_FACTOR);
-        let tykuCIkind = $('#tyku_cutinBox').children().val() | 0;
+        let tykuCIkind = $('#tyku_cutin').val() | 0;
         let factor = getTykuCuinFactor(tykuCIkind, isFriend);
         //console.log(kaju,tykuCIkind,kajuTotal)
+        const isAirRaid = $('#isAirRaid').prop('checked');
         // 擊墜數A = int( 最終加重對空值*((0 or 1)の一様な乱数)*対空カットイン定數C + 対空カットイン定數A )
         let minA = factor.A;
-        let maxA = getA(kajuTotal, tykuCIkind, isFriend, isCombined, i);
+        let maxA = getA(kajuTotal, tykuCIkind, isFriend, isCombined, i, isAirRaid);
         // 擊墜數B = int( 0.02*基本定數*機數*艦船加重對空值*((0 or 1)の一様な乱数) + 対空カットイン定數B )
         let minB = factor.B;
-        let maxB = getB(kaju, slotNum, tykuCIkind, isFriend, isCombined, i);
+        let maxB = getB(kaju, slotNum, tykuCIkind, isFriend, isCombined, i, isAirRaid);
         // 割合撃墜
-        let proportionShotDown = getProportion(kaju, isCombined, i, isFriend);
-        let proportionShotDownNum = getProportionNum(kaju, slotNum, isCombined, i, isFriend);
+        let proportionShotDown = getProportion(kaju, isCombined, i, isFriend, isAirRaid);
+        let proportionShotDownNum = getProportionNum(kaju, slotNum, isCombined, i, isFriend, isAirRaid);
         // 固定撃墜
-        let fixedShotDown = getFixedNum(kajuTotal, tykuCIkind, isFriend, isCombined, i);
+        let fixedShotDown = getFixedNum(kajuTotal, tykuCIkind, isFriend, isCombined, i, isAirRaid);
         // 最低保証
         let guaranteedShotDown = getGuaranteedNum(tykuCIkind, isFriend);
 
@@ -243,9 +246,9 @@ function initialize() {
     $('.parseFriend').hide();
     $('.parseEnemy').show();
   }
-  $('#formationBox').children().prop('selectedIndex', 0);
+  $('#formation').prop('selectedIndex', 0);
   // $('#slotNumSpinner').val(0);
-  $('#tyku_cutinBox').children().prop('selectedIndex', 0);
+  $('#tyku_cutin').prop('selectedIndex', 0);
   for (let i = 1; i <= 2; i++) {
     for (let j = 1; j <= 7; j++) {
       $('#f' + i + 's' + j + 'name').off('click');
@@ -476,251 +479,47 @@ function resetItem(i, j, k) {
 }
 
 function showCombinedFormation() {
-  $("#formationBox").children().children('[kc-id=1]').prop('disabled', true);
-  $("#formationBox").children().children('[kc-id=2]').prop('disabled', true);
-  $("#formationBox").children().children('[kc-id=3]').prop('disabled', true);
-  $("#formationBox").children().children('[kc-id=4]').prop('disabled', true);
-  $("#formationBox").children().children('[kc-id=5]').prop('disabled', true);
-  $("#formationBox").children().children('[kc-id=6]').prop('disabled', true);
-  $("#formationBox").children().children('[kc-id=11]').prop('disabled', false);
-  $("#formationBox").children().children('[kc-id=12]').prop('disabled', false);
-  $("#formationBox").children().children('[kc-id=13]').prop('disabled', false);
-  $("#formationBox").children().children('[kc-id=14]').prop('disabled', false);
-  $("#formationBox").children().children('[kc-id=1]').hide();
-  $("#formationBox").children().children('[kc-id=2]').hide();
-  $("#formationBox").children().children('[kc-id=3]').hide();
-  $("#formationBox").children().children('[kc-id=4]').hide();
-  $("#formationBox").children().children('[kc-id=5]').hide();
-  $("#formationBox").children().children('[kc-id=6]').hide();
-  $("#formationBox").children().children('[kc-id=11]').show();
-  $("#formationBox").children().children('[kc-id=12]').show();
-  $("#formationBox").children().children('[kc-id=13]').show();
-  $("#formationBox").children().children('[kc-id=14]').show();
+  $("#formation").children('[kc-id=1]').prop('disabled', true);
+  $("#formation").children('[kc-id=2]').prop('disabled', true);
+  $("#formation").children('[kc-id=3]').prop('disabled', true);
+  $("#formation").children('[kc-id=4]').prop('disabled', true);
+  $("#formation").children('[kc-id=5]').prop('disabled', true);
+  $("#formation").children('[kc-id=6]').prop('disabled', true);
+  $("#formation").children('[kc-id=11]').prop('disabled', false);
+  $("#formation").children('[kc-id=12]').prop('disabled', false);
+  $("#formation").children('[kc-id=13]').prop('disabled', false);
+  $("#formation").children('[kc-id=14]').prop('disabled', false);
+  $("#formation").children('[kc-id=1]').hide();
+  $("#formation").children('[kc-id=2]').hide();
+  $("#formation").children('[kc-id=3]').hide();
+  $("#formation").children('[kc-id=4]').hide();
+  $("#formation").children('[kc-id=5]').hide();
+  $("#formation").children('[kc-id=6]').hide();
+  $("#formation").children('[kc-id=11]').show();
+  $("#formation").children('[kc-id=12]').show();
+  $("#formation").children('[kc-id=13]').show();
+  $("#formation").children('[kc-id=14]').show();
 }
 
 function showNormalFormation() {
-  $("#formationBox").children().children('[kc-id=1]').prop('disabled', false);
-  $("#formationBox").children().children('[kc-id=2]').prop('disabled', false);
-  $("#formationBox").children().children('[kc-id=3]').prop('disabled', false);
-  $("#formationBox").children().children('[kc-id=4]').prop('disabled', false);
-  $("#formationBox").children().children('[kc-id=5]').prop('disabled', false);
-  $("#formationBox").children().children('[kc-id=6]').prop('disabled', false);
-  $("#formationBox").children().children('[kc-id=11]').prop('disabled', true);
-  $("#formationBox").children().children('[kc-id=12]').prop('disabled', true);
-  $("#formationBox").children().children('[kc-id=13]').prop('disabled', true);
-  $("#formationBox").children().children('[kc-id=14]').prop('disabled', true);
-  $("#formationBox").children().children('[kc-id=1]').show();
-  $("#formationBox").children().children('[kc-id=2]').show();
-  $("#formationBox").children().children('[kc-id=3]').show();
-  $("#formationBox").children().children('[kc-id=4]').show();
-  $("#formationBox").children().children('[kc-id=5]').show();
-  $("#formationBox").children().children('[kc-id=6]').show();
-  $("#formationBox").children().children('[kc-id=11]').hide();
-  $("#formationBox").children().children('[kc-id=12]').hide();
-  $("#formationBox").children().children('[kc-id=13]').hide();
-  $("#formationBox").children().children('[kc-id=14]').hide();
-}
-
-/**
- * イベント名
- */
-function iniPresetAreaId() {
-  for (let areaIdx in AREA_NAMES) {
-    $('#presetAreaIdBox').append($('<option>').html(AREA_NAMES[areaIdx][0]).val(areaIdx));
-  }
-}
-
-/**
- * 1-「X」以降をセット
- * イベント名セット時
- */
-function setPresetAreaNo() {
-  loadWikiData($('#presetAreaIdBox').val());
-}
-
-/**
- * 1-1-「X」以降をセット
- * 1-「X」セット時
- */
-function setPresetMapCell() {
-  resetPresetMapCell();
-  for (let cell in mapdata[$('#presetAreaIdBox').val()][$('#presetAreaNoBox').val()]) {
-    let isBoss = mapdata[$('#presetAreaIdBox').val()][$('#presetAreaNoBox').val()][cell]['boss'];
-    _setPresetMapCell(cell, isBoss);
-  }
-  sortCell();
-  setPresetMapDifficulty();
-}
-
-/**
- * 難易度以降をセット
- * 1-1-「X」セット時
- */
-function setPresetMapDifficulty() {
-  resetPresetMapDifficulty();
-  for (let difficulty in mapdata[$('#presetAreaIdBox').val()][$('#presetAreaNoBox').val()][$('#presetMapCellBox').val()]['difficulty']) {
-    _setPresetMapDifficulty(difficulty);
-  }
-  setPresetEnemyPattern();
-}
-
-/**
- * パターン以降をセット
- * 難易度セット時
- */
-function setPresetEnemyPattern() {
-  resetPresetEnemyPattern();
-  //console.log(mapdata)
-  for (let id in mapdata[$('#presetAreaIdBox').val()][$('#presetAreaNoBox').val()][$('#presetMapCellBox').val()]['difficulty'][$('#presetMapDifficultyBox').val()]['pattern']) {
-    let data = mapdata[$('#presetAreaIdBox').val()][$('#presetAreaNoBox').val()][$('#presetMapCellBox').val()]['difficulty'][$('#presetMapDifficultyBox').val()]['pattern'][id]['organization'];
-    _setPresetEnemyPattern(id, data);
-  }
-  sortPattern();
-  setPresetEnemyFormation();
-}
-
-/**
- * 陣形以降をセット
- * パターンセット時
- */
-function setPresetEnemyFormation() {
-  resetPresetEnemyFormation();
-  //console.log($('#presetAreaIdBox').val(),$('#presetAreaNoBox').val(),$('#presetMapCellBox').val(),'difficulty',$('#presetMapDifficultyBox').val(),'pattern',$('#presetEnemyPatternBox').val(),'formation')
-  for (let id in mapdata[$('#presetAreaIdBox').val()][$('#presetAreaNoBox').val()][$('#presetMapCellBox').val()]['difficulty'][$('#presetMapDifficultyBox').val()]['pattern'][$('#presetEnemyPatternBox').val()]['formation']) {
-    _setPresetEnemyFormation(mapdata[$('#presetAreaIdBox').val()][$('#presetAreaNoBox').val()][$('#presetMapCellBox').val()]['difficulty'][$('#presetMapDifficultyBox').val()]['pattern'][$('#presetEnemyPatternBox').val()]['formation'][id]);
-  }
-}
-
-/**
- * 敵編成をセット
- * 反映クリック時
- */
-function setPresetEnemyData() {
-  let data = mapdata[$('#presetAreaIdBox').val()][$('#presetAreaNoBox').val()][$('#presetMapCellBox').val()]['difficulty'][$('#presetMapDifficultyBox').val()]['pattern'][$('#presetEnemyPatternBox').val()];
-  let formation = $('#presetEnemyFormationBox').val();
-  let organization = data['organization'];
-
-  //console.log(formation,organization)
-  parseName(organization, false);
-  $("#formationBox").children().children('[kc-id=' + formation + ']').prop('selected', true);
-  calc();
-}
-
-
-function _setPresetAreaNo(areaNo) {
-  $('#presetAreaNoBox').append($('<option>').html(areaNo).val(areaNo));
-}
-
-function _setPresetMapCell(cell, isBoss) {
-  $('#presetMapCellBox').append($('<option>').html(cell + (isBoss ? "(ボス)" : "")).val(cell));
-}
-
-function _setPresetMapDifficulty(difficulty) {
-  $('#presetMapDifficultyBox').append($('<option>').html(toDifficultyName(difficulty)).val(difficulty));
-}
-
-function _setPresetEnemyPattern(id, data) {
-  $('#presetEnemyPatternBox').append($('<option title=' + data + '>').html(id).val(id));
-}
-
-function _setPresetEnemyFormation(id) {
-  $('#presetEnemyFormationBox').append($('<option>').html(toFormationName(id)).val(id));
-}
-
-function resetPresetAreaNo() {
-  $('#presetAreaNoBox option').remove();
-}
-
-function resetPresetMapCell() {
-  $('#presetMapCellBox option').remove();
-}
-
-function resetPresetMapDifficulty() {
-  $('#presetMapDifficultyBox option').remove();
-}
-
-function resetPresetEnemyPattern() {
-  $('#presetEnemyPatternBox option').remove();
-}
-
-function resetPresetEnemyFormation() {
-  $('#presetEnemyFormationBox option').remove();
-}
-
-function setPresetAll(areaIdx) {
-  if (areaIdx == 0) return;
-  resetPresetAll();
-  for (let no in mapdata[areaIdx]) {
-    _setPresetAreaNo(no);
-  }
-  let no = Object.keys(mapdata[areaIdx])[0];
-  for (let cell in mapdata[areaIdx][no]) {
-    let isBoss = mapdata[areaIdx][no][cell]['boss'];
-    _setPresetMapCell(cell, isBoss);
-  }
-  let cell = Object.keys(mapdata[areaIdx][no])[0];
-  for (let difficulty in mapdata[areaIdx][no][cell]['difficulty']) {
-    _setPresetMapDifficulty(difficulty);
-  }
-  let difficulty = Object.keys(mapdata[areaIdx][no][cell]['difficulty'])[0];
-  for (let pattern in mapdata[areaIdx][no][cell]['difficulty'][difficulty]['pattern']) {
-    _setPresetEnemyPattern(pattern);
-  }
-  let pattern = Object.keys(mapdata[areaIdx][no][cell]['difficulty'][difficulty]['pattern'])[0];
-  for (let formation in mapdata[areaIdx][no][cell]['difficulty'][difficulty]['pattern'][pattern]['formation']) {
-    _setPresetEnemyFormation(mapdata[areaIdx][no][cell]['difficulty'][difficulty]['pattern'][pattern]['formation'][formation]);
-  }
-  allowFind();
-  sortCell();
-  sortPattern();
-}
-
-function resetPresetAll() {
-  resetPresetAreaNo();
-  resetPresetMapCell();
-  resetPresetMapDifficulty();
-  resetPresetEnemyPattern();
-  resetPresetEnemyFormation();
-}
-
-function allowFind() {
-  $('#presetButton').prop('disabled', false);
-}
-
-function sortCell() {
-  $('#presetMapCellBox').children().sort(function (a, b) {
-    var item = $("#presetMapCellBox").children().sort(function (a, b) {
-      //textでソート
-      var sortA = a.text;
-      var sortB = b.text;
-      if (sortA > sortB) {
-        return 1;
-      } else if (sortA < sortB) {
-        return -1;
-      } else {
-        return 0;
-      }
-    });
-    $("#presetMapCellBox").append(item);
-  });
-  $('#presetMapCellBox').val($('#presetMapCellBox').children().first().val());
-}
-
-function sortPattern() {
-  $('#presetEnemyPatternBox').children().sort(function (a, b) {
-    var item = $("#presetEnemyPatternBox").children().sort(function (a, b) {
-      //textでソート
-      var sortA = a.text;
-      var sortB = b.text;
-      if (sortA > sortB) {
-        return 1;
-      } else if (sortA < sortB) {
-        return -1;
-      } else {
-        return 0;
-      }
-    });
-    $("#presetEnemyPatternBox").append(item);
-  });
-  $('#presetEnemyPatternBox').val($('#presetEnemyPatternBox').children().first().val());
+  $("#formation").children('[kc-id=1]').prop('disabled', false);
+  $("#formation").children('[kc-id=2]').prop('disabled', false);
+  $("#formation").children('[kc-id=3]').prop('disabled', false);
+  $("#formation").children('[kc-id=4]').prop('disabled', false);
+  $("#formation").children('[kc-id=5]').prop('disabled', false);
+  $("#formation").children('[kc-id=6]').prop('disabled', false);
+  $("#formation").children('[kc-id=11]').prop('disabled', true);
+  $("#formation").children('[kc-id=12]').prop('disabled', true);
+  $("#formation").children('[kc-id=13]').prop('disabled', true);
+  $("#formation").children('[kc-id=14]').prop('disabled', true);
+  $("#formation").children('[kc-id=1]').show();
+  $("#formation").children('[kc-id=2]').show();
+  $("#formation").children('[kc-id=3]').show();
+  $("#formation").children('[kc-id=4]').show();
+  $("#formation").children('[kc-id=5]').show();
+  $("#formation").children('[kc-id=6]').show();
+  $("#formation").children('[kc-id=11]').hide();
+  $("#formation").children('[kc-id=12]').hide();
+  $("#formation").children('[kc-id=13]').hide();
+  $("#formation").children('[kc-id=14]').hide();
 }

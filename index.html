@@ -5,24 +5,19 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.easytabs/3.2.0/jquery.easytabs.min.js"></script>
     <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
-    <script src="js/jquery.easytabs.min.js"></script>
-    <script src="js/jquery.xdomainajax.js"></script>
+    <script src="js/select.js"></script>
     <script src="js/data.js"></script>
-    <script src="js/ecl.js"></script>
-    <script src="js/preset.js"></script>
     <script src="js/util.js"></script>
     <script src="js/process.js"></script>
-    <script src="js/select.js"></script>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/select.css">
   </head>
   <body>
-    <h2>対空砲火計算機　Ver1.2.6.1</h2>
+    <h2>対空砲火計算機　Ver1.2.7</h2>
     <p>対空砲火を調べることが出来るかも(╹‿ ╹.　)</p>
     <p><strong>注意：これは艦これ改の対空砲火計算式を元に制作しています。<u>本家(ブラウザ版)と多少結果が異なる可能性</u>があるのでご注意下さい。</strong></p>
-    <p><strong><strike>連絡：連合艦隊は只今対応中です。現在仮置き状態ですので、次回以降のアップデート(1.1.6-)をお待ち下さい。</strike><span style="color:red">仮対応しました。</span></strong></p>
-    <p><strong><strike>連絡：七隻編成に雑に仮対応。</strike><span style="color:red">デッキビルダーのフォーマットがちゃんと機能していないので注意して下さい。</span></strong></p>
     <br>
     <p>
       表示形式：
@@ -37,11 +32,65 @@
         <input type="radio" name="isFriend" value="false" onclick="initialize()"> 深海棲艦
       </span>
       陣形：
-      <span id="formationBox"></span>
+      <select name="formation" id="formation" onchange="calc()">
+        <option kc-id="1" value="1.0" selected>単縦陣</option>
+        <option kc-id="2" value="1.2">複縦陣</option>
+        <option kc-id="3" value="1.6">輪形陣</option>
+        <option kc-id="4" value="1.0">梯形陣</option>
+        <option kc-id="5" value="1.0">単横陣</option>
+        <option kc-id="6" value="1.1">警戒陣</option>
+        <option kc-id="11" value="1.1" style="display:none;" disabled>第一警戒航行序列</option>
+        <option kc-id="12" value="1.0" style="display:none" disabled>第二警戒航行序列</option>
+        <option kc-id="13" value="1.5" style="display:none" disabled>第三警戒航行序列</option>
+        <option kc-id="14" value="1.0" style="display:none" disabled>第四警戒航行序列</option>
+      </select>
       スロット機数：
       <input type="number" name="slotNum" id="slotNumSpinner" value="0" min="0" oninput="calc()" onchange="calc()">
       対空カットイン種別：
-      <span id="tyku_cutinBox"></span>
+      <select name="tyku_cutin" id="tyku_cutin" onchange="calc()" title="14番以降は検証ソースです。AとBは合計値だけ合わせて後は適当に配置しています。">
+        <option value="0" selected>0:なし</option>
+        <option value="1">1:高角砲x2/電探&lt;秋月&gt;</option>
+        <option value="2">2:高角砲/電探&lt;秋月&gt;</option>
+        <option value="3">3:高角砲x2&lt;秋月&gt;</option>
+        <option value="4">4:大口径主砲/三式弾/高射装置/電探</option>
+        <option value="5">5:高角砲+高射装置x2/電探</option>
+        <option value="6">6:大口径主砲/三式弾/高射装置</option>
+        <option value="7">7:高角砲/高射装置/電探</option>
+        <option value="8">8:高角砲+高射装置/電探</option>
+        <option value="9">9:高角砲/高射装置</option>
+        <option value="10">10:高角砲/集中機銃/電探&lt;摩耶&gt;</option>
+        <option value="11">11:高角砲/集中機銃&lt;摩耶&gt;</option>
+        <option value="12">12:集中機銃/機銃/電探</option>
+        <option value="13" disabled>13:高角砲/機銃/電探</option>
+        <option value="14">14:高角砲/機銃/電探&lt;五十鈴&gt;</option>
+        <option value="15">15:高角砲/機銃&lt;五十鈴&gt;</option>
+        <option value="16">16:高角砲/機銃/電探&lt;霞&gt;</option>
+        <option value="17">17:高角砲/機銃&lt;霞&gt;</option>
+        <option value="18">18:集中機銃&lt;皐月&gt;</option>
+        <option value="19">19:高角砲(非高射装置)/集中機銃&lt;鬼怒&gt;</option>
+        <option value="20">20:集中機銃&lt;鬼怒&gt;</option>
+        <option value="21">21:高角砲/電探&lt;由良&gt;</option>
+        <option value="22">22:集中機銃&lt;文月&gt;</option>
+        <option value="23">23:機銃(非集中)&lt;UIT-25&gt;</option>
+        <option value="24">24:高角砲/機銃(非集中)&lt;龍田&gt;</option>
+        <option value="25">25:噴進砲改二/電探/三式弾&lt;伊勢&gt;</option>
+        <option value="26">26:高角砲+増設機銃/電探&lt;武蔵&gt;</option>
+        <option value="27" disabled>27:不明</option>
+        <option value="28">28:噴進砲改二/電探&lt;伊勢&gt;</option>
+        <option value="29">29:高角砲/電探&lt;浜風&gt;</option>
+        <option value="30">30:高角砲x3&lt;天龍&gt;</option>
+        <option value="31">31:高角砲x2&lt;天龍&gt;</option>
+        <option value="32">32:ロケランx2 or FCR/ポンポン砲 or ロケラン/ポンポン砲&lt;英国&gt;</option>
+        <option value="33">33:高角砲/機銃(非集中)</option>
+        <option value="34">34:Fletcher砲改+GFCSx2\&lt;Johnston&gt;</option>
+        <option value="35">35:Fletcher砲改+GFCS/Fletcher砲改&lt;Johnston&gt;</option>
+        <option value="36">36:Fletcher砲改x2/GFCS&lt;Johnston&gt;</option>
+        <option value="37">37:Fletcher砲改x2&lt;Johnston&gt;</option>
+        <option value="38" disabled>38:不明</option>
+        <option value="39">39:Atlanta砲+GFCS/Atlanta砲&lt;Atlanta&gt;</option>
+        <option value="40">40:Atlanta砲x2/GFCS&lt;Atlanta&gt;</option>
+        <option value="41">41:Atlanta砲x2&lt;Atlanta&gt;</option>
+      </select>
       <span class="parseFriend">
         <span title="艦これブラウザ版の補正をかけます。艦これ改で計算する場合はチェックを外して下さい。"><input type="checkbox" id="useBrowserCheckBox" onchange="calc()" checked>ブラウザ版補正</span>
         <span class="space"></span>
@@ -59,28 +108,6 @@
         <input type="button" value="反映" onclick="parseName($('#parseNameLabel').val().split(/[、,\,]/))">
       </span>
     </p>
-    <p class="parseEnemy">
-      <span title="wikiからデータを引っ張ってきて反映します。">編成プリセット(β)→</span>
-      海域：
-      <select id="presetAreaIdBox" onchange="setPresetAreaNo()">
-      </select>
-      －
-      <select id="presetAreaNoBox" onchange="setPresetMapCell()">
-      </select>
-      セル:
-      <select id="presetMapCellBox" onchange="setPresetMapDifficulty()">
-      </select>
-      難易度:
-      <select id="presetMapDifficultyBox" onchange="setPresetEnemyPattern()">
-      </select>
-      パターン:
-      <select id="presetEnemyPatternBox" onchange="setPresetEnemyFormation()">
-      </select>
-      陣形:
-      <select id="presetEnemyFormationBox">
-      </select>
-      <input type="button" value="反映" id="presetButton" onclick="setPresetEnemyData()" disabled>
-    </p>
     <Hr Width="100%">
     <p>
       全滅確率：
@@ -89,6 +116,9 @@
       <input name="kantai" id="kantaiLabel" value="0" readonly>
       <span id="isCombinedLabel" class="space">
         通常艦隊
+      </span>
+      <span style="margin-left: 10px;" id="airRaid">
+        <input type="checkbox" id="isAirRaid" onchange="calc()">長距離空襲戦
       </span>
     </p>
     <table class="table" border="1" id="table">
@@ -410,17 +440,16 @@
     <p>艦名から深海棲艦を反映します。読点「、」またはカンマ「,」で区切ること。第二艦隊分も繋げて書く。</p>
     <p>第二艦隊もやる場合は繋げて書いて下さい。 基本的にはwikiの敵編成をコピペで大丈夫だと思います。ID反映と比べるとかなり精度が落ちるので、その点はご了承下さい。</p>
     <p>例:6-4ボスパターン1「離島棲姫(B)*17、砲台小鬼(A)*18、砲台小鬼(B)*19、砲台小鬼(C)*20、集積地棲姫-壊(C)*21、軽巡ホ級flagship」</p>
-    <p>・プリセット機能(β)について</p>
-    <p>wikiからデータを引っ張ってきて反映します。大体反映されると思いますが、バグが残ってるかもしれません。また、wikiの状態によってかなり左右されます。ご了承下さい。</p>
     <br>
     <p>ソースに関しては<a href="https://twitter.com/KennethWWKK" target="_blank">@KennethWWKK</a>さんの
     <a href="https://docs.google.com/document/d/1tqYyqzdc1RT_fYDKFMcUId0kOZHCdGpVsObm6yt-Yco/edit?usp=sharing" target="_blank">艦これ改のソフトって解析翻訳</a>をご参照下さい。</p>
     <p>ご要望、ご指摘お待ちしてます(╹‿ ╹.　)</p>
-    <p>作成者：<a href="https://twitter.com/Nishisonic" target="_blank">@Nishisonic</a></p>
+    <p>作成者：<a href="https://twitter.com/nishikuma24Q" target="_blank">@nishikuma24Q</a></p>
     <!-- アクセス解析(╹‿ ╹.　) -->
     <a href="https://nishisonic.github.io/anti_aircraft/"><img src="https://ga-beacon.appspot.com/UA-79452548-2/nishisonic.github.io/anti_aircraft?pixel"/></a>
     履歴<br>
     <textarea cols="40" rows="6" style="overflow:auto;width:50em;" readonly>
+Ver1.2.7 2020/02/01 プリセット機能削除、新データ更新&#13;
 Ver1.2.6 2017/12/08 ブラウザ版新対空仕様に変更&#13;
 Ver1.2.5 2017/07/22 プリセット機能バグ修正&#13;
 Ver1.2.4 2017/06/14 バグ修正&#13;
