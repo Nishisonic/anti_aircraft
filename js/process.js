@@ -38,6 +38,32 @@ $(function () {
   $('.parseEnemy').hide();
 });
 
+function setAACI() {
+  const kind = Number($("#tyku_cutin").val());
+  if (kind !== -1) {
+    $("#aaciValueA").prop("disabled", true);
+    $("#aaciValueB").prop("disabled", true);
+    $("#aaciValueC").prop("disabled", true);
+    if (kind !== 0) {
+      $("#aaciValueA").val(TYKU_CUTIN[kind].A);
+      $("#aaciValueB").val(TYKU_CUTIN[kind].B);
+      $("#aaciValueC").val(TYKU_CUTIN[kind].C);
+    } else {
+      const camp = $("#isFriend").is(':checked') ? "FRIEND" : "ENEMY";
+      $("#aaciValueA").val(TYKU_CUTIN[kind][camp].A);
+      $("#aaciValueB").val(TYKU_CUTIN[kind][camp].B);
+      $("#aaciValueC").val(TYKU_CUTIN[kind][camp].C);
+    }
+  } else {
+    $("#aaciValueA").prop("disabled", false);
+    $("#aaciValueB").prop("disabled", false);
+    $("#aaciValueC").prop("disabled", false);
+    $("#aaciValueA").val(1);
+    $("#aaciValueB").val(0);
+    $("#aaciValueC").val(1);
+  }
+}
+
 // parent = #f1s1name
 function setStatus(parent, shipid, isFriend) {
   let fleet = parent.substring(2, 3);
@@ -168,23 +194,24 @@ function calc() {
         let kaju = (isFriend ? (shipTyku / 2) : (isBrowser ? Math.floor(Math.sqrt(shipTyku + totalItemTyku)) : Math.sqrt(shipTyku + totalItemTyku))) + sum;
         // 最終加重對空值 = (艦船加重對空值 + 艦隊防空補正)*基本定數*味方相手補正(0.8(味方の対空砲火) or 0.75(相手の対空砲火))
         let kajuTotal = (kaju + kantaiAirBonus) * AIR_BATTLE_FACTOR * (isFriend ? FRIEND_FACTOR : ENEMY_FACTOR);
-        let tykuCIkind = $('#tyku_cutin').val() | 0;
-        let factor = getTykuCuinFactor(tykuCIkind, isFriend);
+        const ciA = Number($("#aaciValueA").val());
+        const ciB = Number($("#aaciValueB").val());
+        const ciC = Number($("#aaciValueC").val());
         //console.log(kaju,tykuCIkind,kajuTotal)
         const isAirRaid = $('#isAirRaid').prop('checked');
         // 擊墜數A = int( 最終加重對空值*((0 or 1)の一様な乱数)*対空カットイン定數C + 対空カットイン定數A )
-        let minA = factor.A;
-        let maxA = getA(kajuTotal, tykuCIkind, isFriend, isCombined, i, isAirRaid);
+        const minA = ciA;
+        const maxA = getA(kajuTotal, ciA, ciC, isFriend, isCombined, i, isAirRaid);
         // 擊墜數B = int( 0.02*基本定數*機數*艦船加重對空值*((0 or 1)の一様な乱数) + 対空カットイン定數B )
-        let minB = factor.B;
-        let maxB = getB(kaju, slotNum, tykuCIkind, isFriend, isCombined, i, isAirRaid);
+        const minB = ciB;
+        const maxB = getB(kaju, slotNum, ciB, isFriend, isCombined, i, isAirRaid);
         // 割合撃墜
-        let proportionShotDown = getProportion(kaju, isCombined, i, isFriend, isAirRaid);
-        let proportionShotDownNum = getProportionNum(kaju, slotNum, isCombined, i, isFriend, isAirRaid);
+        const proportionShotDown = getProportion(kaju, isCombined, i, isFriend, isAirRaid);
+        const proportionShotDownNum = getProportionNum(kaju, slotNum, isCombined, i, isFriend, isAirRaid);
         // 固定撃墜
-        let fixedShotDown = getFixedNum(kajuTotal, tykuCIkind, isFriend, isCombined, i, isAirRaid);
+        const fixedShotDown = getFixedNum(kajuTotal, ciC, isFriend, isCombined, i, isAirRaid);
         // 最低保証
-        let guaranteedShotDown = getGuaranteedNum(tykuCIkind, isFriend);
+        const guaranteedShotDown = getGuaranteedNum(ciA, ciB);
 
         // 確率計算
         shipNum++;
@@ -236,11 +263,17 @@ function initialize() {
   let nameSource;
   let itemSource;
   if ($('input[name=isFriend]:checked').val() === 'true') {
+    $("#aaciValueA").val(TYKU_CUTIN[0]["FRIEND"].A);
+    $("#aaciValueB").val(TYKU_CUTIN[0]["FRIEND"].B);
+    $("#aaciValueC").val(TYKU_CUTIN[0]["FRIEND"].C);
     nameSource = '#friendShipDialog';
     itemSource = '#friendItemDialog';
     $('.parseEnemy').hide();
     $('.parseFriend').show();
   } else {
+    $("#aaciValueA").val(TYKU_CUTIN[0]["ENEMY"].A);
+    $("#aaciValueB").val(TYKU_CUTIN[0]["ENEMY"].B);
+    $("#aaciValueC").val(TYKU_CUTIN[0]["ENEMY"].C);
     nameSource = '#enemyShipDialog';
     itemSource = '#enemyItemDialog';
     $('.parseFriend').hide();

@@ -15,7 +15,7 @@
     <link rel="stylesheet" href="css/select.css">
   </head>
   <body>
-    <h2>対空砲火計算機　Ver1.2.8</h2>
+    <h2>対空砲火計算機　Ver1.2.9</h2>
     <p>対空砲火を調べることが出来るかも(╹‿ ╹.　)</p>
     <p><strong>注意：これは艦これ改の対空砲火計算式を元に制作しています。<u>本家(ブラウザ版)と多少結果が異なる可能性</u>があるのでご注意下さい。</strong></p>
     <br>
@@ -28,7 +28,7 @@
     </p>
     <p>
       <span id="radiogroup">
-        <input type="radio" name="isFriend" value="true" onclick="initialize()" checked> 艦娘
+        <input type="radio" id="isFriend" name="isFriend" value="true" onclick="initialize()" checked> 艦娘
         <input type="radio" name="isFriend" value="false" onclick="initialize()"> 深海棲艦
       </span>
       陣形：
@@ -47,7 +47,7 @@
       スロット機数：
       <input type="number" name="slotNum" id="slotNumSpinner" value="0" min="0" oninput="calc()" onchange="calc()">
       対空カットイン種別：
-      <select name="tyku_cutin" id="tyku_cutin" onchange="calc()" title="14番以降は検証ソースです。AとBは合計値だけ合わせて後は適当に配置しています。">
+      <select name="tyku_cutin" id="tyku_cutin" onchange="setAACI();calc();" style="width: 200px;" title="14番以降は検証ソースです。AとBは合計値だけ合わせて後は適当に配置しています。">
         <option value="0" selected>0:なし</option>
         <option value="1">1:高角砲x2/電探&lt;秋月&gt;</option>
         <option value="2">2:高角砲/電探&lt;秋月&gt;</option>
@@ -90,7 +90,11 @@
         <option value="39">39:Atlanta砲+GFCS/Atlanta砲&lt;Atlanta&gt;</option>
         <option value="40">40:Atlanta砲x2/GFCS&lt;Atlanta&gt;</option>
         <option value="41">41:Atlanta砲x2&lt;Atlanta&gt;</option>
+        <option value="-1">手入力</option>
       </select>
+      A:<input id="aaciValueA" type="number" value="1" step="1" style="width: 50px;" onchange="calc();" disabled />
+      B:<input id="aaciValueB" type="number" value="1" step="1" style="width: 50px;" onchange="calc();" disabled />
+      C:<input id="aaciValueC" type="number" value="1" step="0.05" min="1" style="width: 50px;" onchange="calc();" disabled />
       <span class="parseFriend">
         <span title="艦これブラウザ版の補正をかけます。艦これ改で計算する場合はチェックを外して下さい。"><input type="checkbox" id="useBrowserCheckBox" onchange="calc()" checked>ブラウザ版補正</span>
         <span class="space"></span>

@@ -7,7 +7,7 @@ const FRIEND_FIRST_COMBINED_AIRRAID_FACTOR = 0.9;
 const ENEMY_FIRST_COMBINED_FACTOR = 1.0;
 const SECOND_COMBINED_FACTOR = 0.6;
 
-const TYKU_CUIIN = [
+const TYKU_CUTIN = [
   {"FRIEND":{A:1,B:0,C:1},"ENEMY":{A:0,B:0,C:1}},
   {A:3,B:5,C:1.7},  // 1
   {A:3,B:4,C:1.7},  // 2
@@ -124,20 +124,12 @@ function getFormationBonus(formation){
   }
 }
 // 撃墜数A
-function getA(kaju,ciKind,isFriend,isCombined,fleetno, isAirRaid){
-  let ciFactor = getTykuCuinFactor(ciKind,isFriend);
-  return Math.floor(kaju * ciFactor.C * getCombinedFactor(isCombined,fleetno,isFriend, isAirRaid) + ciFactor.A);
+function getA(kaju,ciA,ciC,isFriend,isCombined,fleetno, isAirRaid){
+  return Math.floor(kaju * ciC * getCombinedFactor(isCombined,fleetno,isFriend, isAirRaid) + ciA);
 }
 // 撃墜数B
-function getB(kaju,slot,ciKind,isFriend,isCombined,fleetno, isAirRaid){
-  let ciFactor = getTykuCuinFactor(ciKind,isFriend);
-  return Math.floor(0.02 * AIR_BATTLE_FACTOR * slot * kaju * getCombinedFactor(isCombined,fleetno,isFriend, isAirRaid) + ciFactor.B);
-}
-function getTykuCuinFactor(ciKind,isFriend){
-  if(TYKU_CUIIN[ciKind].A !== undefined){
-    return TYKU_CUIIN[ciKind];
-  }
-  return TYKU_CUIIN[ciKind][isFriend ? "FRIEND" : "ENEMY"];
+function getB(kaju,slot,ciB,isFriend,isCombined,fleetno, isAirRaid){
+  return Math.floor(0.02 * AIR_BATTLE_FACTOR * slot * kaju * getCombinedFactor(isCombined,fleetno,isFriend, isAirRaid) + ciB);
 }
 // 割合撃墜確率
 function getProportion(kaju,isCombined,fleetno,isFriend, isAirRaid){
@@ -148,14 +140,12 @@ function getProportionNum(kaju,slot,isCombined,fleetno,isFriend, isAirRaid){
   return Math.floor(0.02 * AIR_BATTLE_FACTOR * slot * kaju * getCombinedFactor(isCombined,fleetno,isFriend, isAirRaid));
 }
 // 固定撃墜数
-function getFixedNum(kaju,ciKind,isFriend,isCombined,fleetno, isAirRaid){
-  let ciFactor = getTykuCuinFactor(ciKind,isFriend);
-  return Math.floor(kaju * ciFactor.C * getCombinedFactor(isCombined,fleetno,isFriend, isAirRaid));
+function getFixedNum(kaju,ciC,isFriend,isCombined,fleetno, isAirRaid){
+  return Math.floor(kaju * ciC * getCombinedFactor(isCombined,fleetno,isFriend, isAirRaid));
 }
 // 最低保証数
-function getGuaranteedNum(ciKind,isFriend){
-  let ciFactor = getTykuCuinFactor(ciKind,isFriend);
-  return ciFactor.A + ciFactor.B;
+function getGuaranteedNum(ciA,ciB){
+  return ciA + ciB;
 }
 
 function getCombinedFactor(isCombined,fleetno,isFriend, isAirRaid){
